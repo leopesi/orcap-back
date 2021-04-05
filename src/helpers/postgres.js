@@ -8,17 +8,28 @@ const Config = require('../config/database')
 
 module.exports = {
 
+	/**
+	 * @function
+	 * Start o módulo Postgres
+	 */
 	start() {
 		this.pool = new Pool(Config)
 	},
 
-	async getClients() {
+	/**
+	 * @function
+	 * @param {String} query 
+	 * SQL Query
+	 * @param {Function} callback 
+	 * Function que recebe o resultado
+	 */
+	query(query, callback) {
 		if (!this.pool) this.start()
-		this.pool.query('SELECT * from users', (error, results) => {
+		this.pool.query(query, (error, results) => {
 			if (error) {
 				throw error
 			}
-			console.log(results.rows)
+			callback(results.rows)
 		})
 	},
 }
