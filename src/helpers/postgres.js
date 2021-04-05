@@ -14,7 +14,7 @@ module.exports = {
 
 	async getClients() {
 		if (!this.pool) this.start()
-		this.pool.query('SELECT * from usuarios', (error, results) => {
+		this.pool.query('SELECT * from users', (error, results) => {
 			if (error) {
 				throw error
 			}
