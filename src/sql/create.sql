@@ -10,4 +10,5 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 insert into users (id, name, mail, password, created_on, last_login) values (1, 'Admin', 'admin@orcap.com.br', '', now(), now());
+update users set password = '$2a$08$EAmMB9jhdtQWp86tbWwiseB3GHo5AXAlV8y0dQZj6Zklo0RGPQWzm' where id = 1;
 
