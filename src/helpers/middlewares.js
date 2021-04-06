@@ -3,6 +3,7 @@
  */
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
+const Config = require('../config')
 
 module.exports = {
     
@@ -35,9 +36,9 @@ module.exports = {
             }
 
             const aut = authHeader.split(' ');
-            const token = aut.length === 2 ? aut[1] : aut[0];
+            const token = aut.length === 2 ? aut[1] : '';
 
-            const { key } = self.config.token;
+            const { key } = Config.token;
             try {
                 const decoded = await promisify(jwt.verify)(token, key);
 

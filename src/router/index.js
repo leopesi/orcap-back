@@ -1,9 +1,19 @@
 const Server = require('../helpers/server')
 const Sessions = require('../controllers/sessions')
+const Users = require('../controllers/users')
+const ShopKeepers = require('../controllers/shopkeepers')
+const SalesPeople = require('../controllers/salespeople')
+const Clients = require('../controllers/clients')
 
 module.exports = {
+	
 	start() {
-		this.sessions()
+		
+		Sessions.setRoutes()
+		Users.setRoutes()
+		ShopKeepers.setRoutes()
+		SalesPeople.setRoutes()
+		Clients.setRoutes()
 
 		Server.addRoute(
 			'/',
@@ -14,7 +24,4 @@ module.exports = {
 		).get(false)
 	},
 
-	sessions() {
-		Server.addRoute('/login', Sessions.login, Server).get(false)
-	},
 }

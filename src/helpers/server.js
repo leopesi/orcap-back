@@ -161,10 +161,10 @@ module.exports = {
 	/**
 	 * @function
 	 * Cria uma string criptografada que pode ser descriptografada
-	 * @param {String} str 
-	 * String a ser encriptografada 
-	 * @returns 
-	 * 
+	 * @param {String} str
+	 * String a ser encriptografada
+	 * @returns
+	 *
 	 */
 	createToken(str) {
 		try {
@@ -177,8 +177,42 @@ module.exports = {
 
 	/**
 	 * @function
+	 * Retorna string descriptografada
+	 * @param {String} str
+	 * String a ser descriptografada
+	 * @returns
+	 *
+	 */
+	decodeToken(str) {
+		try {
+			return jwt.verify(str, Config.token.key).str
+		} catch (e) {
+			return undefined
+		}
+	},
+
+	/**
+	 * @function
+	 * Retorna o Id através do token
+	 * @param {Object} req
+	 * Request Express
+	 * @returns
+	 *
+	 */
+	decodedID(req) {
+		try {
+			const auth = req.headers.authorization.split(' ')
+			const token = auth.length === 2 ? auth[1] : ''
+			return jwt.verify(token, Config.token.key).str
+		} catch (e) {
+			return undefined
+		}
+	},
+
+	/**
+	 * @function
 	 * Arruma o request do GET unindo o .body com o .query
-	 * @param {Object} request 
+	 * @param {Object} request
 	 * Request do Express
 	 * @returns {Object}
 	 * Request do Express arrumado
@@ -191,5 +225,4 @@ module.exports = {
 			return undefined
 		}
 	},
-
 }

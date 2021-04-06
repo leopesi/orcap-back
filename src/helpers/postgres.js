@@ -29,7 +29,7 @@ module.exports = {
 			if (error) {
 				throw error
 			}
-			callback(results.rows)
+			if (typeof callback === 'function') callback(results.rows)
 		})
 	},
 }
