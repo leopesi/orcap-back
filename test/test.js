@@ -1,5 +1,5 @@
 const axios = require('axios')
-const UserTest = require('./users')
+const UserTest = require('./controllers/test-users')
 
 require('../src')
 

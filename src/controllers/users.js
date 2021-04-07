@@ -9,7 +9,7 @@ module.exports = {
 	setRoutes() {
 		Server.addRoute('/users/:id', this.get, this).get(true)
 		Server.addRoute('/users/', this.list, this).get(true)
-		Server.addRoute('/users', this.create, this).post(true)
+		Server.addRoute('/users', this.create, this).post(false)
 		Server.addRoute('/users', this.change, this).put(true)
 		Server.addRoute('/users', this.delete, this).delete(true)
 	},
@@ -39,7 +39,24 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	create(req, res, self) {},
+	async create(req, res, self) {
+		if (Permissions.check()) {
+			const sql =
+				"INSERT into users (name, mail, password, created_on, last_login) values ('" +
+				req.body.name +
+				"', '" +
+				req.body.mail +
+				"', '" +
+				(await Server.getHash(req.body.password)) +
+				"', now(), now())"
+			console.log(sql)
+			Postgres.query(sql, (data) => {
+				res.send({ message: 'Criado', data })
+			})
+		} else {
+			res.send({ message: 'Açao nao permitida', data })
+		}
+	},
 
 	/**
 	 * @function
