@@ -199,11 +199,29 @@ module.exports = {
 	 * @returns
 	 *
 	 */
-	decodedID(req) {
+	decodedIdByRequestHeader(req) {
 		try {
 			const auth = req.headers.authorization.split(' ')
 			const token = auth.length === 2 ? auth[1] : ''
-			return jwt.verify(token, Config.token.key).str
+			const id = jwt.decode(token, Config.token.key).str
+			return id
+		} catch (e) {
+			return undefined
+		}
+	},
+
+	/**
+	 * @function
+	 * Retorna o Id através do token
+	 * @param {String} token
+	 * Request Express
+	 * @returns
+	 *
+	 */
+	decodedIdByToken(token) {
+		try {
+			const id = jwt.decode(token, Config.token.key).str
+			return id
 		} catch (e) {
 			return undefined
 		}

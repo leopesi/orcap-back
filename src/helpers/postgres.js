@@ -7,7 +7,6 @@ const { Pool } = require('pg')
 const Config = require('../config/database')
 
 module.exports = {
-
 	/**
 	 * @function
 	 * Start o módulo Postgres
@@ -18,9 +17,9 @@ module.exports = {
 
 	/**
 	 * @function
-	 * @param {String} query 
+	 * @param {String} query
 	 * SQL Query
-	 * @param {Function} callback 
+	 * @param {Function} callback
 	 * Function que recebe o resultado
 	 */
 	query(query, callback) {
@@ -29,7 +28,10 @@ module.exports = {
 			if (error) {
 				throw error
 			}
-			if (typeof callback === 'function') callback(results.rows)
+			if (typeof callback === 'function') {
+				if (results.rows) callback(results.rows)
+				else callback(results)
+			}
 		})
 	},
 }

@@ -10,8 +10,8 @@ module.exports = {
 		Server.addRoute('/users/:id', this.get, this).get(true)
 		Server.addRoute('/users/', this.list, this).get(true)
 		Server.addRoute('/users', this.create, this).post(true)
-		Server.addRoute('/users/:id', this.change, this).put(true)
-		Server.addRoute('/users/:id', this.delete, this).delete(true)
+		Server.addRoute('/users', this.change, this).put(true)
+		Server.addRoute('/users', this.delete, this).delete(true)
 	},
 
 	/**
@@ -50,7 +50,7 @@ module.exports = {
 	 */
 	change(req, res, self) {
 		if (Permissions.check()) {
-			const id = Server.decodedID(req)
+			const id = Server.decodedIdByRequestHeader(req)
 			Postgres.query(
 				"UPDATE users set name = '" +
 					req.body.name +
@@ -58,9 +58,11 @@ module.exports = {
 					id +
 					"'",
 				(data) => {
-					res.send({ message: 'Atualizado' })
+					res.send({ message: 'Atualizado', data })
 				}
 			)
+		} else {
+			res.send({ message: 'Açao nao permitida', data })
 		}
 	},
 

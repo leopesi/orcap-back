@@ -7,7 +7,10 @@ const Postgres = require('../helpers/postgres')
 module.exports = {
 
 	setRoutes() {
-		Server.addRoute('/login', this.loginUser, this).get(false)
+		Server.addRoute('/login/user', this.loginUser, this).get(false)
+		Server.addRoute('/login/shopkeepers', this.loginUser, this).get(false)
+		Server.addRoute('/login/salespeople', this.loginUser, this).get(false)
+		Server.addRoute('/login/client', this.loginUser, this).get(false)
 	},
 
 	/**
@@ -25,9 +28,13 @@ module.exports = {
 				if (response && response.token) {
 					Postgres.query(
 						"UPDATE users set last_login = now() where id = '" + Server.decodeToken(response.token) + "'",
+						() => {
+							res.send(response)
+						}
 					)
+				} else {
+					res.send({ message: 'Usuário nao encontrado'})
 				}
-				res.send(response)
 			}
 		)
 	},
