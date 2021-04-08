@@ -3,6 +3,7 @@
  */
 const Server = require('../helpers/server')
 const Postgres = require('../helpers/postgres')
+const MSG_USER = require('../messages/controllers/messages-users')
 
 module.exports = {
 
@@ -33,7 +34,7 @@ module.exports = {
 						}
 					)
 				} else {
-					res.send({ message: 'Usuário nao encontrado'})
+					res.send({ message: MSG_USER.USER_NOT_FOUND })
 				}
 			}
 		)

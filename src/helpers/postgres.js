@@ -27,7 +27,7 @@ module.exports = {
 		this.pool.query(query, (error, results) => {
 			if (error) {
 				// throw error
-				callback(error)
+				callback({ error })
 			} else if (typeof callback === 'function') {
 				if (results.rows) callback(results.rows)
 				else callback(results)

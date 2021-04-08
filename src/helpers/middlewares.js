@@ -4,6 +4,7 @@
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const Config = require('../config')
+const MSG = require('../messages')
 
 module.exports = {
     
@@ -47,7 +48,7 @@ module.exports = {
                 return true; //next();
             } catch (err) {
 
-                return res.status(401).send({ error: 'Token inválido' });
+                return res.status(401).send({ error: MSG.h('SERVER.INVALID_TOKEN') });
             }
         } catch (e) {
             return res.status(401).send({ error: 'Middlewares Autenticação Error: ' + e.message });

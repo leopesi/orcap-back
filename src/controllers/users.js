@@ -4,6 +4,7 @@
 const Server = require('../helpers/server')
 const Postgres = require('../helpers/postgres')
 const Permissions = require('./permissions')
+const MSG_USER = require('../messages/controllers/messages-users')
 
 module.exports = {
 	setRoutes() {
@@ -49,9 +50,12 @@ module.exports = {
 				"', '" +
 				(await Server.getHash(req.body.password)) +
 				"', now(), now())"
-			console.log(sql)
 			Postgres.query(sql, (data) => {
-				res.send({ message: 'Criado', data })
+				if (!data.error) {
+					res.send({ message: MSG_USER.USER_CREATED, data })
+				} else {
+					res.send({ error: MSG_USER.USER_INSERT_ERROR })
+				}
 			})
 		} else {
 			res.send({ message: 'Açao nao permitida', data })

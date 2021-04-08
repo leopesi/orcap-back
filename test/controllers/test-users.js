@@ -5,34 +5,42 @@ const Data = require('../data/data-users')
 module.exports = {
 	start() {
 		this.userCreate((data) => {
-			this.login(data, () => {
-				this.userChange(data)
-			})
+			if (!data.error) {
+				this.login(data, () => {
+					this.userChange(data)
+				})
+			} else {
+				console.log(data)
+			}
 		})
 	},
 
 	login(data, callback) {
-		axios
-			.get('/login/user?mail=' + data.mail + '&password=' + data.mail)
-			.then(
-				(response) => {
-					axios.defaults.headers.common['Authorization'] =
-						'Bearer ' + response.data.token
-					callback()
-				},
-				(error) => {
-					console.log(error.response.data)
-				}
-			)
+		axios.get('/login/user?mail=' + data.mail + '&password=' + data.mail).then(
+			(response) => {
+				axios.defaults.headers.common['Authorization'] =
+					'Bearer ' + response.data.token
+				callback()
+			},
+			(error) => {
+				console.log(error.response.data)
+			}
+		)
 	},
 
 	userCreate(callback) {
 		for (const i in Data) {
-			console.log('-- Usuário Criado')
+			console.log('-- Teste de criaçao de Usuário')
 			axios.post('/users', Data[i]).then(
 				(response) => {
-					if (response && response.data) console.log(response.data)
-					callback(Data[i])
+					if (response && response.data && !response.data.error) {
+						console.log(response.data)
+						callback(Data[i])
+					} else if (response && response.data) {
+						callback(response.data)
+					} else {
+						callback({ error: 'Erro no request ' })
+					}
 				},
 				(error) => {
 					console.log(error.response.data)
