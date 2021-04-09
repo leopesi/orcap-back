@@ -1,5 +1,7 @@
 module.exports = {
 	'pt-br': {
-		INVALID_TOKEN: 'Token inválido'
+		TOKEN_NOT_FOUND: 'Token não informado',
+		INVALID_TOKEN: 'Token inválido',
+		AUTH_CATCH_ERROR: 'Middlewares Autenticação Error: '
 	}
 }

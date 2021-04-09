@@ -4,7 +4,8 @@
 const Server = require('../helpers/server')
 const Postgres = require('../helpers/postgres')
 const Permissions = require('./permissions')
-const MSG_USER = require('../messages/controllers/messages-users')
+const User = require('../models/user')
+const MSG = require('../messages/')
 
 module.exports = {
 	setRoutes() {
@@ -42,23 +43,35 @@ module.exports = {
 	 */
 	async create(req, res, self) {
 		if (Permissions.check()) {
-			const sql =
-				"INSERT into users (name, mail, password, created_on, last_login) values ('" +
-				req.body.name +
-				"', '" +
-				req.body.mail +
-				"', '" +
-				(await Server.getHash(req.body.password)) +
-				"', now(), now())"
-			Postgres.query(sql, (data) => {
-				if (!data.error) {
-					res.send({ message: MSG_USER.USER_CREATED, data })
-				} else {
-					res.send({ error: MSG_USER.USER_INSERT_ERROR })
-				}
-			})
+			await User.sync({ force: true})
+			delete req.body.id
+			req.body.password = await Server.getHash(req.body.password)
+			User.build(req.body)
+				.save()
+				.then((data) => {
+					res.send(true)
+				})
+				.catch((error) => {
+					console.log(error)
+					res.send(false)
+				})
+			// const sql =
+			// 	"INSERT into users (name, mail, password, created_on, last_login) values ('" +
+			// 	req.body.name +
+			// 	"', '" +
+			// 	req.body.mail +
+			// 	"', '" +
+			// 	(await Server.getHash(req.body.password)) +
+			// 	"', now(), now())"
+			// Postgres.query(sql, (data) => {
+			// 	if (!data.error) {
+			// 		res.send({ message: MSG.c('USERS.USER_CREATED'), data })
+			// 	} else {
+			// 		res.send({ error: MSG.c('USERS.USER_INSERT_ERROR') })
+			// 	}
+			// })
 		} else {
-			res.send({ message: 'Açao nao permitida', data })
+			res.send({ message: MSG.c('USERS.USER_INSERT_ERROR'), data })
 		}
 	},
 
@@ -79,11 +92,15 @@ module.exports = {
 					id +
 					"'",
 				(data) => {
-					res.send({ message: 'Atualizado', data })
+					if (!data.error) {
+						res.send({ message: MSG.c('USERS.USER_UPDATED'), data })
+					} else {
+						res.send({ error: MSG.c('USERS.USER_UPDATE_ERROR') })
+					}
 				}
 			)
 		} else {
-			res.send({ message: 'Açao nao permitida', data })
+			res.send({ error: MSG.c('USERS.USER_UPDATE_ERROR'), data })
 		}
 	},
 

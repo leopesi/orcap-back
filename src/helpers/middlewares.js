@@ -33,7 +33,7 @@ module.exports = {
             }
             
             if (!authHeader) {
-                return res.status(401).send({ error: 'Token não informado' });
+                return res.status(401).send({ error: MSG.h('SERVER.TOKEN_NOT_FOUND') });
             }
 
             const aut = authHeader.split(' ');
@@ -51,7 +51,7 @@ module.exports = {
                 return res.status(401).send({ error: MSG.h('SERVER.INVALID_TOKEN') });
             }
         } catch (e) {
-            return res.status(401).send({ error: 'Middlewares Autenticação Error: ' + e.message });
+            return res.status(401).send({ error: MSG.h('SERVER.AUTH_CATCH_ERROR') + e.message });
         }
     },
 }

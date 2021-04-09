@@ -4,7 +4,7 @@ module.exports = {
 	locaale: 'pt-br',
 
 	c(name) {
-		return this.t('./controllers/messages-' + name.split('.')[0].toLowerCase() + '.js')
+		return this.t('./controllers/messages-' + name.split('.')[0].toLowerCase() + '.js', name)
 	},
 
 	h(name) {

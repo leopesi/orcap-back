@@ -4,6 +4,7 @@
 const Server = require('../helpers/server')
 const Postgres = require('../helpers/postgres')
 const MSG_USER = require('../messages/controllers/messages-users')
+const User = require('../models/user')
 
 module.exports = {
 
@@ -22,22 +23,25 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	loginUser(req, res, self) {
-		Postgres.query(
-			"SELECT id, password from users where mail = '" + req.body.mail + "'",
-			(data) => {
-				const response = self.createLoginHash(req, data)
-				if (response && response.token) {
-					Postgres.query(
-						"UPDATE users set last_login = now() where id = '" + Server.decodeToken(response.token) + "'",
-						() => {
-							res.send(response)
-						}
-					)
-				} else {
-					res.send({ message: MSG_USER.USER_NOT_FOUND })
-				}
-			}
-		)
+		// Postgres.query(
+		// 	"SELECT id, password from users where mail = '" + req.body.mail + "'",
+		// 	(data) => {
+		// 		const response = self.createLoginHash(req, data)
+		// 		if (response && response.token) {
+		// 			Postgres.query(
+		// 				"UPDATE users set last_login = now() where id = '" + Server.decodeToken(response.token) + "'",
+		// 				() => {
+		// 					res.send(response)
+		// 				}
+		// 			)
+		// 		} else {
+		// 			res.send({ message: MSG_USER.USER_NOT_FOUND })
+		// 		}
+		// 	}
+		// )
+
+		console.log(User.get())
+		
 	},
 
 	/**
