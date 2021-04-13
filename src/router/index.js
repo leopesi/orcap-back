@@ -22,6 +22,14 @@ module.exports = {
 			},
 			this
 		).get(false)
+
+		Server.addRoute(
+			'/error',
+			(req, res, self) => {
+				res.send({ status: 'error' })
+			},
+			this
+		).get(false)
 	},
 
 }

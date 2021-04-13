@@ -5,7 +5,6 @@ const Server = require('../helpers/server')
 const Postgres = require('../helpers/postgres')
 const Permissions = require('./permissions')
 const User = require('../models/user')
-const MSG = require('../messages/')
 
 module.exports = {
 	setRoutes() {
@@ -43,7 +42,6 @@ module.exports = {
 	 */
 	async create(req, res, self) {
 		if (Permissions.check()) {
-			await User.sync({ force: true})
 			delete req.body.id
 			req.body.password = await Server.getHash(req.body.password)
 			User.build(req.body)
@@ -65,13 +63,13 @@ module.exports = {
 			// 	"', now(), now())"
 			// Postgres.query(sql, (data) => {
 			// 	if (!data.error) {
-			// 		res.send({ message: MSG.c('USERS.USER_CREATED'), data })
+			// 		res.send({ message: 'USER_CREATED', data })
 			// 	} else {
-			// 		res.send({ error: MSG.c('USERS.USER_INSERT_ERROR') })
+			// 		res.send({ error: 'USER_INSERT_ERROR') })
 			// 	}
 			// })
 		} else {
-			res.send({ message: MSG.c('USERS.USER_INSERT_ERROR'), data })
+			res.send({ message: '.USER_INSERT_ERROR', data })
 		}
 	},
 
@@ -85,22 +83,22 @@ module.exports = {
 	change(req, res, self) {
 		if (Permissions.check()) {
 			const id = Server.decodedIdByRequestHeader(req)
-			Postgres.query(
-				"UPDATE users set name = '" +
-					req.body.name +
-					"' where id = '" +
-					id +
-					"'",
-				(data) => {
-					if (!data.error) {
-						res.send({ message: MSG.c('USERS.USER_UPDATED'), data })
-					} else {
-						res.send({ error: MSG.c('USERS.USER_UPDATE_ERROR') })
-					}
-				}
-			)
+			// Postgres.query(
+			// 	"UPDATE users set name = '" +
+			// 		req.body.name +
+			// 		"' where id = '" +
+			// 		id +
+			// 		"'",
+			// 	(data) => {
+			// 		if (!data.error) {
+			// 			res.send({ message:'USER_UPDATED', data })
+			// 		} else {
+			// 			res.send({ error: 'USER_UPDATE_ERROR' })
+			// 		}
+			// 	}
+			// )
 		} else {
-			res.send({ error: MSG.c('USERS.USER_UPDATE_ERROR'), data })
+			res.send({ error: 'USER_UPDATE_ERROR', data })
 		}
 	},
 

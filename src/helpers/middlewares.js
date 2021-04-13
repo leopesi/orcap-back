@@ -4,7 +4,6 @@
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const Config = require('../config')
-const MSG = require('../messages')
 
 module.exports = {
     
@@ -33,7 +32,7 @@ module.exports = {
             }
             
             if (!authHeader) {
-                return res.status(401).send({ error: MSG.h('SERVER.TOKEN_NOT_FOUND') });
+                return res.status(401).send({ error: 'TOKEN_NOT_FOUND' });
             }
 
             const aut = authHeader.split(' ');
@@ -48,10 +47,10 @@ module.exports = {
                 return true; //next();
             } catch (err) {
 
-                return res.status(401).send({ error: MSG.h('SERVER.INVALID_TOKEN') });
+                return res.status(401).send({ error: 'INVALID_TOKEN' });
             }
         } catch (e) {
-            return res.status(401).send({ error: MSG.h('SERVER.AUTH_CATCH_ERROR') + e.message });
+            return res.status(401).send({ error: 'AUTH_CATCH_ERROR' + e.message });
         }
     },
 }

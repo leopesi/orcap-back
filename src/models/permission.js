@@ -1,19 +1,14 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = require('../helpers/postgres')
 
-module.exports = sequelize.define('users', {
+module.exports = sequelize.define('permissions', {
 	id: {
 		type: DataTypes.UUID,
 		primaryKey: true,
 		defaultValue: DataTypes.UUIDV4
 	},
 	name: DataTypes.STRING(50),
-	mail: DataTypes.STRING(255),
-	password: DataTypes.STRING,
-	last_login: {
-		type: DataTypes.DATE,
-		defaultValue: Sequelize.NOW
-	},
+	type: DataTypes.STRING(255),
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW
