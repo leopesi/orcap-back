@@ -14,7 +14,7 @@ module.exports = {
 	setRoutes() {
 		Server.addRoute('/users/:id', this.get, this).get(true)
 		Server.addRoute('/users/', this.list, this).get(true)
-		Server.addRoute('/users', this.create, this).post(false)
+		Server.addRoute('/users', this.create, this).post(true)
 		Server.addRoute('/users', this.change, this).put(true)
 		Server.addRoute('/users', this.delete, this).delete(true)
 	},
@@ -45,20 +45,19 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		if (Permissions.check()) {
+		if (await Permissions.check(req, 'users', 'insert')) {
 			delete req.body.id
 			req.body.password = await Server.getHash(req.body.password)
 			User.build(req.body)
 				.save()
 				.then((data) => {
-					res.send(true)
+					res.send({ status: 'USER_INSERT_SUCCESS', data })
 				})
 				.catch((error) => {
-					console.log(error)
-					res.send(false)
+					res.send({ status: 'USER_INSERT_ERROR', error: error.parent.detail })
 				})
 		} else {
-			res.send({ message: '.USER_INSERT_ERROR', data })
+			res.send({ status: 'USER_PERMISSION_ERROR', error: 'Action not allowed' })
 		}
 	},
 
@@ -69,11 +68,24 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	change(req, res, self) {
-		if (Permissions.check()) {
-			const id = Server.decodedIdByRequestHeader(req)
+	async change(req, res, self) {
+		if (await Permissions.check(req, 'users', 'update')) {
+			const mail = req.body.mail
+			const result = await User.findOne({ where: { mail } })
+			req.body.name = req.body.name.split(' ')[0] + ' 2'
+			req.body.id = result.dataValues.id
+			delete req.body.mail
+			delete req.body.password
+			result
+				.update(req.body)
+				.then((data) => {
+					res.send({ status: 'USER_UPDATE_SUCCESS', data })
+				})
+				.catch((error) => {
+					res.send({ status: 'USER_UPDATE_ERROR', error: error.parent.detail })
+				})
 		} else {
-			res.send({ error: 'USER_UPDATE_ERROR', data })
+			res.send({ status: 'USER_PERMISSION_ERROR', error: 'Action not allowed' })
 		}
 	},
 
@@ -84,5 +96,24 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	delete(req, res, self) {},
+	async delete(req, res, self) {
+		if (await Permissions.check(req, 'users', 'delete')) {
+			const mail = req.body.mail
+			const result = await User.findOne({ where: { mail } })
+			req.body.name = req.body.name.split(' ')[0] + ' 2'
+			req.body.id = result.dataValues.id
+			delete req.body.mail
+			delete req.body.password
+			result
+				.update(req.body)
+				.then((data) => {
+					res.send({ status: 'USER_UPDATE_SUCCESS', data })
+				})
+				.catch((error) => {
+					res.send({ status: 'USER_UPDATE_ERROR', error: error.parent.detail })
+				})
+		} else {
+			res.send({ status: 'USER_PERMISSION_ERROR', error: 'Action not allowed' })
+		}
+	},
 }

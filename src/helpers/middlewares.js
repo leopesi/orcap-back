@@ -1,9 +1,8 @@
 /**
  * @module Middlewares
  */
-const jwt = require('jsonwebtoken');
-const { promisify } = require('util');
-const Config = require('../config')
+const Config = require('../config');
+const Server = require('./server');
 
 module.exports = {
     
@@ -37,14 +36,9 @@ module.exports = {
 
             const aut = authHeader.split(' ');
             const token = aut.length === 2 ? aut[1] : '';
-
-            const { key } = Config.token;
             try {
-                const decoded = await promisify(jwt.verify)(token, key);
-
-                req.tokenID = decoded.id;
-
-                return true; //next();
+                req.token = token
+                return true;
             } catch (err) {
 
                 return res.status(401).send({ error: 'INVALID_TOKEN' });

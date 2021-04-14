@@ -21,4 +21,25 @@ module.exports = [
 		password: '123456',
 		type: 'employee'
 	},
+	{
+		id: null,
+		name: 'Lojista',
+		mail: 'contato@logista.com.br',
+		password: '123456',
+		type: 'logist'
+	},
+	{
+		id: null,
+		name: 'Vendedor',
+		mail: 'vendedor@logista.com.br',
+		password: '123456',
+		type: 'seller'
+	},
+	{
+		id: null,
+		name: 'Cliente',
+		mail: 'contato@cliente.com.br',
+		password: '123456',
+		type: 'client'
+	},
 ]

@@ -6,9 +6,9 @@ require('../src')
 
 axios.defaults.baseURL = 'http://localhost:3333/'
 
-
-
-UserTest.start(() => {
-	console.log('EXIT')
+const start = async () => {
+	await UserTest.start()
 	process.exit()
-})
+}
+
+start()

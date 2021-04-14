@@ -4,6 +4,7 @@
 const Server = require('../helpers/server')
 const Group = require('../models/permission-group')
 const Permission = require('../models/permission')
+const User = require('../models/user')
 
 module.exports = {
 	/**
@@ -31,8 +32,21 @@ module.exports = {
 	 * Verifica a permissão
 	 * @returns {Boolean}
 	 */
-	check() {
-		return true
+	async check(req, table, type) {
+		const id = Server.decodedIdByToken(req.token)
+		if (id) {
+			const user = await User.findOne({ where: { id } })
+			const permission = await Permission.findAll({
+				where: { name: user.type, table, type },
+			})
+			if (permission[0]) {
+				return true
+			} else {
+				return false
+			}
+		} else {
+			return false
+		}
 	},
 
 	/**
@@ -48,7 +62,7 @@ module.exports = {
 			})
 			res.send({ groups })
 		} else {
-			res.send({ message: 'INVALID_PERMISSION' })
+			res.send({ status: 'INVALID_PERMISSION' })
 		}
 	},
 
@@ -70,7 +84,7 @@ module.exports = {
 					res.send(error)
 				})
 		} else {
-			res.send({ message: 'INVALID_PERMISSION' })
+			res.send({ status: 'INVALID_PERMISSION' })
 		}
 	},
 
@@ -87,7 +101,7 @@ module.exports = {
 			})
 			res.send({ permissions })
 		} else {
-			res.send({ message: 'INVALID_PERMISSION' })
+			res.send({ status: 'INVALID_PERMISSION' })
 		}
 	},
 
@@ -109,7 +123,7 @@ module.exports = {
 					res.send(error)
 				})
 		} else {
-			res.send({ message: 'INVALID_PERMISSION' })
+			res.send({ status: 'INVALID_PERMISSION' })
 		}
 	},
 }

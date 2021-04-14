@@ -21,12 +21,8 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async loginUser(req, res, self) {
-		const users = await User.findAll({
-			where: {
-				mail: req.body.mail,
-			},
-		})
-		const response = self.createLoginHash(req, users)
+		const user = await User.findOne({ where: { mail: req.body.mail } })
+		const response = self.createLoginHash(req, user)
 		if (response && response.token) {
 			await User.update(
 				{ last_login: Date.now() },
@@ -36,9 +32,9 @@ module.exports = {
 					},
 				}
 			)
-			res.send(response)
+			res.send({ token: response.token, type: user.type })
 		} else {
-			res.send({ message: 'USER_NOT_FOUND' })
+			res.send({ status: 'USER_NOT_FOUND' })
 		}
 	},
 
@@ -51,9 +47,7 @@ module.exports = {
 	 */
 	loginLogist(req, res, self) {
 		Postgres.query(
-			"SELECT id, password from logists where mail = '" +
-				req.body.mail +
-				"'",
+			"SELECT id, password from logists where mail = '" + req.body.mail + "'",
 			(data) => {
 				const response = self.createLoginHash(req, data)
 				if (response && response.token) {
@@ -77,9 +71,7 @@ module.exports = {
 	 */
 	loginSeller(req, res, self) {
 		Postgres.query(
-			"SELECT id, password from seller where mail = '" +
-				req.body.mail +
-				"'",
+			"SELECT id, password from seller where mail = '" + req.body.mail + "'",
 			(data) => {
 				const response = self.createLoginHash(req, data)
 				if (response && response.token) {
@@ -125,8 +117,7 @@ module.exports = {
 	 * @returns {Object}
 	 */
 	createLoginHash(req, data) {
-		if (data && data[0]) {
-			data = data[0]
+		if (data) {
 			if (req.body.password) {
 				if (Server.compareHash(data.password, req.body.password)) {
 					const token = Server.createToken(data.id)

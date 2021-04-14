@@ -15,6 +15,7 @@ const sequelize = new Sequelize(
 		host: DBConfig.host,
 		dialect: 'postgres',
 		port: DBConfig.port,
+		logging: false
 	}
 )
 

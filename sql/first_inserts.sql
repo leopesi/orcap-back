@@ -1,0 +1,2 @@
+
+insert into users (id, name, mail, password, type, phone, active) values ('98121754-4a25-4b02-addf-cf15374b2d8d', 'Administrador', 'admin@orcap.com.br', '$2a$08$Bu55m3xl4UUyV7j8cFX1n.GCC/HiqkBzDmTbLxFzjN52A2f/KzWfC', 'admin', '', false);

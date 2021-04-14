@@ -18,6 +18,10 @@ module.exports = sequelize.define('users', {
 	},
 	password: DataTypes.STRING,
 	phone: DataTypes.STRING,
+	active: {
+		type: DataTypes.BOOLEAN,
+		defaultValue: false
+	},
 	last_login: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW
