@@ -1,5 +1,8 @@
 const Server = require('../helpers/server')
+
 const Sessions = require('../controllers/sessions')
+const Permissions = require('../controllers/permissions')
+
 const Users = require('../controllers/users')
 const ShopKeepers = require('../controllers/shopkeepers')
 const SalesPeople = require('../controllers/salespeople')
@@ -10,6 +13,8 @@ module.exports = {
 	start() {
 		
 		Sessions.setRoutes()
+		Permissions.setRoutes()
+		
 		Users.setRoutes()
 		ShopKeepers.setRoutes()
 		SalesPeople.setRoutes()

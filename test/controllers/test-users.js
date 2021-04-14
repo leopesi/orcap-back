@@ -20,7 +20,7 @@ module.exports = {
 			(response) => {
 				axios.defaults.headers.common['Authorization'] =
 					'Bearer ' + response.data.token
-				callback()
+				callback({ token: response.data.token })
 			},
 			(error) => {
 				console.log(error.response.data)

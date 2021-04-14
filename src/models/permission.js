@@ -2,13 +2,21 @@ const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = require('../helpers/postgres')
 
 module.exports = sequelize.define('permissions', {
-	id: {
-		type: DataTypes.UUID,
-		primaryKey: true,
-		defaultValue: DataTypes.UUIDV4
+	name: {
+		type: DataTypes.STRING(50),
+		unique: 'compositeIndex',
+		primaryKey: true
 	},
-	name: DataTypes.STRING(50),
-	type: DataTypes.STRING(255),
+	table: {
+		type: DataTypes.STRING(50),
+		unique: 'compositeIndex',
+		primaryKey: true
+	},
+	type: {
+		type: DataTypes.STRING(50),
+		unique: 'compositeIndex',
+		primaryKey: true
+	},
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW
@@ -18,9 +26,8 @@ module.exports = sequelize.define('permissions', {
 		defaultValue: Sequelize.NOW
 	}
 }, {
+	indexes: [{ unique: true, fields: ['name', 'table', 'type'] }],
 	getterMethods: {
-		getFullName() {
-			return this.name + ' ' + this.mail;
-		}
+		
 	}
 })
