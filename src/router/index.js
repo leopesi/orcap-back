@@ -4,8 +4,8 @@ const Sessions = require('../controllers/sessions')
 const Permissions = require('../controllers/permissions')
 
 const Users = require('../controllers/users')
-const ShopKeepers = require('../controllers/shopkeepers')
-const SalesPeople = require('../controllers/salespeople')
+const Logists = require('../controllers/logists')
+const Sellers = require('../controllers/sellers')
 const Clients = require('../controllers/clients')
 
 module.exports = {
@@ -16,8 +16,8 @@ module.exports = {
 		Permissions.setRoutes()
 		
 		Users.setRoutes()
-		ShopKeepers.setRoutes()
-		SalesPeople.setRoutes()
+		Logists.setRoutes()
+		Sellers.setRoutes()
 		Clients.setRoutes()
 
 		Server.addRoute(

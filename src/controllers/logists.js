@@ -1,5 +1,5 @@
 /**
- * @module ShopKeepersController
+ * @module LogistsController
  */
 const Server = require('../helpers/server')
 const Postgres = require('../helpers/postgres')
@@ -7,11 +7,11 @@ const Postgres = require('../helpers/postgres')
 module.exports = {
 
 	setRoutes() {
-		Server.addRoute('/shopkeepers/:id', this.get, this).get(true)
-		Server.addRoute('/shopkeepers/', this.list, this).get(true)
-		Server.addRoute('/shopkeepers', this.create, this).post(false)
-		Server.addRoute('/shopkeepers/:id', this.change, this).put(true)
-		Server.addRoute('/shopkeepers/:id', this.delete, this).delete(true)
+		Server.addRoute('/logists/:id', this.get, this).get(true)
+		Server.addRoute('/logists/', this.list, this).get(true)
+		Server.addRoute('/logists', this.create, this).post(false)
+		Server.addRoute('/logists/:id', this.change, this).put(true)
+		Server.addRoute('/logists/:id', this.delete, this).delete(true)
 	},
 
 	/**

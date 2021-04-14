@@ -5,25 +5,25 @@ const UserTest = require('./test-users')
 
 module.exports = {
 	start() {
+		
 		UserTest.login(Data[0], () => {
 			this.createGroup(() => {
 				this.listGroups((data) => {
 					console.log(data)
+					const types = ['select', 'insert']
+					for (let i in types) {
+						this.createPermission(types[i], () => {})
+					}
+					this.listPermissions((data) => {
+						console.log(data)
+					})
 				})
-			})
-
-			const types = ['select', 'insert', 'update', 'delete']
-			for (let i in types) {
-				this.createPermission(types[i], () => {})
-			}
-			this.listPermissions((data) => {
-				console.log(data)
 			})
 		})
 	},
 
 	createGroup(callback) {
-		axios.post('/permissions/create-group', { name: 'admin' }).then(
+		axios.post('/permissions/create-group', { name: 'employee' }).then(
 			(response) => {
 				callback(response.data)
 			},
@@ -45,14 +45,20 @@ module.exports = {
 	},
 
 	createPermission(type, callback) {
-		axios.post('/permissions/create-permission', { name: 'admin', table: 'users', type }).then(
-			(response) => {
-				callback(response.data)
-			},
-			(error) => {
-				console.log(error.response.data)
-			}
-		)
+		axios
+			.post('/permissions/create-permission', {
+				name: 'employee',
+				table: 'users',
+				type,
+			})
+			.then(
+				(response) => {
+					callback(response.data)
+				},
+				(error) => {
+					console.log(error.response.data)
+				}
+			)
 	},
 
 	listPermissions(callback) {

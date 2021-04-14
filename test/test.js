@@ -6,4 +6,9 @@ require('../src')
 
 axios.defaults.baseURL = 'http://localhost:3333/'
 
-PermissionTest.start()
+
+
+UserTest.start(() => {
+	console.log('EXIT')
+	process.exit()
+})

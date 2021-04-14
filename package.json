@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "test": "nodemon test/test.js"
+    "test": "node test/test.js",
+    "sequelize": "node bin/sequelize.js"
   },
   "author": "",
   "license": "ISC",

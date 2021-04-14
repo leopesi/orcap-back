@@ -7,6 +7,10 @@ const Permissions = require('./permissions')
 const User = require('../models/user')
 
 module.exports = {
+	/**
+	 * @function
+	 * Seta as rotas dos Usuários
+	 */
 	setRoutes() {
 		Server.addRoute('/users/:id', this.get, this).get(true)
 		Server.addRoute('/users/', this.list, this).get(true)
@@ -53,21 +57,6 @@ module.exports = {
 					console.log(error)
 					res.send(false)
 				})
-			// const sql =
-			// 	"INSERT into users (name, mail, password, created_on, last_login) values ('" +
-			// 	req.body.name +
-			// 	"', '" +
-			// 	req.body.mail +
-			// 	"', '" +
-			// 	(await Server.getHash(req.body.password)) +
-			// 	"', now(), now())"
-			// Postgres.query(sql, (data) => {
-			// 	if (!data.error) {
-			// 		res.send({ message: 'USER_CREATED', data })
-			// 	} else {
-			// 		res.send({ error: 'USER_INSERT_ERROR') })
-			// 	}
-			// })
 		} else {
 			res.send({ message: '.USER_INSERT_ERROR', data })
 		}
@@ -83,20 +72,6 @@ module.exports = {
 	change(req, res, self) {
 		if (Permissions.check()) {
 			const id = Server.decodedIdByRequestHeader(req)
-			// Postgres.query(
-			// 	"UPDATE users set name = '" +
-			// 		req.body.name +
-			// 		"' where id = '" +
-			// 		id +
-			// 		"'",
-			// 	(data) => {
-			// 		if (!data.error) {
-			// 			res.send({ message:'USER_UPDATED', data })
-			// 		} else {
-			// 			res.send({ error: 'USER_UPDATE_ERROR' })
-			// 		}
-			// 	}
-			// )
 		} else {
 			res.send({ error: 'USER_UPDATE_ERROR', data })
 		}

@@ -7,9 +7,17 @@ module.exports = sequelize.define('users', {
 		primaryKey: true,
 		defaultValue: DataTypes.UUIDV4
 	},
+	type: {
+		type: DataTypes.STRING(50),
+		defaultValue: 'client'
+	},
 	name: DataTypes.STRING(50),
-	mail: DataTypes.STRING(255),
+	mail: {
+		type: DataTypes.STRING(255),
+		unique: true
+	},
 	password: DataTypes.STRING,
+	phone: DataTypes.STRING,
 	last_login: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW

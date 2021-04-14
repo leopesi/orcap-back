@@ -3,14 +3,18 @@ const Server = require('../../src/helpers/server')
 const Data = require('../data/data-users')
 
 module.exports = {
-	start() {
+	start(callback) {
 		this.userCreate((data) => {
 			if (!data.error) {
 				this.login(data, () => {
-					this.userChange(data)
+					this.userChange(data, () => {
+						console.log('USER CAHNGE')
+						callback()
+					})
 				})
 			} else {
 				console.log(data)
+				callback()
 			}
 		})
 	},
@@ -44,20 +48,24 @@ module.exports = {
 				},
 				(error) => {
 					console.log(error.response.data)
+					callback()
 				}
 			)
 		}
 	},
 
-	userChange(data) {
+	userChange(data, callback) {
 		console.log('-- Alterar usuário')
 		axios.put('/users', data).then(
 			(response) => {
 				if (response && response.data) console.log(response.data)
+				callback()
 			},
 			(error) => {
 				console.log(error.response.data)
+				callback()
 			}
 		)
+		callback()
 	},
 }

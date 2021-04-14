@@ -8,8 +8,8 @@ const User = require('../models/user')
 module.exports = {
 	setRoutes() {
 		Server.addRoute('/login/user', this.loginUser, this).get(false)
-		Server.addRoute('/login/shopkeepers', this.loginUser, this).get(false)
-		Server.addRoute('/login/salespeople', this.loginUser, this).get(false)
+		Server.addRoute('/login/logist', this.loginUser, this).get(false)
+		Server.addRoute('/login/seller', this.loginUser, this).get(false)
 		Server.addRoute('/login/client', this.loginUser, this).get(false)
 	},
 
@@ -28,16 +28,8 @@ module.exports = {
 		})
 		const response = self.createLoginHash(req, users)
 		if (response && response.token) {
-			// Postgres.query(
-			// 	"UPDATE users set last_login = now() where id = '" +
-			// 		Server.decodeToken(response.token) +
-			// 		"'",
-			// 	() => {
-			// 		res.send(response)
-			// 	}
-			// )
 			await User.update(
-				{ name: 'OLA', last_login: Date.now() },
+				{ last_login: Date.now() },
 				{
 					where: {
 						id: Server.decodeToken(response.token),
@@ -48,33 +40,6 @@ module.exports = {
 		} else {
 			res.send({ message: 'USER_NOT_FOUND' })
 		}
-		// Postgres.query(
-		// 	"SELECT id, password from users where mail = '" + req.body.mail + "'",
-		// 	(data) => {
-		// 		const response = self.createLoginHash(req, data)
-		// 		if (response && response.token) {
-		// 			Postgres.query(
-		// 				"UPDATE users set last_login = now() where id = '" + Server.decodeToken(response.token) + "'",
-		// 				() => {
-		// 					res.send(response)
-		// 				}
-		// 			)
-		// 		} else {
-		// 			res.send({ message: 'USER_NOT_FOUND' })
-		// 		}
-		// 	}
-		// )
-
-		// let user = await User.create({ id: 'fe2255c8-28a3-4133-b076-91fc3c1954fd' });
-		// user = await User.findOne();
-		// console.log(user.name);
-		// const users = await User.findAll({
-		// 	where: {
-		// 		id: '31355dcd-3e5f-4dae-92d6-6c2e828e1169'
-		// 	  }
-		// })
-		// // console.log(users.every((user) => user instanceof User)) // true
-		// console.log(users)
 	},
 
 	/**
@@ -84,16 +49,16 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	loginShopKeepers(req, res, self) {
+	loginLogist(req, res, self) {
 		Postgres.query(
-			"SELECT id, password from shopkeepers where mail = '" +
+			"SELECT id, password from logists where mail = '" +
 				req.body.mail +
 				"'",
 			(data) => {
 				const response = self.createLoginHash(req, data)
 				if (response && response.token) {
 					Postgres.query(
-						"UPDATE shopkeepers set last_login = now() where id = '" +
+						"UPDATE logists set last_login = now() where id = '" +
 							Server.decodeToken(response.token) +
 							"'"
 					)
@@ -110,16 +75,16 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	loginSalesPeople(req, res, self) {
+	loginSeller(req, res, self) {
 		Postgres.query(
-			"SELECT id, password from salespeople where mail = '" +
+			"SELECT id, password from seller where mail = '" +
 				req.body.mail +
 				"'",
 			(data) => {
 				const response = self.createLoginHash(req, data)
 				if (response && response.token) {
 					Postgres.query(
-						"UPDATE salespeople set last_login = now() where id = '" +
+						"UPDATE seller set last_login = now() where id = '" +
 							Server.decodeToken(response.token) +
 							"'"
 					)
