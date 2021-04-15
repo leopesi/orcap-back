@@ -1,6 +1,6 @@
 const axios = require('axios')
 const chalk = require('chalk')
-const Server = require('../../src/helpers/server')
+const AxiosHelper = require('../helpers/axios')
 const Data = require('../data/data-users')
 
 module.exports = {
@@ -36,30 +36,14 @@ module.exports = {
 		await this.userCreate(result)
 		for (const i in Data) {
 			console.log(
-				chalk.blue('\n-- Permissão ' + result.type + ' / ' + Data[i].type + '')
+				chalk.blue('\n-- Permissão Alterar ' + result.type + ' / ' + Data[i].type + '')
 			)
 			await this.userChange(Data[i])
 		}
 	},
 
 	async login(data) {
-		console.log(chalk.blue('\n-- Logar com Usuário ( ' + data.mail + ' )'))
-		let result = {}
-		await axios
-			.get('/login/user?mail=' + data.mail + '&password=' + data.password)
-			.then(
-				(response) => {
-					axios.defaults.headers.common['Authorization'] =
-						'Bearer ' + response.data.token
-					console.log(data.password)
-					console.log(chalk.green('Logado: ' + response.data.token))
-					result = response.data
-				},
-				(error) => {
-					console.log(chalk.red(error.data.error.parent.detail))
-					result = { status: error.data.error.parent.detail }
-				}
-			)
+		const result = await AxiosHelper.login(data)
 		return result
 	},
 
@@ -70,38 +54,12 @@ module.exports = {
 					'\n-- Adicionar Usuário ( ' + data.type + ' / ' + Data[i].mail + ' )'
 				)
 			)
-			await axios.post('/users', Data[i]).then(
-				(response) => {
-					if (response && response.data && !response.data.error) {
-						console.log(chalk.green(response.data.status))
-					} else {
-						console.log(chalk.red(response.data.status))
-						console.log(chalk.redBright(response.data.error))
-						console.log(chalk.red(response.data.error))
-					}
-				},
-				(error) => {
-					console.log(chalk.red(error))
-				}
-			)
+			await AxiosHelper.exec('post', '/users', Data[i])
 		}
 	},
 
 	async userChange(data) {
-		console.log(chalk.blackBright('---- Alterar Usuário ( ' + data.mail + ' )'))
 		data.name = data.name + ' 1'
-		await axios.put('/users', data).then(
-			(response) => {
-				if (response && response.data && !response.data.error) {
-					console.log(chalk.green(response.data.status))
-				} else {
-					console.log(chalk.red(response.data.status))
-					console.log(chalk.redBright(response.data.error))
-				}
-			},
-			(error) => {
-				console.log(chalk.red(error.data.error))
-			}
-		)
+		await AxiosHelper.exec('put', '/users', data)
 	},
 }

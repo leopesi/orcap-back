@@ -26,7 +26,13 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	get(req, res, self) {},
+	async get(req, res, self) {
+		if (await Permissions.check(req, 'users', 'insert')) {
+			console.log(req.body.id)
+		} else {
+			res.send({ status: 'USER_PERMISSION_ERROR', error: 'Action not allowed' })
+		}
+	},
 
 	/**
 	 * @function
@@ -35,7 +41,22 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	list(req, res, self) {},
+	 async list(req, res, self) {
+		if (await Permissions.check(req, 'users', 'insert')) {
+			delete req.body.id
+			req.body.password = await Server.getHash(req.body.password)
+			User.build(req.body)
+				.save()
+				.then((data) => {
+					res.send({ status: 'USER_INSERT_SUCCESS', data })
+				})
+				.catch((error) => {
+					res.send({ status: 'USER_INSERT_ERROR', error: error.parent.detail })
+				})
+		} else {
+			res.send({ status: 'USER_PERMISSION_ERROR', error: 'Action not allowed' })
+		}
+	},
 
 	/**
 	 * @function
