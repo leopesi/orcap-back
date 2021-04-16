@@ -2,15 +2,44 @@
  * @module SessionsController
  */
 const Server = require('../helpers/server')
-const Postgres = require('../helpers/postgres')
-const User = require('../models/user')
+const Session = require('../models/sessions/session')
+const User = require('../models/sessions/user')
+const Logist = require('../models/sessions/logist')
 
 module.exports = {
 	setRoutes() {
-		Server.addRoute('/login/user', this.loginUser, this).get(false)
-		Server.addRoute('/login/logist', this.loginUser, this).get(false)
-		Server.addRoute('/login/seller', this.loginUser, this).get(false)
-		Server.addRoute('/login/client', this.loginUser, this).get(false)
+		Server.addRoute('/login', this.login, this).get(false)
+	},
+
+	/**
+	 * @function
+	 * Fazer do login geral
+	 * @param {Object} req
+	 * @param {Object} res
+	 * @param {Object} self
+	 */
+	async login(req, res, self) {
+		const session = await Session.findOne({ where: { mail: req.body.mail } })
+		if (session) {
+			const token = self.createLoginHash(session, req.body.password)			
+			if (token) {
+				let data = null
+				if (session.table == 'users') {
+					data = await self.loginUser(session.person)
+				} else if (session.table == 'logists') {
+					data = await self.loginLogist(session.person)
+				}
+				if (data) {
+					res.send({ token, type: session.type })
+				} else {
+					res.send({ status: session.type.toUpperCase() + '_SESSION_NOT_FOUND' })
+				}
+			} else {
+				res.send({ status: session.type.toUpperCase() + '_NOT_FOUND' })
+			}
+		} else {
+			res.send({ status: 'SESSION_NOT_FOUND' })
+		}
 	},
 
 	/**
@@ -20,21 +49,20 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	async loginUser(req, res, self) {
-		const user = await User.findOne({ where: { mail: req.body.mail } })
-		const response = self.createLoginHash(req, user)
-		if (response && response.token) {
+	async loginUser(id) {
+		const user = await User.findOne({ where: { id } })
+		if (user) {
 			await User.update(
 				{ last_login: Date.now() },
 				{
 					where: {
-						id: Server.decodeToken(response.token),
+						id,
 					},
 				}
 			)
-			res.send({ token: response.token, type: user.type })
+			return true
 		} else {
-			res.send({ status: 'USER_NOT_FOUND' })
+			return false
 		}
 	},
 
@@ -45,21 +73,21 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	loginLogist(req, res, self) {
-		Postgres.query(
-			"SELECT id, password from logists where mail = '" + req.body.mail + "'",
-			(data) => {
-				const response = self.createLoginHash(req, data)
-				if (response && response.token) {
-					Postgres.query(
-						"UPDATE logists set last_login = now() where id = '" +
-							Server.decodeToken(response.token) +
-							"'"
-					)
+	async loginLogist(id) {
+		const logist = await Logist.findOne({ where: { id } })
+		if (logist) {
+			await Logist.update(
+				{ last_login: Date.now() },
+				{
+					where: {
+						id,
+					},
 				}
-				res.send(response)
-			}
-		)
+			)
+			return true
+		} else {
+			return false
+		}
 	},
 
 	/**
@@ -69,21 +97,22 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	loginSeller(req, res, self) {
-		Postgres.query(
-			"SELECT id, password from seller where mail = '" + req.body.mail + "'",
-			(data) => {
-				const response = self.createLoginHash(req, data)
-				if (response && response.token) {
-					Postgres.query(
-						"UPDATE seller set last_login = now() where id = '" +
-							Server.decodeToken(response.token) +
-							"'"
-					)
+	async loginSeller(req, res, self) {
+		const seller = await Seller.findOne({ where: { mail: req.body.mail } })
+		const response = self.createLoginHash(req, seller)
+		if (response && response.token) {
+			await Seller.update(
+				{ last_login: Date.now() },
+				{
+					where: {
+						id: Server.decodeToken(response.token),
+					},
 				}
-				res.send(response)
-			}
-		)
+			)
+			res.send({ token: response.token, type: seller.type })
+		} else {
+			res.send({ status: 'SELLER_NOT_FOUND' })
+		}
 	},
 
 	/**
@@ -93,21 +122,22 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	loginClients(req, res, self) {
-		Postgres.query(
-			"SELECT id, password from clients where mail = '" + req.body.mail + "'",
-			(data) => {
-				const response = self.createLoginHash(req, data)
-				if (response && response.token) {
-					Postgres.query(
-						"UPDATE clients set last_login = now() where id = '" +
-							Server.decodeToken(response.token) +
-							"'"
-					)
+	async loginClient(req, res, self) {
+		const client = await Client.findOne({ where: { mail: req.body.mail } })
+		const response = self.createLoginHash(req, client)
+		if (response && response.token) {
+			await Client.update(
+				{ last_login: Date.now() },
+				{
+					where: {
+						id: Server.decodeToken(response.token),
+					},
 				}
-				res.send(response)
-			}
-		)
+			)
+			res.send({ token: response.token, type: client.type })
+		} else {
+			res.send({ status: 'CLIENT_NOT_FOUND' })
+		}
 	},
 
 	/**
@@ -116,17 +146,17 @@ module.exports = {
 	 * @param {Object} data
 	 * @returns {Object}
 	 */
-	createLoginHash(req, data) {
+	createLoginHash(data, password) {
 		if (data) {
-			if (req.body.password) {
-				if (Server.compareHash(data.password, req.body.password)) {
+			if (password) {
+				if (Server.compareHash(data.password, password)) {
 					const token = Server.createToken(data.id)
-					return { token }
+					return token
 				} else {
-					return { error: 'Incorrect password' }
+					return false
 				}
 			} else {
-				return { error: 'Login data not found' }
+				return false
 			}
 		}
 	},

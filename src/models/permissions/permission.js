@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize')
-const sequelize = require('../helpers/postgres')
+const sequelize = require('../../helpers/postgres')
 
 module.exports = sequelize.define('permissions', {
 	name: {
@@ -16,6 +16,9 @@ module.exports = sequelize.define('permissions', {
 		type: DataTypes.STRING(50),
 		unique: 'compositeIndex',
 		primaryKey: true
+	},
+	text: {
+		type: DataTypes.STRING(50),
 	},
 	createdAt: {
 		type: DataTypes.DATE,

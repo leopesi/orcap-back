@@ -1,8 +1,6 @@
 /**
  * @module Middlewares
  */
-const Config = require('../config');
-const Server = require('./server');
 
 module.exports = {
     
@@ -24,27 +22,28 @@ module.exports = {
             let authHeader = undefined
             if (req.headers) {
                 if (req.headers.authorization) {
-                    authHeader = req.headers.authorization;
+                    authHeader = req.headers.authorization
                 } else if (req.headers.Authorization) {
                     authHeader = req.headers.Authorization
                 }
             }
             
             if (!authHeader) {
-                return res.status(401).send({ error: 'TOKEN_NOT_FOUND' });
+                return res.status(401).send({ error: 'TOKEN_NOT_FOUND' })
             }
 
-            const aut = authHeader.split(' ');
-            const token = aut.length === 2 ? aut[1] : '';
+            const aut = authHeader.split(' ')
+            const token = aut.length === 2 ? aut[1] : ''
+            console.log(authHeader)
             try {
                 req.token = token
-                return true;
+                return true
             } catch (err) {
 
-                return res.status(401).send({ error: 'INVALID_TOKEN' });
+                return res.status(401).send({ error: 'INVALID_TOKEN' })
             }
         } catch (e) {
-            return res.status(401).send({ error: 'AUTH_CATCH_ERROR' + e.message });
+            return res.status(401).send({ error: 'AUTH_CATCH_ERROR' + e.message })
         }
     },
 }

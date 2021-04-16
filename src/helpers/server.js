@@ -87,7 +87,7 @@ module.exports = {
 			},
 			/**
 			 * @function
-			 * Seta uma rota para o método POST
+			 * Seta uma rota para o método PUT
 			 * @param {Boolean} auth
 			 * Se auth = true será tratado pelo middleware de autenticacao
 			 */
@@ -105,7 +105,7 @@ module.exports = {
 			},
 			/**
 			 * @function
-			 * Seta uma rota para o método POST
+			 * Seta uma rota para o método DELETE
 			 * @param {Boolean} auth
 			 * Se auth = true será tratado pelo middleware de autenticacao
 			 */

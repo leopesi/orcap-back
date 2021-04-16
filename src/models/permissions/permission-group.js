@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize')
-const sequelize = require('../helpers/postgres')
+const sequelize = require('../../helpers/postgres')
 
 module.exports = sequelize.define(
 	'permissions_groups',

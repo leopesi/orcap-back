@@ -2,9 +2,11 @@
  * @module PermissionsController
  */
 const Server = require('../helpers/server')
-const Group = require('../models/permission-group')
-const Permission = require('../models/permission')
-const User = require('../models/user')
+const Group = require('../models/permissions/permission-group')
+const Permission = require('../models/permissions/permission')
+const Session = require('../models/sessions/session')
+const User = require('../models/sessions/user')
+const Logist = require('../models/sessions/logist')
 
 module.exports = {
 	/**
@@ -32,13 +34,22 @@ module.exports = {
 	 * Verifica a permissão
 	 * @returns {Boolean}
 	 */
-	async check(req, table, type) {
-		const id = Server.decodedIdByToken(req.token)
+	async check(token, permissionTable, permissiontType) {
+		const id = Server.decodedIdByToken(token)
 		if (id) {
-			const user = await User.findOne({ where: { id } })
+			const session = await this.getSession(id)
 			const permission = await Permission.findAll({
-				where: { name: user.type, table, type },
+				where: {
+					name: session.type,
+					table: permissionTable,
+					type: permissiontType,
+				},
 			})
+			const aux = {
+				name: session.type,
+					table: permissionTable,
+					type: permissiontType,
+			}
 			if (permission[0]) {
 				return true
 			} else {
@@ -47,6 +58,18 @@ module.exports = {
 		} else {
 			return false
 		}
+	},
+
+	async getSession(id) {
+		const session = await Session.findOne({ where: { id } })
+		let data = { }
+		if (session.table == 'users') {
+			data = await User.findOne({ where: { id: session.person } })
+		} else if (session.table == 'logists') {
+			data = await Logist.findOne({ where: { id: session.person } })			
+		}
+		data.type = session.type
+		return data
 	},
 
 	/**
