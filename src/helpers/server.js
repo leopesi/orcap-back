@@ -152,7 +152,8 @@ module.exports = {
 	async compareHash(hash, str) {
 		try {
 			if (str === undefined) return false
-			return await bcrypt.compare(str.toString(), hash)
+			const result = await bcrypt.compare(str.toString(), hash)
+			return result
 		} catch (e) {
 			return false
 		}
