@@ -4,6 +4,7 @@
 const Server = require('../helpers/server')
 const Permissions = require('./permissions')
 const User = require('../models/sessions/user')
+const Sessions = require('./sessions')
 
 module.exports = {
 	/**
@@ -67,13 +68,23 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
+		delete req.body.id
 		if (await Permissions.check(req.token, 'users', 'insert')) {
-			delete req.body.id
 			req.body.password = await Server.getHash(req.body.password)
 			User.build(req.body)
 				.save()
-				.then((data) => {
-					res.send({ status: 'USER_INSERT_SUCCESS', data })
+				.then(async (data) => {
+					req.body.type = 'admin'
+					req.body.table = 'users'
+					req.body.person = data.id
+					Sessions.create(req, (result) => {
+						console.log(result)
+						if (result.status == 'SESSION_INSERT_SUCCESS') {
+							res.send({ status: 'USER_INSERT_SUCCESS', data })
+						} else {
+							res.send({ status: 'USER_INSERT_ERROR', error: result.error })
+						}
+					})
 				})
 				.catch((error) => {
 					res.send({ status: 'USER_INSERT_ERROR', error: error.parent.detail })

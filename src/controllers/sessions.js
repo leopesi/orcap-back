@@ -2,6 +2,7 @@
  * @module SessionsController
  */
 const Server = require('../helpers/server')
+const Permissions = require('./permissions')
 const Session = require('../models/sessions/session')
 const User = require('../models/sessions/user')
 const Logist = require('../models/sessions/logist')
@@ -11,6 +12,35 @@ const Client = require('../models/sessions/client')
 module.exports = {
 	setRoutes() {
 		Server.addRoute('/login', this.login, this).get(false)
+	},
+
+	/**
+	 * @function
+	 * Cria uma Sessão
+	 * @param {Object} req
+	 * @param {Object} res
+	 * @param {Object} self
+	 */
+	async create(req, callback) {
+		if (await Permissions.check(req.token, 'sessions', 'insert')) {
+			req.body.password = await Server.getHash(req.body.password)
+			Session.build(req.body)
+				.save()
+				.then((data) => {
+					callback({ status: 'SESSION_INSERT_SUCCESS', data })
+				})
+				.catch((error) => {
+					callback({
+						status: 'SESSION_INSERT_ERROR',
+						error: error.parent.detail,
+					})
+				})
+		} else {
+			callback({
+				status: 'SESSION_PERMISSION_ERROR',
+				error: 'Action not allowed',
+			})
+		}
 	},
 
 	/**

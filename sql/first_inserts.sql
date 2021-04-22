@@ -15,6 +15,12 @@ insert into permissions_groups (id, name) values ('584ead51-a3d8-49d7-b69e-32380
 insert into permissions_groups (id, name) values ('98121754-4a25-4b02-addf-cf15374b2d8d','logist');
 insert into permissions_groups (id, name) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','seller');
 
+insert into permissions (name, type, "table") values ('admin', 'select', 'sessions');
+insert into permissions (name, type, "table") values ('admin', 'insert', 'sessions');
+insert into permissions (name, type, "table") values ('admin', 'update', 'sessions');
+insert into permissions (name, type, "table") values ('admin', 'delete', 'sessions');
+insert into permissions (name, type, "table") values ('admin', 'restore', 'sessions');
+
 insert into permissions (name, type, "table") values ('admin', 'select', 'users');
 insert into permissions (name, type, "table") values ('admin', 'insert', 'users');
 insert into permissions (name, type, "table") values ('admin', 'update', 'users');
