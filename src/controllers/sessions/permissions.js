@@ -1,12 +1,12 @@
 /**
  * @module PermissionsController
  */
-const Server = require('../helpers/server')
-const Group = require('../models/permissions/permission-group')
-const Permission = require('../models/permissions/permission')
-const Session = require('../models/sessions/session')
-const User = require('../models/sessions/user')
-const Logist = require('../models/sessions/logist')
+const Server = require('../../helpers/server')
+const Group = require('../../models/permissions/permission-group')
+const Permission = require('../../models/permissions/permission')
+const Session = require('../../models/sessions/session')
+const User = require('../../models/sessions/user')
+const Logist = require('../../models/sessions/logist')
 
 module.exports = {
 	/**
@@ -45,12 +45,7 @@ module.exports = {
 					type: permissiontType,
 				},
 			})
-			const aux = {
-				name: session.type,
-					table: permissionTable,
-					type: permissiontType,
-			}
-			if (permission[0]) {
+			if (permission && permission[0]) {
 				return true
 			} else {
 				return false
@@ -103,7 +98,6 @@ module.exports = {
 					res.send(data)
 				})
 				.catch((error) => {
-					console.log(error)
 					res.send(error)
 				})
 		} else {
@@ -142,7 +136,6 @@ module.exports = {
 					res.send(data)
 				})
 				.catch((error) => {
-					console.log(error)
 					res.send(error)
 				})
 		} else {

@@ -1,9 +1,9 @@
 /**
- * @module UsersController
+ * @module SellersController
  */
- const Server = require('../helpers/server')
+ const Server = require('../../helpers/server')
  const Permissions = require('./permissions')
- const User = require('../models/sessions/seller')
+ const Seller = require('../../models/sessions/seller')
  
  module.exports = {
 	 /**
@@ -28,11 +28,11 @@
 	  */
 	 async get(req, res, self) {
 		 if (await Permissions.check(req.token, 'sellers', 'select')) {
-			 const seller = await User.findOne({ where: { id: req.params.id } })
+			 const seller = await Seller.findOne({ where: { id: req.params.id } })
 			 if (seller && seller.dataValues && seller.dataValues.id) {
 				 res.send({ status: 'SELLER_GET_SUCCESS', data: seller })
 			 } else {
-				 res.send({ status: 'SELLER_NOT_FOUND', error: 'User not found' })
+				 res.send({ status: 'SELLER_NOT_FOUND', error: 'Seller not found' })
 			 }
 		 } else {
 			 res.send({ status: 'SELLER_PERMISSION_ERROR', error: 'Action not allowed' })
@@ -48,11 +48,11 @@
 	  */
 	 async list(req, res, self) {
 		 if (await Permissions.check(req.token, 'sellers', 'select')) {
-			 const sellers = await User.findAll({ where: {} })
+			 const sellers = await Seller.findAll({ where: {} })
 			 if (sellers && sellers.length > 0) {
 				 res.send({ status: 'SELLER_LIST_SUCCESS', data: sellers })
 			 } else {
-				 res.send({ status: 'SELLERS_QUERY_EMPTY', error: 'User not found' })
+				 res.send({ status: 'SELLERS_QUERY_EMPTY', error: 'Seller not found' })
 			 }
 		 } else {
 			 res.send({ status: 'SELLER_PERMISSION_ERROR', error: 'Action not allowed' })
@@ -70,7 +70,7 @@
 		 if (await Permissions.check(req.token, 'sellers', 'insert')) {
 			 delete req.body.id
 			 req.body.password = await Server.getHash(req.body.password)
-			 User.build(req.body)
+			 Seller.build(req.body)
 				 .save()
 				 .then((data) => {
 					 res.send({ status: 'SELLER_INSERT_SUCCESS', data })
@@ -92,7 +92,7 @@
 	  */
 	 async change(req, res, self) {
 		 if (await Permissions.check(req.token, 'sellers', 'update')) {
-			 const result = await User.findOne({ where: { id: req.params.id } })
+			 const result = await Seller.findOne({ where: { id: req.params.id } })
 			 if (result) {
 				 req.body.id = result.dataValues.id
 				 delete req.body.mail
@@ -128,7 +128,7 @@
 	  */
 	 async delete(req, res, self) {
 		 if (await Permissions.check(req.token, 'sellers', 'delete')) {
-			 const result = await User.findOne({ where: { id: req.params.id } })
+			 const result = await Seller.findOne({ where: { id: req.params.id } })
 			 if (result) {
 				 delete req.body.mail
 				 delete req.body.password
@@ -164,7 +164,7 @@
 	  */
 	 async restore(req, res, self) {
 		 if (await Permissions.check(req.token, 'sellers', 'restore')) {
-			 const result = await User.findOne({ where: { id: req.params.id } })
+			 const result = await Seller.findOne({ where: { id: req.params.id } })
 			 if (result) {
 				 delete req.body.mail
 				 delete req.body.password

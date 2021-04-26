@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = require('../../helpers/postgres')
 
-module.exports = sequelize.define('sellers', {
+module.exports = sequelize.define('clients', {
 	id: {
 		type: DataTypes.UUID,
 		primaryKey: true,

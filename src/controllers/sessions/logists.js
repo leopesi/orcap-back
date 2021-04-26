@@ -1,9 +1,9 @@
 /**
  * @module LogistsController
  */
-const Server = require('../helpers/server')
+const Server = require('../../helpers/server')
 const Permissions = require('./permissions')
-const Logist = require('../models/sessions/logist')
+const Logist = require('../../models/sessions/logist')
 
 module.exports = {
 	/**

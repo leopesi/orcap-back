@@ -1,13 +1,13 @@
 /**
  * @module SessionsController
  */
-const Server = require('../helpers/server')
+const Server = require('../../helpers/server')
 const Permissions = require('./permissions')
-const Session = require('../models/sessions/session')
-const User = require('../models/sessions/user')
-const Logist = require('../models/sessions/logist')
-const Seller = require('../models/sessions/seller')
-const Client = require('../models/sessions/client')
+const Session = require('../../models/sessions/session')
+const User = require('../../models/sessions/user')
+const Logist = require('../../models/sessions/logist')
+const Seller = require('../../models/sessions/seller')
+const Client = require('../../models/sessions/client')
 
 module.exports = {
 	setRoutes() {

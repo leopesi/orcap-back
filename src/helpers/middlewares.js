@@ -34,7 +34,6 @@ module.exports = {
 
             const aut = authHeader.split(' ')
             const token = aut.length === 2 ? aut[1] : ''
-            console.log(authHeader)
             try {
                 req.token = token
                 return true

@@ -10,10 +10,8 @@ exec_sequelize = async () => {
 	const params = JSON.parse(process.env.npm_config_argv).original[2]
 
 	const dirs = fs.readdirSync('./src/models')
-	console.log(dirs)
 	for (const i in dirs) {
 		const files = fs.readdirSync('./src/models/' + dirs[i])
-		console.log(files)
 		for (const j in files) {
 			console.log('../src/models/' + dirs[i] + '/' + files[j])
 			const model = require('../src/models/' + dirs[i] + '/' + files[j])

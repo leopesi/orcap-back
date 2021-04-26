@@ -1,9 +1,9 @@
 /**
  * @module UsersController
  */
-const Server = require('../helpers/server')
+const Server = require('../../helpers/server')
 const Permissions = require('./permissions')
-const User = require('../models/sessions/user')
+const User = require('../../models/sessions/user')
 const Sessions = require('./sessions')
 
 module.exports = {
@@ -78,7 +78,6 @@ module.exports = {
 					req.body.table = 'users'
 					req.body.person = data.id
 					Sessions.create(req, (result) => {
-						console.log(result)
 						if (result.status == 'SESSION_INSERT_SUCCESS') {
 							res.send({ status: 'USER_INSERT_SUCCESS', data })
 						} else {
