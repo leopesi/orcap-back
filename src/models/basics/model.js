@@ -7,6 +7,9 @@ module.exports = sequelize.define('models', {
 		primaryKey: true,
 		defaultValue: DataTypes.UUIDV4
 	},
+	brand: {
+		type: DataTypes.UUID
+	},
 	name: DataTypes.STRING(50),
 	description: DataTypes.STRING(50),
 	createdAt: {

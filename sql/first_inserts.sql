@@ -58,15 +58,6 @@ insert into permissions (name, type, "table") values ('admin', 'update', 'client
 insert into permissions (name, type, "table") values ('admin', 'delete', 'clients');
 insert into permissions (name, type, "table") values ('admin', 'restore', 'clients');
 
-insert into brands (id, name) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','Marca A');
-insert into brands (id, name) values ('584ead51-a3d8-49d7-b69e-32380bb31825','Marca B');
-
-insert into permissions (name, type, "table") values ('admin', 'select', 'brands');
-insert into permissions (name, type, "table") values ('admin', 'insert', 'brands');
-insert into permissions (name, type, "table") values ('admin', 'update', 'brands');
-insert into permissions (name, type, "table") values ('admin', 'delete', 'brands');
-insert into permissions (name, type, "table") values ('admin', 'restore', 'brands');
-
 insert into formats (id, image) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','Formato A');
 insert into formats (id, image) values ('584ead51-a3d8-49d7-b69e-32380bb31825','Formato B');
 
@@ -75,3 +66,60 @@ insert into permissions (name, type, "table") values ('admin', 'insert', 'format
 insert into permissions (name, type, "table") values ('admin', 'update', 'formats');
 insert into permissions (name, type, "table") values ('admin', 'delete', 'formats');
 insert into permissions (name, type, "table") values ('admin', 'restore', 'formats');
+
+
+
+insert into providers (id, name) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','Fornecedor A');
+insert into providers (id, name) values ('584ead51-a3d8-49d7-b69e-32380bb31825','Fornecedor B');
+
+insert into permissions (name, type, "table") values ('admin', 'select', 'providers');
+insert into permissions (name, type, "table") values ('admin', 'insert', 'providers');
+insert into permissions (name, type, "table") values ('admin', 'update', 'providers');
+insert into permissions (name, type, "table") values ('admin', 'delete', 'providers');
+insert into permissions (name, type, "table") values ('admin', 'restore', 'providers');
+
+insert into brands (id, provider, name) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Marca A');
+insert into brands (id, provider, name) values ('584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Marca B');
+
+insert into permissions (name, type, "table") values ('admin', 'select', 'brands');
+insert into permissions (name, type, "table") values ('admin', 'insert', 'brands');
+insert into permissions (name, type, "table") values ('admin', 'update', 'brands');
+insert into permissions (name, type, "table") values ('admin', 'delete', 'brands');
+insert into permissions (name, type, "table") values ('admin', 'restore', 'brands');
+
+insert into models (id, brand, name) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Modelo A');
+insert into models (id, brand, name) values ('584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Modelo B');
+
+insert into permissions (name, type, "table") values ('admin', 'select', 'models');
+insert into permissions (name, type, "table") values ('admin', 'insert', 'models');
+insert into permissions (name, type, "table") values ('admin', 'update', 'models');
+insert into permissions (name, type, "table") values ('admin', 'delete', 'models');
+insert into permissions (name, type, "table") values ('admin', 'restore', 'models');
+
+
+insert into payments (id, logist, name) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Dinheiro a vista');
+insert into payments (id, logist, name) values ('584ead51-a3d8-49d7-b69e-32380bb31825','3d7615ae-d514-48a0-b269-6e563984c6ba','Crédito a prazo');
+
+insert into permissions (name, type, "table") values ('admin', 'select', 'payments');
+insert into permissions (name, type, "table") values ('admin', 'insert', 'payments');
+insert into permissions (name, type, "table") values ('admin', 'update', 'payments');
+insert into permissions (name, type, "table") values ('admin', 'delete', 'payments');
+insert into permissions (name, type, "table") values ('admin', 'restore', 'payments');
+
+insert into status_budgets (id, name) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','Aberto');
+insert into status_budgets (id, name) values ('584ead51-a3d8-49d7-b69e-32380bb31825','Finalizado');
+
+insert into permissions (name, type, "table") values ('admin', 'select', 'status_budgets');
+insert into permissions (name, type, "table") values ('admin', 'insert', 'status_budgets');
+insert into permissions (name, type, "table") values ('admin', 'update', 'status_budgets');
+insert into permissions (name, type, "table") values ('admin', 'delete', 'status_budgets');
+insert into permissions (name, type, "table") values ('admin', 'restore', 'status_budgets');
+
+insert into types_budgets (id, name) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','Mão de obra da loja');
+insert into types_budgets (id, name) values ('584ead51-a3d8-49d7-b69e-32380bb31825','Mão de obra do cliente');
+
+insert into permissions (name, type, "table") values ('admin', 'select', 'types_budgets');
+insert into permissions (name, type, "table") values ('admin', 'insert', 'types_budgets');
+insert into permissions (name, type, "table") values ('admin', 'update', 'types_budgets');
+insert into permissions (name, type, "table") values ('admin', 'delete', 'types_budgets');
+insert into permissions (name, type, "table") values ('admin', 'restore', 'types_budgets');
