@@ -13,10 +13,6 @@ module.exports = sequelize.define('logists', {
 		type: DataTypes.BOOLEAN,
 		defaultValue: false
 	},
-	last_login: {
-		type: DataTypes.DATE,
-		defaultValue: Sequelize.NOW
-	},
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW

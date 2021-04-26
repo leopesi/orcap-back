@@ -1,17 +1,14 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = require('../../helpers/postgres')
 
-module.exports = sequelize.define('sellers', {
+module.exports = sequelize.define('lids', {
 	id: {
 		type: DataTypes.UUID,
 		primaryKey: true,
 		defaultValue: DataTypes.UUIDV4
 	},
-	name: DataTypes.STRING(50),
-	phone: DataTypes.STRING,
-	active: {
-		type: DataTypes.BOOLEAN,
-		defaultValue: false
+	equipment: {
+		type: DataTypes.UUID
 	},
 	createdAt: {
 		type: DataTypes.DATE,
@@ -20,11 +17,5 @@ module.exports = sequelize.define('sellers', {
 	updatedAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW
-	}
-}, {
-	getterMethods: {
-		getFullName() {
-			return this.name
-		}
 	}
 })
