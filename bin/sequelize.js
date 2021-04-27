@@ -9,12 +9,13 @@ const sequelize = require('../src/helpers/postgres')
 exec_sequelize = async () => {
 	const params = JSON.parse(process.env.npm_config_argv).original[2]
 
-	const dirs = fs.readdirSync('./src/models')
+	const dirs = require('../src/models/sequelize-config')['models']
+	//fs.readdirSync('./src/models')
 	for (const i in dirs) {
-		const files = fs.readdirSync('./src/models/' + dirs[i])
+		const files = dirs[i]
 		for (const j in files) {
-			console.log('../src/models/' + dirs[i] + '/' + files[j])
-			const model = require('../src/models/' + dirs[i] + '/' + files[j])
+			console.log('../src/models/' + i + '/' + files[j])
+			const model = require('../src/models/' + i + '/' + files[j])
 			await model.sync()
 		}
 	}

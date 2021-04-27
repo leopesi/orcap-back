@@ -78,8 +78,8 @@ insert into permissions (name, type, "table") values ('admin', 'update', 'provid
 insert into permissions (name, type, "table") values ('admin', 'delete', 'providers');
 insert into permissions (name, type, "table") values ('admin', 'restore', 'providers');
 
-insert into brands (id, provider, name) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Marca A');
-insert into brands (id, provider, name) values ('584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Marca B');
+insert into brands (id, provider_id, name) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Marca A');
+insert into brands (id, provider_id, name) values ('584ead51-a3d8-49d7-b69e-32380bb31825','3d7615ae-d514-48a0-b269-6e563984c6ba','Marca B');
 
 insert into permissions (name, type, "table") values ('admin', 'select', 'brands');
 insert into permissions (name, type, "table") values ('admin', 'insert', 'brands');
@@ -87,8 +87,8 @@ insert into permissions (name, type, "table") values ('admin', 'update', 'brands
 insert into permissions (name, type, "table") values ('admin', 'delete', 'brands');
 insert into permissions (name, type, "table") values ('admin', 'restore', 'brands');
 
-insert into models (id, brand, name) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Modelo A');
-insert into models (id, brand, name) values ('584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Modelo B');
+insert into models (id, brand_id, name) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','584ead51-a3d8-49d7-b69e-32380bb31825','Modelo A');
+insert into models (id, brand_id, name) values ('584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Modelo B');
 
 insert into permissions (name, type, "table") values ('admin', 'select', 'models');
 insert into permissions (name, type, "table") values ('admin', 'insert', 'models');
@@ -123,3 +123,30 @@ insert into permissions (name, type, "table") values ('admin', 'insert', 'types_
 insert into permissions (name, type, "table") values ('admin', 'update', 'types_budgets');
 insert into permissions (name, type, "table") values ('admin', 'delete', 'types_budgets');
 insert into permissions (name, type, "table") values ('admin', 'restore', 'types_budgets');
+
+-- EQUIPMENTS
+
+insert into equipments (id, provider, brand, model, name) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Filtro 00001');
+insert into equipments (id, provider, brand, model, name) values ('584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Motor 00001');
+
+insert into permissions (name, type, "table") values ('admin', 'select', 'equipments');
+insert into permissions (name, type, "table") values ('admin', 'insert', 'equipments');
+insert into permissions (name, type, "table") values ('admin', 'update', 'equipments');
+insert into permissions (name, type, "table") values ('admin', 'delete', 'equipments');
+insert into permissions (name, type, "table") values ('admin', 'restore', 'equipments');
+
+insert into filters (id, equipment) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba');
+
+insert into permissions (name, type, "table") values ('admin', 'select', 'filters');
+insert into permissions (name, type, "table") values ('admin', 'insert', 'filters');
+insert into permissions (name, type, "table") values ('admin', 'update', 'filters');
+insert into permissions (name, type, "table") values ('admin', 'delete', 'filters');
+insert into permissions (name, type, "table") values ('admin', 'restore', 'filters');
+
+insert into engines (id, equipment) values ('584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825');
+
+insert into permissions (name, type, "table") values ('admin', 'select', 'engines');
+insert into permissions (name, type, "table") values ('admin', 'insert', 'engines');
+insert into permissions (name, type, "table") values ('admin', 'update', 'engines');
+insert into permissions (name, type, "table") values ('admin', 'delete', 'engines');
+insert into permissions (name, type, "table") values ('admin', 'restore', 'engines');

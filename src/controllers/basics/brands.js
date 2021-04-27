@@ -3,6 +3,7 @@
  */
 const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
+const Provider = require('../../models/basics/provider')
 const Brand = require('../../models/basics/brand')
 
 module.exports = {
@@ -28,14 +29,17 @@ module.exports = {
 	 */
 	async get(req, res, self) {
 		if (await Permissions.check(req.token, 'brands', 'select')) {
-			const brand = await Brand.findOne({ where: { id: req.params.id } })
+			const brand = await Brand.findOne({ where: { id: req.params.id }, include: 'providers' })
 			if (brand && brand.dataValues && brand.dataValues.id) {
 				res.send({ status: 'BRAND_GET_SUCCESS', data: brand })
 			} else {
 				res.send({ status: 'BRAND_NOT_FOUND', error: 'Brand not found' })
 			}
 		} else {
-			res.send({ status: 'BRAND_PERMISSION_ERROR', error: 'Action not allowed' })
+			res.send({
+				status: 'BRAND_PERMISSION_ERROR',
+				error: 'Action not allowed',
+			})
 		}
 	},
 
@@ -55,7 +59,10 @@ module.exports = {
 				res.send({ status: 'BRANDS_QUERY_EMPTY', error: 'Brand not found' })
 			}
 		} else {
-			res.send({ status: 'BRAND_PERMISSION_ERROR', error: 'Action not allowed' })
+			res.send({
+				status: 'BRAND_PERMISSION_ERROR',
+				error: 'Action not allowed',
+			})
 		}
 	},
 
@@ -69,26 +76,23 @@ module.exports = {
 	async create(req, res, self) {
 		delete req.body.id
 		if (await Permissions.check(req.token, 'brands', 'insert')) {
-			req.body.password = await Server.getHash(req.body.password)
+			delete req.body.id
 			Brand.build(req.body)
 				.save()
 				.then(async (data) => {
-					req.body.type = 'admin'
-					req.body.table = 'brands'
-					req.body.person = data.id
-					Sessions.create(req, (result) => {
-						if (result.status == 'SESSION_INSERT_SUCCESS') {
-							res.send({ status: 'BRAND_INSERT_SUCCESS', data })
-						} else {
-							res.send({ status: 'BRAND_INSERT_ERROR', error: result.error })
-						}
-					})
+					res.send({ status: 'BRAND_INSERT_SUCCESS', data })
 				})
 				.catch((error) => {
-					res.send({ status: 'BRAND_INSERT_ERROR', error: error.parent.detail })
+					res.send({
+						status: 'BRAND_INSERT_ERROR',
+						error: error.parent ? error.parent.detail : error,
+					})
 				})
 		} else {
-			res.send({ status: 'BRAND_PERMISSION_ERROR', error: 'Action not allowed' })
+			res.send({
+				status: 'BRAND_PERMISSION_ERROR',
+				error: 'Action not allowed',
+			})
 		}
 	},
 
@@ -114,7 +118,7 @@ module.exports = {
 					.catch((error) => {
 						res.send({
 							status: 'BRAND_UPDATE_ERROR',
-							error: error.parent.detail,
+							error: error.parent ? error.parent.detail : error,
 						})
 					})
 			} else {
@@ -124,7 +128,10 @@ module.exports = {
 				})
 			}
 		} else {
-			res.send({ status: 'BRAND_PERMISSION_ERROR', error: 'Action not allowed' })
+			res.send({
+				status: 'BRAND_PERMISSION_ERROR',
+				error: 'Action not allowed',
+			})
 		}
 	},
 
@@ -150,7 +157,7 @@ module.exports = {
 					.catch((error) => {
 						res.send({
 							status: 'BRAND_DELETE_ERROR',
-							error: error.parent.detail,
+							error: error.parent ? error.parent.detail : error,
 						})
 					})
 			} else {
@@ -160,7 +167,10 @@ module.exports = {
 				})
 			}
 		} else {
-			res.send({ status: 'BRAND_PERMISSION_ERROR', error: 'Action not allowed' })
+			res.send({
+				status: 'BRAND_PERMISSION_ERROR',
+				error: 'Action not allowed',
+			})
 		}
 	},
 
@@ -186,7 +196,7 @@ module.exports = {
 					.catch((error) => {
 						res.send({
 							status: 'BRAND_RESTORE_ERROR',
-							error: error.parent.detail,
+							error: error.parent ? error.parent.detail : error,
 						})
 					})
 			} else {
@@ -196,7 +206,10 @@ module.exports = {
 				})
 			}
 		} else {
-			res.send({ status: 'BRAND_PERMISSION_ERROR', error: 'Action not allowed' })
+			res.send({
+				status: 'BRAND_PERMISSION_ERROR',
+				error: 'Action not allowed',
+			})
 		}
 	},
 }

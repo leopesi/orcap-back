@@ -1,14 +1,20 @@
 const { Sequelize, DataTypes } = require('sequelize')
+const { model } = require('../../helpers/postgres')
 const sequelize = require('../../helpers/postgres')
+const Brand = require('./brand')
 
-module.exports = sequelize.define('models', {
+const Model = sequelize.define('models', {
 	id: {
 		type: DataTypes.UUID,
 		primaryKey: true,
 		defaultValue: DataTypes.UUIDV4
 	},
-	brand: {
-		type: DataTypes.UUID
+	brand_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'brands',
+			key: 'id',
+		},
 	},
 	name: DataTypes.STRING(50),
 	description: DataTypes.STRING(50),
@@ -21,3 +27,7 @@ module.exports = sequelize.define('models', {
 		defaultValue: Sequelize.NOW
 	}
 })
+
+Model.belongsTo(Brand, { foreignKey: 'brand_id', as: 'brands' })
+
+module.exports = Model

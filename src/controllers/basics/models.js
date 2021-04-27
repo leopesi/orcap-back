@@ -28,14 +28,17 @@ module.exports = {
 	 */
 	async get(req, res, self) {
 		if (await Permissions.check(req.token, 'models', 'select')) {
-			const model = await Model.findOne({ where: { id: req.params.id } })
+			const model = await Model.findOne({ where: { id: req.params.id }, include: 'brands' })
 			if (model && model.dataValues && model.dataValues.id) {
 				res.send({ status: 'MODEL_GET_SUCCESS', data: model })
 			} else {
 				res.send({ status: 'MODEL_NOT_FOUND', error: 'Model not found' })
 			}
 		} else {
-			res.send({ status: 'MODEL_PERMISSION_ERROR', error: 'Action not allowed' })
+			res.send({
+				status: 'MODEL_PERMISSION_ERROR',
+				error: 'Action not allowed',
+			})
 		}
 	},
 
@@ -55,7 +58,10 @@ module.exports = {
 				res.send({ status: 'MODELS_QUERY_EMPTY', error: 'Model not found' })
 			}
 		} else {
-			res.send({ status: 'MODEL_PERMISSION_ERROR', error: 'Action not allowed' })
+			res.send({
+				status: 'MODEL_PERMISSION_ERROR',
+				error: 'Action not allowed',
+			})
 		}
 	},
 
@@ -73,22 +79,16 @@ module.exports = {
 			Model.build(req.body)
 				.save()
 				.then(async (data) => {
-					req.body.type = 'admin'
-					req.body.table = 'models'
-					req.body.person = data.id
-					Sessions.create(req, (result) => {
-						if (result.status == 'SESSION_INSERT_SUCCESS') {
-							res.send({ status: 'MODEL_INSERT_SUCCESS', data })
-						} else {
-							res.send({ status: 'MODEL_INSERT_ERROR', error: result.error })
-						}
-					})
+					res.send({ status: 'MODEL_INSERT_SUCCESS', data })
 				})
 				.catch((error) => {
 					res.send({ status: 'MODEL_INSERT_ERROR', error: error.parent.detail })
 				})
 		} else {
-			res.send({ status: 'MODEL_PERMISSION_ERROR', error: 'Action not allowed' })
+			res.send({
+				status: 'MODEL_PERMISSION_ERROR',
+				error: 'Action not allowed',
+			})
 		}
 	},
 
@@ -124,7 +124,10 @@ module.exports = {
 				})
 			}
 		} else {
-			res.send({ status: 'MODEL_PERMISSION_ERROR', error: 'Action not allowed' })
+			res.send({
+				status: 'MODEL_PERMISSION_ERROR',
+				error: 'Action not allowed',
+			})
 		}
 	},
 
@@ -160,7 +163,10 @@ module.exports = {
 				})
 			}
 		} else {
-			res.send({ status: 'MODEL_PERMISSION_ERROR', error: 'Action not allowed' })
+			res.send({
+				status: 'MODEL_PERMISSION_ERROR',
+				error: 'Action not allowed',
+			})
 		}
 	},
 
@@ -196,7 +202,10 @@ module.exports = {
 				})
 			}
 		} else {
-			res.send({ status: 'MODEL_PERMISSION_ERROR', error: 'Action not allowed' })
+			res.send({
+				status: 'MODEL_PERMISSION_ERROR',
+				error: 'Action not allowed',
+			})
 		}
 	},
 }
