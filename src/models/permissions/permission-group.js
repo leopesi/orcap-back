@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = require('../../helpers/postgres')
 
-module.exports = sequelize.define(
+const PermissionGroup = sequelize.define(
 	'permissions_groups',
 	{
 		id: {
@@ -26,3 +26,5 @@ module.exports = sequelize.define(
 		getterMethods: {},
 	}
 )
+
+module.exports = PermissionGroup

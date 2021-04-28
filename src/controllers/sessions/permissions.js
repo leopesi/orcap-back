@@ -56,14 +56,24 @@ module.exports = {
 	},
 
 	async getSession(id) {
-		const session = await Session.findOne({ where: { id } })
-		let data = { }
-		if (session.table == 'users') {
-			data = await User.findOne({ where: { id: session.person } })
-		} else if (session.table == 'logists') {
-			data = await Logist.findOne({ where: { id: session.person } })			
+		const session = await Session.findOne({
+			where: { id },
+			include: ['users', 'logists', 'sellers', 'clients'],
+		})
+		let data = {}
+		data.type = []
+		if (session.users) {
+			data.type.push(session.users.type_id)
 		}
-		data.type = session.type
+		if (session.logists) {
+			data.type.push(session.logists.type_id)
+		}
+		if (session.sellers) {
+			data.type.push(session.sellers.type_id)
+		}
+		if (session.clients) {
+			data.type.push(session.clients.type_id)
+		}
 		return data
 	},
 

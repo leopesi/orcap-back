@@ -1,15 +1,13 @@
 
-insert into users (id, name, phone, active) values ('98121754-4a25-4b02-addf-cf15374b2d8d', 'Administrador', '', false);
+insert into sessions (id, "table", mail, password) values ('98121754-4a25-4b02-addf-cf15374b2d8d', 'users', 'admin@orcap.com.br', '$2a$08$Bu55m3xl4UUyV7j8cFX1n.GCC/HiqkBzDmTbLxFzjN52A2f/KzWfC');
+insert into sessions (id, "table", mail, password) values ('3d7615ae-d514-48a0-b269-6e563984c6ba', 'logists', 'contato@logista.com.br', '$2a$08$Bu55m3xl4UUyV7j8cFX1n.GCC/HiqkBzDmTbLxFzjN52A2f/KzWfC');
+insert into sessions (id, "table", mail, password) values ('584ead51-a3d8-49d7-b69e-32380bb31825', 'sellers', 'vendedor@logista.com.br', '$2a$08$Bu55m3xl4UUyV7j8cFX1n.GCC/HiqkBzDmTbLxFzjN52A2f/KzWfC');
+insert into sessions (id, "table", mail, password) values ('2a1a5117-b923-436f-9b46-8a0869013796', 'clients', 'contato@cliente.com.br', '$2a$08$Bu55m3xl4UUyV7j8cFX1n.GCC/HiqkBzDmTbLxFzjN52A2f/KzWfC');
 
-insert into logists (id, name, phone, active) values ('3d7615ae-d514-48a0-b269-6e563984c6ba', 'Lojista', '', false);
-
-insert into sellers (id, name, phone, active) values ('584ead51-a3d8-49d7-b69e-32380bb31825', 'Vendedor', '', false);
-insert into clients (id, name, phone, active) values ('2a1a5117-b923-436f-9b46-8a0869013796', 'Cliente', '', false);
-
-insert into sessions (id, person, "table", type, mail, password) values ('98121754-4a25-4b02-addf-cf15374b2d8d', '98121754-4a25-4b02-addf-cf15374b2d8d', 'users', 'admin', 'admin@orcap.com.br', '$2a$08$Bu55m3xl4UUyV7j8cFX1n.GCC/HiqkBzDmTbLxFzjN52A2f/KzWfC');
-insert into sessions (id, person, "table", type, mail, password) values ('3d7615ae-d514-48a0-b269-6e563984c6ba', '3d7615ae-d514-48a0-b269-6e563984c6ba', 'logists', 'logist', 'contato@logista.com.br', '$2a$08$Bu55m3xl4UUyV7j8cFX1n.GCC/HiqkBzDmTbLxFzjN52A2f/KzWfC');
-insert into sessions (id, person, "table", type, mail, password) values ('584ead51-a3d8-49d7-b69e-32380bb31825', '584ead51-a3d8-49d7-b69e-32380bb31825', 'sellers', 'seller', 'vendedor@logista.com.br', '$2a$08$Bu55m3xl4UUyV7j8cFX1n.GCC/HiqkBzDmTbLxFzjN52A2f/KzWfC');
-insert into sessions (id, person, "table", type, mail, password) values ('2a1a5117-b923-436f-9b46-8a0869013796', '2a1a5117-b923-436f-9b46-8a0869013796', 'clients', 'client', 'contato@cliente.com.br', '$2a$08$Bu55m3xl4UUyV7j8cFX1n.GCC/HiqkBzDmTbLxFzjN52A2f/KzWfC');
+insert into users (id, session_id, type_id, name, phone, active) values ('98121754-4a25-4b02-addf-cf15374b2d8d', '98121754-4a25-4b02-addf-cf15374b2d8d', 'admin', 'Administrador', '', false);
+insert into logists (id, session_id, type_id, name, phone, active) values ('3d7615ae-d514-48a0-b269-6e563984c6ba', '3d7615ae-d514-48a0-b269-6e563984c6ba', 'logist', 'Lojista', '', false);
+insert into sellers (id, session_id, type_id, name, phone, active) values ('584ead51-a3d8-49d7-b69e-32380bb31825', '584ead51-a3d8-49d7-b69e-32380bb31825', 'seller', 'Vendedor', '', false);
+insert into clients (id, session_id, type_id, name, phone, active) values ('2a1a5117-b923-436f-9b46-8a0869013796', '2a1a5117-b923-436f-9b46-8a0869013796', 'client', 'Cliente', '', false);
 
 insert into permissions_groups (id, name) values ('2a1a5117-b923-436f-9b46-8a0869013796','admin');
 insert into permissions_groups (id, name) values ('d8caaa4f-2366-4a8d-adcb-e32b2e6ed289','manager');
@@ -96,9 +94,8 @@ insert into permissions (name, type, "table") values ('admin', 'update', 'models
 insert into permissions (name, type, "table") values ('admin', 'delete', 'models');
 insert into permissions (name, type, "table") values ('admin', 'restore', 'models');
 
-
-insert into payments (id, logist, name) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Dinheiro a vista');
-insert into payments (id, logist, name) values ('584ead51-a3d8-49d7-b69e-32380bb31825','3d7615ae-d514-48a0-b269-6e563984c6ba','Crédito a prazo');
+insert into payments (id, logist_id, name) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Dinheiro a vista');
+insert into payments (id, logist_id, name) values ('584ead51-a3d8-49d7-b69e-32380bb31825','3d7615ae-d514-48a0-b269-6e563984c6ba','Crédito a prazo');
 
 insert into permissions (name, type, "table") values ('admin', 'select', 'payments');
 insert into permissions (name, type, "table") values ('admin', 'insert', 'payments');
@@ -126,8 +123,8 @@ insert into permissions (name, type, "table") values ('admin', 'restore', 'types
 
 -- EQUIPMENTS
 
-insert into equipments (id, provider, brand, model, name) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Filtro 00001');
-insert into equipments (id, provider, brand, model, name) values ('584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Motor 00001');
+insert into equipments (id, provider_id, brand_id, model_id, name) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Filtro 00001');
+insert into equipments (id, provider_id, brand_id, model_id, name) values ('584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Motor 00001');
 
 insert into permissions (name, type, "table") values ('admin', 'select', 'equipments');
 insert into permissions (name, type, "table") values ('admin', 'insert', 'equipments');
@@ -135,7 +132,7 @@ insert into permissions (name, type, "table") values ('admin', 'update', 'equipm
 insert into permissions (name, type, "table") values ('admin', 'delete', 'equipments');
 insert into permissions (name, type, "table") values ('admin', 'restore', 'equipments');
 
-insert into filters (id, equipment) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba');
+insert into filters (id, equipment_id) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba');
 
 insert into permissions (name, type, "table") values ('admin', 'select', 'filters');
 insert into permissions (name, type, "table") values ('admin', 'insert', 'filters');
@@ -143,7 +140,7 @@ insert into permissions (name, type, "table") values ('admin', 'update', 'filter
 insert into permissions (name, type, "table") values ('admin', 'delete', 'filters');
 insert into permissions (name, type, "table") values ('admin', 'restore', 'filters');
 
-insert into engines (id, equipment) values ('584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825');
+insert into engines (id, equipment_id) values ('584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825');
 
 insert into permissions (name, type, "table") values ('admin', 'select', 'engines');
 insert into permissions (name, type, "table") values ('admin', 'insert', 'engines');

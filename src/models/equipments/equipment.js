@@ -1,20 +1,35 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = require('../../helpers/postgres')
+const Provider = require('../basics/provider')
+const Brand = require('../basics/brand')
+const Model = require('../basics/model')
 
-module.exports = sequelize.define('equipments', {
+const Equipment = sequelize.define('equipments', {
 	id: {
 		type: DataTypes.UUID,
 		primaryKey: true,
-		defaultValue: DataTypes.UUIDV4
+		defaultValue: DataTypes.UUIDV4,
 	},
-	provider: {
-		type: DataTypes.UUID
+	provider_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'providers',
+			key: 'id',
+		},
 	},
-	brand: {
-		type: DataTypes.UUID
+	brand_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'brands',
+			key: 'id',
+		},
 	},
-	model: {
-		type: DataTypes.UUID
+	model_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'models',
+			key: 'id',
+		},
 	},
 	name: DataTypes.STRING(50),
 	description: DataTypes.STRING(50),
@@ -24,10 +39,16 @@ module.exports = sequelize.define('equipments', {
 	forward_price: DataTypes.DECIMAL(10, 2),
 	createdAt: {
 		type: DataTypes.DATE,
-		defaultValue: Sequelize.NOW
+		defaultValue: Sequelize.NOW,
 	},
 	updatedAt: {
 		type: DataTypes.DATE,
-		defaultValue: Sequelize.NOW
-	}
+		defaultValue: Sequelize.NOW,
+	},
 })
+
+Equipment.belongsTo(Provider, { foreignKey: 'provider_id', as: 'providers' })
+Equipment.belongsTo(Brand, { foreignKey: 'brand_id', as: 'brands' })
+Equipment.belongsTo(Model, { foreignKey: 'model_id', as: 'models' })
+
+module.exports = Equipment

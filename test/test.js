@@ -9,18 +9,12 @@ require('../src')
 
 axios.defaults.baseURL = 'http://localhost:3333/'
 
-// const controllers_dirs = fs.readdirSync('./src/controllers')
-// console.log(controllers_dirs)
-
-// for (const i in controllers_dirs) {
-// 	const dir = controllers_dirs[i]
-// 	const files = fs.readdirSync('./src/controllers/' + dir)
-// 	console.log(files)
-// }
-
 const login = async (data) => {
 	const result = await AxiosHelper.login('users', {
 		mail: 'admin@orcap.com.br',
+		// mail: 'contato@logista.com.br',
+		// mail: 'vendedor@logista.com.br',
+		// mail: 'contato@cliente.com.br',
 		password: '123456',
 	})
 	return result
@@ -131,39 +125,3 @@ const start = async (params) => {
 
 const params = JSON.parse(process.env.npm_config_argv).original[2]
 start(params)
-// const start = async () => {
-// 	await LogistTest.start()
-// 	process.exit()
-// }
-
-// const start = () => {
-// 	LogistTest.start()
-// 	process.exit()
-// }
-
-// start()
-
-// conta = () => {
-// 	console.log('CONTA')
-// 	let v1 = 0
-
-// 	v1 = add(0, (valor) => {
-// 		console.log('CONTA: ' + valor)
-// 		process.exit()
-// 	})
-
-// 	console.log('FINAL')
-// }
-
-// add = (v, callback) => {
-// 	setTimeout(() => {
-// 		console.log('ADD')
-// 		for (let i = 0; i < 10000000; i++) {
-// 			v = v + 1
-// 		}
-// 		console.log('SOMOU TUDO: ' + v)
-// 		callback(v)
-// 	}, 1000)
-// }
-
-// conta()

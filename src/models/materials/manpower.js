@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = require('../../helpers/postgres')
 
-module.exports = sequelize.define('manpowers', {
+const Manprower = sequelize.define('manpowers', {
 	id: {
 		type: DataTypes.UUID,
 		primaryKey: true,
@@ -21,3 +21,5 @@ module.exports = sequelize.define('manpowers', {
 		defaultValue: Sequelize.NOW
 	}
 })
+
+module.exports = Manprower

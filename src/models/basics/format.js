@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = require('../../helpers/postgres')
 
-module.exports = sequelize.define('formats', {
+const Format = sequelize.define('formats', {
 	id: {
 		type: DataTypes.UUID,
 		primaryKey: true,
@@ -25,3 +25,5 @@ module.exports = sequelize.define('formats', {
 		defaultValue: Sequelize.NOW
 	}
 })
+
+module.exports = Format

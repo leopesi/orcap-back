@@ -30,13 +30,11 @@ module.exports = {
 			)
 			.then(
 				(response) => {
-					console.log(response.data)
 					axios.defaults.headers.common['Authorization'] =
 						'Bearer ' + response.data.token
 					result = response.data
 				},
 				(error) => {
-					console.log(error)
 					if (error.data) {
 						console.log(chalk.red(error.data.error.parent.detail))
 						result = { status: error.data.error.parent.detail }

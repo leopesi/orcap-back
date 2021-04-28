@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = require('../../helpers/postgres')
 
-module.exports = sequelize.define('types_budgets', {
+const TypeBudget  = sequelize.define('types_budgets', {
 	id: {
 		type: DataTypes.UUID,
 		primaryKey: true,
@@ -18,3 +18,5 @@ module.exports = sequelize.define('types_budgets', {
 		defaultValue: Sequelize.NOW
 	}
 })
+
+module.exports = TypeBudget

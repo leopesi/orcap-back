@@ -1,14 +1,19 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = require('../../helpers/postgres')
+const Equipment = require('./equipment')
 
-module.exports = sequelize.define('vinyls', {
+const Vinyl = sequelize.define('vinyls', {
 	id: {
 		type: DataTypes.UUID,
 		primaryKey: true,
 		defaultValue: DataTypes.UUIDV4
 	},
-	equipment: {
-		type: DataTypes.UUID
+	equipment_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'equipments',
+			key: 'id',
+		},
 	},
 	createdAt: {
 		type: DataTypes.DATE,
@@ -19,3 +24,7 @@ module.exports = sequelize.define('vinyls', {
 		defaultValue: Sequelize.NOW
 	}
 })
+
+Vinyl.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
+
+module.exports = Vinyl

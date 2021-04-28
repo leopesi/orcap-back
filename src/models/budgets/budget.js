@@ -1,26 +1,59 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = require('../../helpers/postgres')
+const Logist = require('../sessions/logist')
+const Seller = require('../sessions/seller')
+const Client = require('../sessions/client')
+const Format = require('../basics/format')
+const StatusBudget = require('../basics/status_budget')
+const TypeBudget = require('../basics/type_budget')
 
-module.exports = sequelize.define('budgets', {
+const Budget = sequelize.define('budgets', {
 	id: {
 		type: DataTypes.UUID,
 		primaryKey: true,
 		defaultValue: DataTypes.UUIDV4
+	},	
+	logist_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'logists',
+			key: 'id',
+		},
 	},
-	logist: {
-		type: DataTypes.UUID
+	seller_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'sellers',
+			key: 'id',
+		},
 	},
-	seller: {
-		type: DataTypes.UUID
+	client_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'clients',
+			key: 'id',
+		},
 	},
-	client: {
-		type: DataTypes.UUID
+	format_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'formats',
+			key: 'id',
+		},
 	},
-	format: {
-		type: DataTypes.UUID
+	status_budget_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'status_budgets',
+			key: 'id',
+		},
 	},
-	type: {
-		type: DataTypes.UUID
+	type_budget_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'types_budgets',
+			key: 'id',
+		},
 	},
 	length: DataTypes.DECIMAL(10, 2), 
 	width: DataTypes.DECIMAL(10, 2), 
@@ -39,3 +72,12 @@ module.exports = sequelize.define('budgets', {
 		defaultValue: Sequelize.NOW
 	}
 })
+
+Budget.belongsTo(Logist, { foreignKey: 'logist_id', as: 'logists' })
+Budget.belongsTo(Seller, { foreignKey: 'seller_id', as: 'sellers' })
+Budget.belongsTo(Client, { foreignKey: 'client_id', as: 'clients' })
+Budget.belongsTo(Format, { foreignKey: 'format_id', as: 'formats' })
+Budget.belongsTo(StatusBudget, { foreignKey: 'status_budget_id', as: 'status_budgets' })
+Budget.belongsTo(TypeBudget, { foreignKey: 'type_budget_id', as: 'types_budgets' })
+
+module.exports = Budget

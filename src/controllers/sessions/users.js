@@ -29,8 +29,12 @@ module.exports = {
 	 */
 	async get(req, res, self) {
 		if (await Permissions.check(req.token, 'users', 'select')) {
-			const user = await User.findOne({ where: { id: req.params.id } })
-			if (user && user.dataValues && user.dataValues.id) {
+			const user = await User.findOne({
+				where: { id: req.params.id },
+				include: 'sessions',
+			})
+			delete user.password
+			if (user && user.id) {
 				res.send({ status: 'USER_GET_SUCCESS', data: user })
 			} else {
 				res.send({ status: 'USER_NOT_FOUND', error: 'User not found' })
@@ -49,7 +53,7 @@ module.exports = {
 	 */
 	async list(req, res, self) {
 		if (await Permissions.check(req.token, 'users', 'select')) {
-			const users = await User.findAll({ where: {} })
+			const users = await User.findAll({ where: {}, include: 'sessions' })
 			if (users && users.length > 0) {
 				res.send({ status: 'USER_LIST_SUCCESS', data: users })
 			} else {
@@ -71,23 +75,26 @@ module.exports = {
 		delete req.body.id
 		if (await Permissions.check(req.token, 'users', 'insert')) {
 			req.body.password = await Server.getHash(req.body.password)
-			User.build(req.body)
-				.save()
-				.then(async (data) => {
-					req.body.type = 'admin'
-					req.body.table = 'users'
-					req.body.person = data.id
-					Sessions.create(req, (result) => {
-						if (result.status == 'SESSION_INSERT_SUCCESS') {
+			req.body.type = 'admin'
+			req.body.table = 'users'
+			Sessions.create(req, (result) => {
+				if (result.status == 'SESSION_INSERT_SUCCESS') {
+					req.body.session_id = result.data.id
+					User.build(req.body)
+						.save()
+						.then(async (data) => {
 							res.send({ status: 'USER_INSERT_SUCCESS', data })
-						} else {
-							res.send({ status: 'USER_INSERT_ERROR', error: result.error })
-						}
-					})
-				})
-				.catch((error) => {
-					res.send({ status: 'USER_INSERT_ERROR', error: error.parent.detail })
-				})
+						})
+						.catch((error) => {
+							res.send({
+								status: 'USER_INSERT_ERROR',
+								error: error.parent.detail,
+							})
+						})
+				} else {
+					res.send({ status: 'SESSION_INSERT_ERROR', error: result.error })
+				}
+			})
 		} else {
 			res.send({ status: 'USER_PERMISSION_ERROR', error: 'Action not allowed' })
 		}
