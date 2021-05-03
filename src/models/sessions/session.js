@@ -29,6 +29,9 @@ const Session = sequelize.define(
 		active_hash: {
 			type: DataTypes.STRING
 		},
+		password_hash: {
+			type: DataTypes.STRING
+		},
 		last_login: {
 			type: DataTypes.DATE,
 			defaultValue: Sequelize.NOW,

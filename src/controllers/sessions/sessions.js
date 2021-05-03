@@ -13,14 +13,10 @@ module.exports = {
 	setRoutes() {
 		Server.addRoute('/login', this.login, this).get(false)
 
-		Server.addRoute(
-			'/sessions/send-mail-active/:mail',
-			this.sendMailActive,
-			this
-		).get(false)
-		Server.addRoute('/sessions/active/:hash', this.activeAccount, this).get(
-			false
-		)
+		Server.addRoute('/sessions/send-mail-active/:mail', this.sendMailActive, this).get(false)
+		Server.addRoute('/sessions/active-account/:hash/:mail', this.activeAccount, this).get(false)
+		Server.addRoute('/sessions/send-mail-password/:mail', this.sendMailPassword, this).get(false)
+		Server.addRoute('/sessions/change-password/:hash/:mail/:password', this.changePassword, this).post(false)
 
 		Server.addRoute('/sessions/:id', this.get, this).get(true)
 		Server.addRoute('/sessions/', this.list, this).get(true)
@@ -96,11 +92,11 @@ module.exports = {
 						}
 					} else {
 						res.send({
-							status: session.type.toUpperCase() + '_SESSION_NOT_FOUND',
+							status: (session.type ? session.type.toUpperCase() : '_') + 'SESSION_NOT_FOUND',
 						})
 					}
 				} else {
-					res.send({ status: session.type.toUpperCase() + '_NOT_FOUND' })
+					res.send({ status: (session.type ? session.type.toUpperCase() : '_') + 'NOT_FOUND' })
 				}
 			} else {
 				res.send({ status: 'SESSION_NOT_FOUND' })
@@ -142,29 +138,27 @@ module.exports = {
 	async activeAccount(req, res, self) {
 		const session = await Session.findOne({
 			attributes: ['id', 'active_hash', 'active', 'updatedAt'],
-			where: { active_hash: req.params.hash, active: false },
+			where: { active_hash: req.params.hash, mail: req.params.mail, active: false },
 		})
 		if (session && session.id) {
 			const d1 = new Date(session.updatedAt)
 			d1.setMinutes(d1.getMinutes() + 5)
 			const d2 = new Date(Date.now())
 			if (d1 > d2) {
-				
-			
-			session
-				.update({ active_hash: null, active: true })
-				.then((data) => {
-					res.send({
-						status: 'SESSION_ACTIVE_SUCCESS',
-						data: session,
+				session
+					.update({ active_hash: null, active: true })
+					.then((data) => {
+						res.send({
+							status: 'SESSION_ACTIVE_SUCCESS',
+							data: session,
+						})
 					})
-				})
-				.catch((error) => {
-					res.send({
-						status: 'SESSION_UPDATE_ERROR',
-						error: error.parent.detail,
+					.catch((error) => {
+						res.send({
+							status: 'SESSION_UPDATE_ERROR',
+							error: error.parent.detail,
+						})
 					})
-				})
 			} else {
 				res.send({ status: 'SESSION_EXPIRED_KEY', error: 'Expired key to active account' })
 			}
@@ -189,6 +183,80 @@ module.exports = {
 			session
 				.update({
 					active_hash: Server.createToken(session.id + req.params.mail),
+				})
+				.then((data) => {
+					res.send({
+						status: 'SESSION_SEND_MAIL_ACTIVE_SUCCESS',
+						data: session,
+					})
+				})
+				.catch((error) => {
+					res.send({
+						status: 'SESSION_UPDATE_ERROR',
+						error: error.parent.detail,
+					})
+				})
+		} else {
+			res.send({ status: 'SESSION_NOT_FOUND', error: 'Session not found' })
+		}
+	},
+
+	/**
+	 * @function
+	 * Modificar senha
+	 * @param {Object} req
+	 * @param {Object} res
+	 * @param {Object} self
+	 */
+	async changePassword(req, res, self) {
+		const session = await Session.findOne({
+			attributes: ['id', 'password_hash', 'active', 'updatedAt'],
+			where: { password_hash: req.params.hash, mail: req.params.mail, active: true },
+		})
+		if (session && session.id) {
+			const d1 = new Date(session.updatedAt)
+			d1.setMinutes(d1.getMinutes() + 5)
+			const d2 = new Date(Date.now())
+			if (d1 > d2 && req.params.password.toString().trim() != '') {
+				const password = await Server.getHash(req.params.password)
+				session
+					.update({ password_hash: null, active: true, password })
+					.then((data) => {
+						res.send({
+							status: 'SESSION_ACTIVE_SUCCESS',
+							data: session,
+						})
+					})
+					.catch((error) => {
+						res.send({
+							status: 'SESSION_UPDATE_ERROR',
+							error: error.parent.detail,
+						})
+					})
+			} else {
+				res.send({ status: 'SESSION_EXPIRED_KEY', error: 'Expired key to active account' })
+			}
+		} else {
+			res.send({ status: 'SESSION_ACTIVE_ERROR', error: 'Session not found' })
+		}
+	},
+
+	/**
+	 * @function
+	 * Enviar email para alterar senha
+	 * @param {Object} req
+	 * @param {Object} res
+	 * @param {Object} self
+	 */
+	async sendMailPassword(req, res, self) {
+		const session = await Session.findOne({
+			attributes: ['id', 'password_hash', 'mail'],
+			where: { mail: req.params.mail, active: true },
+		})
+		if (session && session.id) {
+			session
+				.update({
+					password_hash: Server.createToken(session.id + req.params.mail),
 				})
 				.then((data) => {
 					res.send({
