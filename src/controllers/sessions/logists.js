@@ -28,17 +28,18 @@ module.exports = {
 	 */
 	async get(req, res, self) {
 		if (await Permissions.check(req.token, 'logists', 'select')) {
-			const logist = await Logist.findOne({ where: { id: req.params.id } })
-			if (logist && logist.dataValues && logist.dataValues.id) {
+			const logist = await Logist.findOne({
+				where: { id: req.params.id },
+				include: 'sessions',
+			})
+			delete logist.password
+			if (logist && logist.id) {
 				res.send({ status: 'LOGIST_GET_SUCCESS', data: logist })
 			} else {
 				res.send({ status: 'LOGIST_NOT_FOUND', error: 'Logist not found' })
 			}
 		} else {
-			res.send({
-				status: 'LOGIST_PERMISSION_ERROR',
-				error: 'Action not allowed',
-			})
+			res.send({ status: 'LOGIST_PERMISSION_ERROR', error: 'Action not allowed' })
 		}
 	},
 
@@ -51,7 +52,7 @@ module.exports = {
 	 */
 	async list(req, res, self) {
 		if (await Permissions.check(req.token, 'logists', 'select')) {
-			const logists = await Logist.findAll({ where: {} })
+			const logists = await Logist.findAll({ where: {}, include: 'sessions' })
 			if (logists && logists.length > 0) {
 				res.send({ status: 'LOGIST_LIST_SUCCESS', data: logists })
 			} else {
@@ -73,25 +74,31 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
+		delete req.body.id
 		if (await Permissions.check(req.token, 'logists', 'insert')) {
-			delete req.body.id
 			req.body.password = await Server.getHash(req.body.password)
-			Logist.build(req.body)
-				.save()
-				.then((data) => {
-					res.send({ status: 'LOGIST_INSERT_SUCCESS', data })
-				})
-				.catch((error) => {
-					res.send({
-						status: 'LOGIST_INSERT_ERROR',
-						error: error.parent.detail,
-					})
-				})
-		} else {
-			res.send({
-				status: 'LOGIST_PERMISSION_ERROR',
-				error: 'Action not allowed',
+			req.body.type = 'admin'
+			req.body.table = 'logists'
+			Sessions.create(req, (result) => {
+				if (result.status == 'SESSION_INSERT_SUCCESS') {
+					req.body.session_id = result.data.id
+					Logist.build(req.body)
+						.save()
+						.then(async (data) => {
+							res.send({ status: 'LOGIST_INSERT_SUCCESS', data })
+						})
+						.catch((error) => {
+							res.send({
+								status: 'LOGIST_INSERT_ERROR',
+								error: error.parent.detail,
+							})
+						})
+				} else {
+					res.send({ status: 'SESSION_INSERT_ERROR', error: result.error })
+				}
 			})
+		} else {
+			res.send({ status: 'LOGIST_PERMISSION_ERROR', error: 'Action not allowed' })
 		}
 	},
 

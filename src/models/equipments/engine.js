@@ -6,7 +6,7 @@ const Engine = sequelize.define('engines', {
 	id: {
 		type: DataTypes.UUID,
 		primaryKey: true,
-		defaultValue: DataTypes.UUIDV4
+		defaultValue: DataTypes.UUIDV4,
 	},
 	equipment_id: {
 		type: DataTypes.UUID,
@@ -17,12 +17,12 @@ const Engine = sequelize.define('engines', {
 	},
 	createdAt: {
 		type: DataTypes.DATE,
-		defaultValue: Sequelize.NOW
+		defaultValue: Sequelize.NOW,
 	},
 	updatedAt: {
 		type: DataTypes.DATE,
-		defaultValue: Sequelize.NOW
-	}
+		defaultValue: Sequelize.NOW,
+	},
 })
 
 Engine.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })

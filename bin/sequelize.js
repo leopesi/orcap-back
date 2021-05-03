@@ -10,13 +10,12 @@ exec_sequelize = async () => {
 	const params = JSON.parse(process.env.npm_config_argv).original[2]
 
 	const dirs = require('../src/models/sequelize-config')['models']
-	console.log(dirs)
 	for (const i in dirs) {
 		const files = dirs[i]
 		for (const j in files) {
 			console.log('../src/models/' + i + '/' + files[j])
 			const model = require('../src/models/' + i + '/' + files[j])
-			if (params.indexOf('--force') !== -1) {
+			if (params && params.indexOf('--force') !== -1) {
 				await model.sync({ force: true })
 			} else {
 				await model.sync()
