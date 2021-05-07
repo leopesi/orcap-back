@@ -1,6 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = require('../../helpers/postgres')
-const Session = require('./session')
 
 const User = sequelize.define('users', {
 	id: {
