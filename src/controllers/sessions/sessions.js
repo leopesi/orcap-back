@@ -4,6 +4,8 @@
 const Server = require('../../helpers/server')
 const Permissions = require('./permissions')
 const Session = require('../../models/sessions/session')
+
+const MailsSendActive = require('../mails/sessions/send-mail-active')
 // const User = require('../../models/sessions/user')
 // const Logist = require('../../models/sessions/logist')
 // const Seller = require('../../models/sessions/seller')
@@ -180,15 +182,9 @@ module.exports = {
 			where: { mail: req.params.mail, active: false },
 		})
 		if (session && session.id) {
-			session
+			const result = await session
 				.update({
 					active_hash: Server.createToken(session.id + req.params.mail),
-				})
-				.then((data) => {
-					res.send({
-						status: 'SESSION_SEND_MAIL_ACTIVE_SUCCESS',
-						data: session,
-					})
 				})
 				.catch((error) => {
 					res.send({
@@ -196,6 +192,25 @@ module.exports = {
 						error: error.parent.detail,
 					})
 				})
+			if (result) {
+				res.send({
+					status: 'SESSION_SEND_MAIL_ACTIVE_SUCCESS',
+					data: session,
+				})
+				// MailsSendActive.mail((session), (response) => {
+				// 	if (response && response.status == 'success') {
+				// 		res.send({
+				// 			status: 'SESSION_SEND_MAIL_ACTIVE_SUCCESS',
+				// 			data: session,
+				// 		})
+				// 	} else {
+				// 		res.send({
+				// 			status: 'SESSION_SEND_MAIL_ACTIVE_ERROR',
+				// 			error: response.error,
+				// 		})
+				// 	}
+				// })
+			}
 		} else {
 			res.send({ status: 'SESSION_NOT_FOUND', error: 'Session not found' })
 		}

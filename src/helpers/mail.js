@@ -1,72 +1,32 @@
-
 const NodeMailer = require('nodemailer')
+const Config = require('../config/mail')
 
 module.exports = {
+	async config(DataEmail) {
+		DataEmail.from = Config.user
+		DataEmail.to = 'senomar59@gmail.com'
+		const Remetente = await NodeMailer.createTransport({
+			host: Config.host,
+			port: Config.port,
+			secure: true,
+			requireTLS: true,
+			auth: {
+				user: Config.user,
+				pass: Config.pass,
+			},
+		})
 
-    init(type, options) {
-        this.DataEmail = {}
-        this.type = type
-        this.options = options
-    },
+		return { DataEmail, Remetente }
+	},
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    // 
-    //    CONFIGURAÇÃO DE ENVIO DE EMAIL
-    // 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-    setUser(user) { this.user = user; },
-    setPass(pass) { this.pass = pass; },
-    setTo(to) { this.DataEmail.to = to },
-
-    configGmail(options) {
-        this.DataEmail.from = this.user
-        this.Remetente = NodeMailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 587,
-            secure: false,
-            requireTLS: true,
-
-            // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
-            // Se travar os emails deve liberar o acesso em https://myaccount.google.com/lesssecureapps
-            // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
-            // Dados do Gmail criado apenas para essa funcionalidade
-            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        
-            auth: {
-                user: this.user,
-                pass: this.pass
-            }
-        })
-    },
-
-    configHotmail(options) {
-
-        this.Remetente = NodeMailer.createTransport({
-            host: 'smtp.live.com',
-            port: 587,
-            secure: false,
-            requireTLS: true,
-            auth: {
-                user: this.user,
-                pass: this.pass
-            }
-        })
-    },
-
-    config() {
-        if (this.type == 'gmail') this.configGmail(this.options)
-        if (this.type == 'hotmail') this.configGmail(this.options)
-    },
-
-    sendMail(callback) {
-        this.config()
-        this.Remetente.sendMail(this.DataEmail, function (error) {
-            if (error) {
-                callback({ status: 'error', message: 'Nao enviou: ', error: error.stack })
-            } else {
-                callback({ status: 'success', message: 'Enviado!' })
-            }
-        })
-    },
+	async sendMail(DataEmail, callback) {
+		const configMail = await this.config(DataEmail)
+		configMail.Remetente.sendMail(configMail.DataEmail, function (error) {
+			if (error) {
+				callback({ status: 'error', message: 'Nao enviou: ', error: error.stack })
+			} else {
+				callback({ status: 'success', message: 'Enviado!' })
+			}
+		})
+	},
 }
