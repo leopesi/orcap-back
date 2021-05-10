@@ -15,19 +15,9 @@ module.exports = {
 	 */
 	setRoutes() {
 		Server.addRoute('/permissions/list-groups', this.listGroups, this).get(true)
-		Server.addRoute('/permissions/create-group', this.createGroup, this).post(
-			true
-		)
-		Server.addRoute(
-			'/permissions/list-permissions',
-			this.listPermissions,
-			this
-		).get(true)
-		Server.addRoute(
-			'/permissions/create-permission',
-			this.createPermission,
-			this
-		).post(true)
+		Server.addRoute('/permissions/create-group', this.createGroup, this).post(true)
+		Server.addRoute('/permissions/list-permissions', this.listPermissions, this).get(true)
+		Server.addRoute('/permissions/create-permission', this.createPermission, this).post(true)
 	},
 
 	/**
