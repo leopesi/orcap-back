@@ -3,6 +3,7 @@
  */
 const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
+const CrudBasicsController = require('../defaults/crud-basics')
 const Model = require('../../models/basics/model')
 
 module.exports = {
@@ -27,19 +28,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		if (await Permissions.check(req.token, 'models', 'select')) {
-			const model = await Model.findOne({ where: { id: req.params.id }, include: 'brands' })
-			if (model && model.dataValues && model.dataValues.id) {
-				res.send({ status: 'MODEL_GET_SUCCESS', data: model })
-			} else {
-				res.send({ status: 'MODEL_NOT_FOUND', error: 'Model not found' })
-			}
-		} else {
-			res.send({
-				status: 'MODEL_PERMISSION_ERROR',
-				error: 'Action not allowed',
-			})
-		}
+		await CrudBasicsController.get(req, res, Model)
 	},
 
 	/**
@@ -50,19 +39,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		if (await Permissions.check(req.token, 'models', 'select')) {
-			const models = await Model.findAll({ where: {} })
-			if (models && models.length > 0) {
-				res.send({ status: 'MODEL_LIST_SUCCESS', data: models })
-			} else {
-				res.send({ status: 'MODELS_QUERY_EMPTY', error: 'Model not found' })
-			}
-		} else {
-			res.send({
-				status: 'MODEL_PERMISSION_ERROR',
-				error: 'Action not allowed',
-			})
-		}
+		await CrudBasicsController.list(req, res, Model)
 	},
 
 	/**
@@ -73,23 +50,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		delete req.body.id
-		if (await Permissions.check(req.token, 'models', 'insert')) {
-			req.body.password = await Server.getHash(req.body.password)
-			Model.build(req.body)
-				.save()
-				.then(async (data) => {
-					res.send({ status: 'MODEL_INSERT_SUCCESS', data })
-				})
-				.catch((error) => {
-					res.send({ status: 'MODEL_INSERT_ERROR', error: error.parent.detail })
-				})
-		} else {
-			res.send({
-				status: 'MODEL_PERMISSION_ERROR',
-				error: 'Action not allowed',
-			})
-		}
+		await CrudBasicsController.create(req, res, Model)
 	},
 
 	/**
@@ -100,33 +61,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		if (await Permissions.check(req.token, 'models', 'update')) {
-			const result = await Model.findOne({ where: { id: req.params.id } })
-			if (result) {
-				req.body.id = result.dataValues.id
-				result
-					.update(req.body)
-					.then((data) => {
-						res.send({ status: 'MODEL_UPDATE_SUCCESS', data })
-					})
-					.catch((error) => {
-						res.send({
-							status: 'MODEL_UPDATE_ERROR',
-							error: error.parent.detail,
-						})
-					})
-			} else {
-				res.send({
-					status: 'MODEL_NOT_FOUND',
-					error: req.params,
-				})
-			}
-		} else {
-			res.send({
-				status: 'MODEL_PERMISSION_ERROR',
-				error: 'Action not allowed',
-			})
-		}
+		await CrudBasicsController.change(req, res, Model)
 	},
 
 	/**
@@ -137,33 +72,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async delete(req, res, self) {
-		if (await Permissions.check(req.token, 'models', 'delete')) {
-			const result = await Model.findOne({ where: { id: req.params.id } })
-			if (result) {
-				req.body.active = false
-				result
-					.update(req.body)
-					.then((data) => {
-						res.send({ status: 'MODEL_DELETE_SUCCESS', data })
-					})
-					.catch((error) => {
-						res.send({
-							status: 'MODEL_DELETE_ERROR',
-							error: error.parent.detail,
-						})
-					})
-			} else {
-				res.send({
-					status: 'MODEL_NOT_FOUND',
-					error: req.params,
-				})
-			}
-		} else {
-			res.send({
-				status: 'MODEL_PERMISSION_ERROR',
-				error: 'Action not allowed',
-			})
-		}
+		await CrudBasicsController.delete(req, res, Model)
 	},
 
 	/**
@@ -174,32 +83,6 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async restore(req, res, self) {
-		if (await Permissions.check(req.token, 'models', 'restore')) {
-			const result = await Model.findOne({ where: { id: req.params.id } })
-			if (result) {
-				req.body.active = true
-				result
-					.update(req.body)
-					.then((data) => {
-						res.send({ status: 'MODEL_RESTORE_SUCCESS', data })
-					})
-					.catch((error) => {
-						res.send({
-							status: 'MODEL_RESTORE_ERROR',
-							error: error.parent.detail,
-						})
-					})
-			} else {
-				res.send({
-					status: 'MODEL_NOT_FOUND',
-					error: req.params,
-				})
-			}
-		} else {
-			res.send({
-				status: 'MODEL_PERMISSION_ERROR',
-				error: 'Action not allowed',
-			})
-		}
+		await CrudBasicsController.restore(req, res, Model)
 	},
 }

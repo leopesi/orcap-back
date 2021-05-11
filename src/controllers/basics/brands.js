@@ -3,7 +3,7 @@
  */
 const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
-const Provider = require('../../models/basics/provider')
+const CrudBasicsController = require('../defaults/crud-basics')
 const Brand = require('../../models/basics/brand')
 
 module.exports = {
@@ -28,19 +28,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		if (await Permissions.check(req.token, 'brands', 'select')) {
-			const brand = await Brand.findOne({ where: { id: req.params.id }, include: 'providers' })
-			if (brand && brand.dataValues && brand.dataValues.id) {
-				res.send({ status: 'BRAND_GET_SUCCESS', data: brand })
-			} else {
-				res.send({ status: 'BRAND_NOT_FOUND', error: 'Brand not found' })
-			}
-		} else {
-			res.send({
-				status: 'BRAND_PERMISSION_ERROR',
-				error: 'Action not allowed',
-			})
-		}
+		await CrudBasicsController.get(req, res, Brand)
 	},
 
 	/**
@@ -51,19 +39,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		if (await Permissions.check(req.token, 'brands', 'select')) {
-			const brands = await Brand.findAll({ where: {} })
-			if (brands && brands.length > 0) {
-				res.send({ status: 'BRAND_LIST_SUCCESS', data: brands })
-			} else {
-				res.send({ status: 'BRANDS_QUERY_EMPTY', error: 'Brand not found' })
-			}
-		} else {
-			res.send({
-				status: 'BRAND_PERMISSION_ERROR',
-				error: 'Action not allowed',
-			})
-		}
+		await CrudBasicsController.list(req, res, Brand)
 	},
 
 	/**
@@ -74,26 +50,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		delete req.body.id
-		if (await Permissions.check(req.token, 'brands', 'insert')) {
-			delete req.body.id
-			Brand.build(req.body)
-				.save()
-				.then(async (data) => {
-					res.send({ status: 'BRAND_INSERT_SUCCESS', data })
-				})
-				.catch((error) => {
-					res.send({
-						status: 'BRAND_INSERT_ERROR',
-						error: error.parent ? error.parent.detail : error,
-					})
-				})
-		} else {
-			res.send({
-				status: 'BRAND_PERMISSION_ERROR',
-				error: 'Action not allowed',
-			})
-		}
+		await CrudBasicsController.create(req, res, Brand)
 	},
 
 	/**
@@ -104,33 +61,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		if (await Permissions.check(req.token, 'brands', 'update')) {
-			const result = await Brand.findOne({ where: { id: req.params.id } })
-			if (result) {
-				req.body.id = result.dataValues.id
-				result
-					.update(req.body)
-					.then((data) => {
-						res.send({ status: 'BRAND_UPDATE_SUCCESS', data })
-					})
-					.catch((error) => {
-						res.send({
-							status: 'BRAND_UPDATE_ERROR',
-							error: error.parent ? error.parent.detail : error,
-						})
-					})
-			} else {
-				res.send({
-					status: 'BRAND_NOT_FOUND',
-					error: req.params,
-				})
-			}
-		} else {
-			res.send({
-				status: 'BRAND_PERMISSION_ERROR',
-				error: 'Action not allowed',
-			})
-		}
+		await CrudBasicsController.change(req, res, Brand)
 	},
 
 	/**
@@ -141,33 +72,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async delete(req, res, self) {
-		if (await Permissions.check(req.token, 'brands', 'delete')) {
-			const result = await Brand.findOne({ where: { id: req.params.id } })
-			if (result) {
-				req.body.active = false
-				result
-					.update(req.body)
-					.then((data) => {
-						res.send({ status: 'BRAND_DELETE_SUCCESS', data })
-					})
-					.catch((error) => {
-						res.send({
-							status: 'BRAND_DELETE_ERROR',
-							error: error.parent ? error.parent.detail : error,
-						})
-					})
-			} else {
-				res.send({
-					status: 'BRAND_NOT_FOUND',
-					error: req.params,
-				})
-			}
-		} else {
-			res.send({
-				status: 'BRAND_PERMISSION_ERROR',
-				error: 'Action not allowed',
-			})
-		}
+		await CrudBasicsController.delete(req, res, Brand)
 	},
 
 	/**
@@ -178,32 +83,6 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async restore(req, res, self) {
-		if (await Permissions.check(req.token, 'brands', 'restore')) {
-			const result = await Brand.findOne({ where: { id: req.params.id } })
-			if (result) {
-				req.body.active = true
-				result
-					.update(req.body)
-					.then((data) => {
-						res.send({ status: 'BRAND_RESTORE_SUCCESS', data })
-					})
-					.catch((error) => {
-						res.send({
-							status: 'BRAND_RESTORE_ERROR',
-							error: error.parent ? error.parent.detail : error,
-						})
-					})
-			} else {
-				res.send({
-					status: 'BRAND_NOT_FOUND',
-					error: req.params,
-				})
-			}
-		} else {
-			res.send({
-				status: 'BRAND_PERMISSION_ERROR',
-				error: 'Action not allowed',
-			})
-		}
+		await CrudBasicsController.restore(req, res, Brand)
 	},
 }

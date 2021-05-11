@@ -3,7 +3,8 @@
  */
 const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
-const StatusBudgets = require('../../models/basics/status_budget')
+const CrudBasicsController = require('../defaults/crud-basics')
+const StatusBudget = require('../../models/basics/status_budget')
 
 module.exports = {
 	/**
@@ -27,16 +28,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		if (await Permissions.check(req.token, 'status_budgets', 'select')) {
-			const status_budgets = await StatusBudgets.findOne({ where: { id: req.params.id } })
-			if (status_budgets && status_budgets.dataValues && status_budgets.dataValues.id) {
-				res.send({ status_budgets: 'STATUS_BUDGET_GET_SUCCESS', data: status_budgets })
-			} else {
-				res.send({ status_budgets: 'STATUS_BUDGET_NOT_FOUND', error: 'StatusBudgets not found' })
-			}
-		} else {
-			res.send({ status_budgets: 'STATUS_BUDGET_PERMISSION_ERROR', error: 'Action not allowed' })
-		}
+		await CrudBasicsController.get(req, res, StatusBudget)
 	},
 
 	/**
@@ -47,16 +39,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		if (await Permissions.check(req.token, 'status_budgets', 'select')) {
-			const status_budgets = await StatusBudgets.findAll({ where: {} })
-			if (status_budgets && status_budgets.length > 0) {
-				res.send({ status_budgets: 'STATUS_BUDGET_LIST_SUCCESS', data: status_budgets })
-			} else {
-				res.send({ status_budgets: 'STATUS_BUDGET_QUERY_EMPTY', error: 'StatusBudgets not found' })
-			}
-		} else {
-			res.send({ status_budgets: 'STATUS_BUDGET_PERMISSION_ERROR', error: 'Action not allowed' })
-		}
+		await CrudBasicsController.list(req, res, StatusBudget)
 	},
 
 	/**
@@ -67,29 +50,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		delete req.body.id
-		if (await Permissions.check(req.token, 'status_budgets', 'insert')) {
-			req.body.password = await Server.getHash(req.body.password)
-			StatusBudgets.build(req.body)
-				.save()
-				.then(async (data) => {
-					req.body.type = 'admin'
-					req.body.table = 'status_budgets'
-					req.body.person = data.id
-					Sessions.create(req, (result) => {
-						if (result.status_budgets == 'SESSION_INSERT_SUCCESS') {
-							res.send({ status_budgets: 'STATUS_BUDGET_INSERT_SUCCESS', data })
-						} else {
-							res.send({ status_budgets: 'STATUS_BUDGET_INSERT_ERROR', error: result.error })
-						}
-					})
-				})
-				.catch((error) => {
-					res.send({ status_budgets: 'STATUS_BUDGET_INSERT_ERROR', error: error.parent.detail })
-				})
-		} else {
-			res.send({ status_budgets: 'STATUS_BUDGET_PERMISSION_ERROR', error: 'Action not allowed' })
-		}
+		await CrudBasicsController.create(req, res, StatusBudget)
 	},
 
 	/**
@@ -100,30 +61,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		if (await Permissions.check(req.token, 'status_budgets', 'update')) {
-			const result = await StatusBudgets.findOne({ where: { id: req.params.id } })
-			if (result) {
-				req.body.id = result.dataValues.id
-				result
-					.update(req.body)
-					.then((data) => {
-						res.send({ status_budgets: 'STATUS_BUDGET_UPDATE_SUCCESS', data })
-					})
-					.catch((error) => {
-						res.send({
-							status_budgets: 'STATUS_BUDGET_UPDATE_ERROR',
-							error: error.parent.detail,
-						})
-					})
-			} else {
-				res.send({
-					status_budgets: 'STATUS_BUDGET_NOT_FOUND',
-					error: req.params,
-				})
-			}
-		} else {
-			res.send({ status_budgets: 'STATUS_BUDGET_PERMISSION_ERROR', error: 'Action not allowed' })
-		}
+		await CrudBasicsController.change(req, res, StatusBudget)
 	},
 
 	/**
@@ -134,30 +72,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async delete(req, res, self) {
-		if (await Permissions.check(req.token, 'status_budgets', 'delete')) {
-			const result = await StatusBudgets.findOne({ where: { id: req.params.id } })
-			if (result) {
-				req.body.active = false
-				result
-					.update(req.body)
-					.then((data) => {
-						res.send({ status_budgets: 'STATUS_BUDGET_DELETE_SUCCESS', data })
-					})
-					.catch((error) => {
-						res.send({
-							status_budgets: 'STATUS_BUDGET_DELETE_ERROR',
-							error: error.parent.detail,
-						})
-					})
-			} else {
-				res.send({
-					status_budgets: 'STATUS_BUDGET_NOT_FOUND',
-					error: req.params,
-				})
-			}
-		} else {
-			res.send({ status_budgets: 'STATUS_BUDGET_PERMISSION_ERROR', error: 'Action not allowed' })
-		}
+		await CrudBasicsController.delete(req, res, StatusBudget)
 	},
 
 	/**
@@ -168,29 +83,6 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async restore(req, res, self) {
-		if (await Permissions.check(req.token, 'status_budgets', 'restore')) {
-			const result = await StatusBudgets.findOne({ where: { id: req.params.id } })
-			if (result) {
-				req.body.active = true
-				result
-					.update(req.body)
-					.then((data) => {
-						res.send({ status_budgets: 'STATUS_BUDGET_RESTORE_SUCCESS', data })
-					})
-					.catch((error) => {
-						res.send({
-							status_budgets: 'STATUS_BUDGET_RESTORE_ERROR',
-							error: error.parent.detail,
-						})
-					})
-			} else {
-				res.send({
-					status_budgets: 'STATUS_BUDGET_NOT_FOUND',
-					error: req.params,
-				})
-			}
-		} else {
-			res.send({ status_budgets: 'STATUS_BUDGET_PERMISSION_ERROR', error: 'Action not allowed' })
-		}
+		await CrudBasicsController.restore(req, res, StatusBudget)
 	},
 }

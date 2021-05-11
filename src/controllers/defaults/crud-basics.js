@@ -55,7 +55,8 @@ module.exports = {
 	async create(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'insert')) {
 			delete req.body.id
-			model.build(req.body)
+			model
+				.build(req.body)
 				.save()
 				.then(async (data) => {
 					Sessions.create(req, (result) => {
@@ -86,8 +87,7 @@ module.exports = {
 			const md = await model.findOne({ where: { id: req.params.id } })
 			if (md) {
 				req.body.id = md.dataValues.id
-				md
-					.update(req.body)
+				md.update(req.body)
 					.then((data) => {
 						res.send({ status: model.tableName.toUpperCase() + '_UPDATE_SUCCESS', data })
 					})
@@ -120,8 +120,7 @@ module.exports = {
 			const md = await model.findOne({ where: { id: req.params.id } })
 			if (md) {
 				req.body.active = false
-				md
-					.update(req.body)
+				md.update(req.body)
 					.then((data) => {
 						res.send({ status: model.tableName.toUpperCase() + '_DELETE_SUCCESS', data })
 					})
@@ -154,8 +153,7 @@ module.exports = {
 			const md = await model.findOne({ where: { id: req.params.id } })
 			if (md) {
 				req.body.active = true
-				md
-					.update(req.body)
+				md.update(req.body)
 					.then((data) => {
 						res.send({ status: model.tableName.toUpperCase() + '_RESTORE_SUCCESS', data })
 					})
