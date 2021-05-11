@@ -15,6 +15,9 @@ const Filter = sequelize.define('filters', {
 			key: 'id',
 		},
 	},
+	max_capacity: {
+		type: DataTypes.DECIMAL,
+	},
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW

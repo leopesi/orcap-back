@@ -3,6 +3,7 @@
  */
 const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
+const CrudBasicsController = require('../defaults/crud-basics')
 const Filter = require('../../models/equipments/filter')
 
 module.exports = {
@@ -27,16 +28,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		if (await Permissions.check(req.token, 'filters', 'select')) {
-			const filter = await Filter.findOne({ where: { id: req.params.id } })
-			if (filter && filter.dataValues && filter.dataValues.id) {
-				res.send({ status: 'FILTER_GET_SUCCESS', data: filter })
-			} else {
-				res.send({ status: 'FILTER_NOT_FOUND', error: 'Filter not found' })
-			}
-		} else {
-			res.send({ status: 'FILTER_PERMISSION_ERROR', error: 'Action not allowed' })
-		}
+		await CrudBasicsController.get(req, res, Filter)
 	},
 
 	/**
@@ -47,16 +39,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		if (await Permissions.check(req.token, 'filters', 'select')) {
-			const filters = await Filter.findAll({ where: {} })
-			if (filters && filters.length > 0) {
-				res.send({ status: 'FILTER_LIST_SUCCESS', data: filters })
-			} else {
-				res.send({ status: 'FILTERS_QUERY_EMPTY', error: 'Filter not found' })
-			}
-		} else {
-			res.send({ status: 'FILTER_PERMISSION_ERROR', error: 'Action not allowed' })
-		}
+		await CrudBasicsController.list(req, res, Filter)
 	},
 
 	/**
@@ -67,29 +50,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		delete req.body.id
-		if (await Permissions.check(req.token, 'filters', 'insert')) {
-			req.body.password = await Server.getHash(req.body.password)
-			Filter.build(req.body)
-				.save()
-				.then(async (data) => {
-					req.body.type = 'admin'
-					req.body.table = 'filters'
-					req.body.person = data.id
-					Sessions.create(req, (result) => {
-						if (result.status == 'SESSION_INSERT_SUCCESS') {
-							res.send({ status: 'FILTER_INSERT_SUCCESS', data })
-						} else {
-							res.send({ status: 'FILTER_INSERT_ERROR', error: result.error })
-						}
-					})
-				})
-				.catch((error) => {
-					res.send({ status: 'FILTER_INSERT_ERROR', error: error.parent.detail })
-				})
-		} else {
-			res.send({ status: 'FILTER_PERMISSION_ERROR', error: 'Action not allowed' })
-		}
+		await CrudBasicsController.create(req, res, Filter)
 	},
 
 	/**
@@ -100,32 +61,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		if (await Permissions.check(req.token, 'filters', 'update')) {
-			const result = await Filter.findOne({ where: { id: req.params.id } })
-			if (result) {
-				req.body.id = result.dataValues.id
-				delete req.body.mail
-				delete req.body.password
-				result
-					.update(req.body)
-					.then((data) => {
-						res.send({ status: 'FILTER_UPDATE_SUCCESS', data })
-					})
-					.catch((error) => {
-						res.send({
-							status: 'FILTER_UPDATE_ERROR',
-							error: error.parent.detail,
-						})
-					})
-			} else {
-				res.send({
-					status: 'FILTER_NOT_FOUND',
-					error: req.params,
-				})
-			}
-		} else {
-			res.send({ status: 'FILTER_PERMISSION_ERROR', error: 'Action not allowed' })
-		}
+		await CrudBasicsController.change(req, res, Filter)
 	},
 
 	/**
@@ -136,32 +72,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async delete(req, res, self) {
-		if (await Permissions.check(req.token, 'filters', 'delete')) {
-			const result = await Filter.findOne({ where: { id: req.params.id } })
-			if (result) {
-				delete req.body.mail
-				delete req.body.password
-				req.body.active = false
-				result
-					.update(req.body)
-					.then((data) => {
-						res.send({ status: 'FILTER_DELETE_SUCCESS', data })
-					})
-					.catch((error) => {
-						res.send({
-							status: 'FILTER_DELETE_ERROR',
-							error: error.parent.detail,
-						})
-					})
-			} else {
-				res.send({
-					status: 'FILTER_NOT_FOUND',
-					error: req.params,
-				})
-			}
-		} else {
-			res.send({ status: 'FILTER_PERMISSION_ERROR', error: 'Action not allowed' })
-		}
+		await CrudBasicsController.delete(req, res, Filter)
 	},
 
 	/**
@@ -172,31 +83,56 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async restore(req, res, self) {
-		if (await Permissions.check(req.token, 'filters', 'restore')) {
-			const result = await Filter.findOne({ where: { id: req.params.id } })
-			if (result) {
-				delete req.body.mail
-				delete req.body.password
-				req.body.active = true
-				result
-					.update(req.body)
-					.then((data) => {
-						res.send({ status: 'FILTER_RESTORE_SUCCESS', data })
-					})
-					.catch((error) => {
-						res.send({
-							status: 'FILTER_RESTORE_ERROR',
-							error: error.parent.detail,
-						})
-					})
-			} else {
-				res.send({
-					status: 'FILTER_NOT_FOUND',
-					error: req.params,
-				})
-			}
-		} else {
-			res.send({ status: 'FILTER_PERMISSION_ERROR', error: 'Action not allowed' })
-		}
+		await CrudBasicsController.restore(req, res, Filter)
 	},
+
+    getFiltersByDimension(dimension) {
+        
+        const filters = Filter.findAll()
+
+        // for filtro in filtros:
+        //     if dimensao.m3real() < filtro['capacidade maxima']:
+        //         return filtro
+
+        // return 'Nao existe filtro com a capacidade adequada cadastrado no sistema'
+	},
+
+    getCoverByDimension (dimension){
+        // dimensao = self.dimensao
+        // tampa_casa_maquinas = self.config['tampa_casa_maquinas'].lista()
+        // filtro = self.dimensionamento_filtro_grupo()
+
+        // for chave in tampa_casa_maquinas:
+        //     if filtro['id'] <= 5:
+        //         if chave['id'] == 1:
+        //             return chave
+        //     elif filtro['id'] >= 6:
+        //         if chave['id'] == 2:
+        //             return chave
+        //     else:
+        //         return 'Não foi encontrado uma tampa de casa de máquinas adequada para este filtro'
+	},
+    
+	getSandByDimension (dimension){
+        // dimensao = self.dimensao
+        // dimensionamento_filtro = self.dimensionamento_filtro_grupo()
+
+        // if dimensionamento_filtro['id'] <= 2:
+        //     return 1 #Incluir o atributo "areia" no filtro
+        // elif dimensionamento_filtro['id'] == 3:
+        //     return 2
+        // elif dimensionamento_filtro['id'] == 4:
+        //     return 3
+        // elif dimensionamento_filtro['id'] == 5:
+        //     return 5
+        // elif dimensionamento_filtro['id'] == 6:
+        //     return 8
+        // elif dimensionamento_filtro['id'] == 7:
+        //     return 12
+        // elif dimensionamento_filtro['id'] == 8:
+        //     return 21
+        // else:
+        //     return 'Error'
+	}
+
 }

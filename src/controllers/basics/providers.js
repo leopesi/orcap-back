@@ -104,8 +104,6 @@ module.exports = {
 			const result = await Provider.findOne({ where: { id: req.params.id } })
 			if (result) {
 				req.body.id = result.dataValues.id
-				delete req.body.mail
-				delete req.body.password
 				result
 					.update(req.body)
 					.then((data) => {
@@ -139,8 +137,6 @@ module.exports = {
 		if (await Permissions.check(req.token, 'providers', 'delete')) {
 			const result = await Provider.findOne({ where: { id: req.params.id } })
 			if (result) {
-				delete req.body.mail
-				delete req.body.password
 				req.body.active = false
 				result
 					.update(req.body)
@@ -175,8 +171,6 @@ module.exports = {
 		if (await Permissions.check(req.token, 'providers', 'restore')) {
 			const result = await Provider.findOne({ where: { id: req.params.id } })
 			if (result) {
-				delete req.body.mail
-				delete req.body.password
 				req.body.active = true
 				result
 					.update(req.body)
