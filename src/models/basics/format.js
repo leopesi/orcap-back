@@ -12,10 +12,7 @@ const Format = sequelize.define('formats', {
 	width: DataTypes.DECIMAL(10, 2), 
 	initial_depth: DataTypes.DECIMAL(10, 2), 
 	final_depth: DataTypes.DECIMAL(10, 2), 
-	average_depth: DataTypes.DECIMAL(10, 2), 
 	sidewalk_width: DataTypes.DECIMAL(10, 2), 
-	perimeter: DataTypes.DECIMAL(10, 2), 
-	pool_area: DataTypes.DECIMAL(10, 2),
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW

@@ -59,9 +59,4 @@ Session.hasOne(Logist, { foreignKey: 'session_id', as: 'logists' })
 Session.hasOne(Seller, { foreignKey: 'session_id', as: 'sellers' })
 Session.hasOne(Client, { foreignKey: 'session_id', as: 'clients' })
 
-User.belongsTo(Session, { foreignKey: 'session_id', as: 'sessions' })
-Logist.belongsTo(Session, { foreignKey: 'session_id', as: 'sessions' })
-Seller.belongsTo(Session, { foreignKey: 'session_id', as: 'sessions' })
-Client.belongsTo(Session, { foreignKey: 'session_id', as: 'sessions' })
-
 module.exports = Session

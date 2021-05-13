@@ -5,6 +5,7 @@ const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
 const CrudBasicsController = require('../defaults/crud-basics')
 const Filter = require('../../models/equipments/filter')
+const Equipment = require('../../models/equipments/equipment')
 
 module.exports = {
 	/**
@@ -12,12 +13,28 @@ module.exports = {
 	 * Seta as rotas do Controller
 	 */
 	setRoutes() {
+		Server.addRoute('/filters-by-dimension', this.filtersByDimension, this).post(true)
 		Server.addRoute('/filters/:id', this.get, this).get(true)
 		Server.addRoute('/filters/', this.list, this).get(true)
 		Server.addRoute('/filters', this.create, this).post(true)
 		Server.addRoute('/filters/:id/restore', this.restore, this).put(true)
 		Server.addRoute('/filters/:id', this.change, this).put(true)
 		Server.addRoute('/filters/:id', this.delete, this).delete(true)
+		Filter.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'sessions' })
+	},
+
+
+	async filtersByDimension(req, res, self) {
+		if (await Permissions.check(req.token, 'filters', 'select')) {
+			const md = await Filter.findAll({ where: { id: req.params.id } })
+			if (md && md.dataValues && md.dataValues.id) {
+				res.send({ status: 'FILTERS_GET_SUCCESS', data: md })
+			} else {
+				res.send({ status: 'FILTERS_NOT_FOUND', error: 'filters not found' })
+			}
+		} else {
+			res.send({ status: 'FILTERS_PERMISSION_ERROR', error: 'Action not allowed' })
+		}
 	},
 
 	/**

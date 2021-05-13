@@ -16,6 +16,8 @@ const Providers = require('../controllers/basics/providers')
 const StatusBudgets = require('../controllers/basics/status_budgets')
 const TypesBudgets = require('../controllers/basics/types_budgets')
 
+const Dimensions = require('../controllers/defaults/dimensions')
+
 const Filters = require('../controllers/equipments/filters')
 
 module.exports = {
@@ -39,6 +41,8 @@ module.exports = {
 		TypesBudgets.setRoutes()
 
 		Filters.setRoutes()
+
+		Dimensions.setRoutes()
 
 		Server.addRoute(
 			'/',

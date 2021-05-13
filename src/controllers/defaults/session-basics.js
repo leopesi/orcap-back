@@ -1,26 +1,27 @@
 /**
- * @module CrudBasicsController
+ * @module SessionBasicsController
  */
 const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
+const Sessions = require('../sessions/sessions')
 
 module.exports = {
 	/**
 	 * @function
-	 * Retorna um Registro
+	 * Retorna um Usuário
 	 * @param {Object} req
 	 * @param {Object} res
-	 * @param {Object} model
+	 * @param {Object} self
 	 */
 	async get(req, res, model) {
-		if (await Permissions.check(req.token, model, 'select')) {
-			if (req.params.id) {
-				const md = await model.findOne({ where: { id: req.params.id } })
-				if (md && md.dataValues && md.dataValues.id) {
-					res.send({ status: model.tableName.toUpperCase() + '_GET_SUCCESS', data: md })
-				} else {
-					res.send({ status: model.tableName.toUpperCase() + '_NOT_FOUND', error: model.tableName + ' not found' })
-				}
+		if (await Permissions.check(req.token, model.tableName, 'select')) {
+			const md = await model.findOne({
+				where: { id: req.params.id },
+				include: 'sessions',
+			})
+			delete md.password
+			if (md && md.id) {
+				res.send({ status: model.tableName.toUpperCase() + '_GET_SUCCESS', data: md })
 			} else {
 				res.send({ status: model.tableName.toUpperCase() + '_NOT_FOUND', error: model.tableName + ' not found' })
 			}
@@ -31,18 +32,18 @@ module.exports = {
 
 	/**
 	 * @function
-	 * Lista dos registros
+	 * Lista de Usuário
 	 * @param {Object} req
 	 * @param {Object} res
-	 * @param {Object} model
+	 * @param {Object} self
 	 */
 	async list(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'select')) {
-			const md = await model.findAll({ where: {} })
+			const md = await model.findAll({ where: {}, include: 'sessions' })
 			if (md && md.length > 0) {
 				res.send({ status: model.tableName.toUpperCase() + '_LIST_SUCCESS', data: md })
 			} else {
-				res.send({ status: model.tableName.toUpperCase() + '_QUERY_EMPTY', error: model.tableName + ' not found' })
+				res.send({ status: 'USERS_QUERY_EMPTY', error: model.tableName + ' not found' })
 			}
 		} else {
 			res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
@@ -51,29 +52,36 @@ module.exports = {
 
 	/**
 	 * @function
-	 * Cria um Registro
+	 * Cria um Usuário
 	 * @param {Object} req
 	 * @param {Object} res
-	 * @param {Object} model
+	 * @param {Object} self
 	 */
 	async create(req, res, model) {
+		delete req.body.id
 		if (await Permissions.check(req.token, model.tableName, 'insert')) {
-			delete req.body.id
-			model
-				.build(req.body)
-				.save()
-				.then(async (data) => {
-					Sessions.create(req, (result) => {
-						if (result.status == 'SESSION_INSERT_SUCCESS') {
+			req.body.password = await Server.getHash(req.body.password)
+			req.body.type = 'admin'
+			req.body.table = model.tableName
+			Sessions.create(req, (result) => {
+				if (result.status == 'SESSION_INSERT_SUCCESS') {
+					req.body.session_id = result.data.id
+					model
+						.build(req.body)
+						.save()
+						.then(async (data) => {
 							res.send({ status: model.tableName.toUpperCase() + '_INSERT_SUCCESS', data })
-						} else {
-							res.send({ status: model.tableName.toUpperCase() + '_INSERT_ERROR', error: result.error })
-						}
-					})
-				})
-				.catch((error) => {
-					res.send({ status: model.tableName.toUpperCase() + '_INSERT_ERROR', error: error.parent.detail })
-				})
+						})
+						.catch((error) => {
+							res.send({
+								status: model.tableName.toUpperCase() + '_INSERT_ERROR',
+								error: error.parent.detail,
+							})
+						})
+				} else {
+					res.send({ status: 'SESSION_INSERT_ERROR', error: result.error })
+				}
+			})
 		} else {
 			res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
 		}
@@ -81,17 +89,20 @@ module.exports = {
 
 	/**
 	 * @function
-	 * Altera um Registro
+	 * Altera um Usuário
 	 * @param {Object} req
 	 * @param {Object} res
-	 * @param {Object} model
+	 * @param {Object} self
 	 */
 	async change(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'update')) {
-			const md = await model.findOne({ where: { id: req.params.id } })
-			if (md) {
-				req.body.id = md.dataValues.id
-				md.update(req.body)
+			const result = await model.findOne({ where: { id: req.params.id } })
+			if (result) {
+				req.body.id = result.dataValues.id
+				delete req.body.mail
+				delete req.body.password
+				result
+					.update(req.body)
 					.then((data) => {
 						res.send({ status: model.tableName.toUpperCase() + '_UPDATE_SUCCESS', data })
 					})
@@ -114,17 +125,20 @@ module.exports = {
 
 	/**
 	 * @function
-	 * Deleta um Registro
+	 * Deleta um Usuário
 	 * @param {Object} req
 	 * @param {Object} res
-	 * @param {Object} model
+	 * @param {Object} self
 	 */
 	async delete(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'delete')) {
-			const md = await model.findOne({ where: { id: req.params.id } })
-			if (md) {
+			const result = await model.findOne({ where: { id: req.params.id } })
+			if (result) {
+				delete req.body.mail
+				delete req.body.password
 				req.body.active = false
-				md.update(req.body)
+				result
+					.update(req.body)
 					.then((data) => {
 						res.send({ status: model.tableName.toUpperCase() + '_DELETE_SUCCESS', data })
 					})
@@ -147,17 +161,20 @@ module.exports = {
 
 	/**
 	 * @function
-	 * Restaura um Registro
+	 * Deleta um Usuário
 	 * @param {Object} req
 	 * @param {Object} res
-	 * @param {Object} model
+	 * @param {Object} self
 	 */
 	async restore(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'restore')) {
-			const md = await model.findOne({ where: { id: req.params.id } })
-			if (md) {
+			const result = await model.findOne({ where: { id: req.params.id } })
+			if (result) {
+				delete req.body.mail
+				delete req.body.password
 				req.body.active = true
-				md.update(req.body)
+				result
+					.update(req.body)
 					.then((data) => {
 						res.send({ status: model.tableName.toUpperCase() + '_RESTORE_SUCCESS', data })
 					})

@@ -27,22 +27,11 @@ insert into permissions (name, type, "table") values ('admin', 'update', 'users'
 insert into permissions (name, type, "table") values ('admin', 'delete', 'users');
 insert into permissions (name, type, "table") values ('admin', 'restore', 'users');
 
-insert into permissions (name, type, "table") values ('manager', 'select', 'users');
-insert into permissions (name, type, "table") values ('manager', 'insert', 'users');
-insert into permissions (name, type, "table") values ('manager', 'update', 'users');
-
-insert into permissions (name, type, "table") values ('employee', 'select', 'users');
-insert into permissions (name, type, "table") values ('employee', 'insert', 'users');
-
 insert into permissions (name, type, "table") values ('admin', 'select', 'logists');
 insert into permissions (name, type, "table") values ('admin', 'insert', 'logists');
 insert into permissions (name, type, "table") values ('admin', 'update', 'logists');
 insert into permissions (name, type, "table") values ('admin', 'delete', 'logists');
 insert into permissions (name, type, "table") values ('admin', 'restore', 'logists');
-
-insert into permissions (name, type, "table") values ('logist', 'select', 'logists');
-insert into permissions (name, type, "table") values ('logist', 'insert', 'logists');
-insert into permissions (name, type, "table") values ('logist', 'update', 'logists');
 
 insert into permissions (name, type, "table") values ('admin', 'select', 'sellers');
 insert into permissions (name, type, "table") values ('admin', 'insert', 'sellers');
@@ -55,6 +44,32 @@ insert into permissions (name, type, "table") values ('admin', 'insert', 'client
 insert into permissions (name, type, "table") values ('admin', 'update', 'clients');
 insert into permissions (name, type, "table") values ('admin', 'delete', 'clients');
 insert into permissions (name, type, "table") values ('admin', 'restore', 'clients');
+
+
+insert into permissions (name, type, "table") values ('manager', 'select', 'users');
+insert into permissions (name, type, "table") values ('manager', 'insert', 'users');
+insert into permissions (name, type, "table") values ('manager', 'update', 'users');
+
+insert into permissions (name, type, "table") values ('employee', 'select', 'users');
+insert into permissions (name, type, "table") values ('employee', 'insert', 'users');
+
+insert into permissions (name, type, "table") values ('logist', 'select', 'logists');
+insert into permissions (name, type, "table") values ('logist', 'insert', 'logists');
+insert into permissions (name, type, "table") values ('logist', 'update', 'logists');
+
+insert into permissions (name, type, "table") values ('logist', 'select', 'sellers');
+insert into permissions (name, type, "table") values ('logist', 'insert', 'sellers');
+insert into permissions (name, type, "table") values ('logist', 'update', 'sellers');
+insert into permissions (name, type, "table") values ('logist', 'delete', 'sellers');
+insert into permissions (name, type, "table") values ('logist', 'restore', 'sellers');
+
+insert into permissions (name, type, "table") values ('logist', 'select', 'clients');
+insert into permissions (name, type, "table") values ('logist', 'insert', 'clients');
+insert into permissions (name, type, "table") values ('logist', 'update', 'clients');
+insert into permissions (name, type, "table") values ('logist', 'delete', 'clients');
+insert into permissions (name, type, "table") values ('logist', 'restore', 'clients');
+
+insert into permissions (name, type, "table") values ('logist', 'select', 'filters');
 
 insert into formats (id, image) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','Formato A');
 insert into formats (id, image) values ('584ead51-a3d8-49d7-b69e-32380bb31825','Formato B');
