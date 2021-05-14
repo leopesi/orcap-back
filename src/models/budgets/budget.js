@@ -70,11 +70,4 @@ const Budget = sequelize.define('budgets', {
 	}
 })
 
-Budget.belongsTo(Logist, { foreignKey: 'logist_id', as: 'logists' })
-Budget.belongsTo(Seller, { foreignKey: 'seller_id', as: 'sellers' })
-Budget.belongsTo(Client, { foreignKey: 'client_id', as: 'clients' })
-Budget.belongsTo(Format, { foreignKey: 'format_id', as: 'formats' })
-Budget.belongsTo(StatusBudget, { foreignKey: 'status_budget_id', as: 'status_budgets' })
-Budget.belongsTo(TypeBudget, { foreignKey: 'type_budget_id', as: 'types_budgets' })
-
 module.exports = Budget

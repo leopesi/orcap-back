@@ -25,6 +25,4 @@ const Blanket = sequelize.define('blankets', {
 	}
 })
 
-Blanket.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
-
 module.exports = Blanket

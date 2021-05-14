@@ -27,6 +27,4 @@ const Brand = sequelize.define('brands', {
 	},
 })
 
-Brand.belongsTo(Provider, { foreignKey: 'provider_id', as: 'providers' })
-
 module.exports = Brand

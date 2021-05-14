@@ -2,9 +2,9 @@
  * @module ModelsController
  */
 const Server = require('../../helpers/server')
-const Permissions = require('../sessions/permissions')
 const CrudBasicsController = require('../defaults/crud-basics')
 const Model = require('../../models/basics/model')
+const Brand = require('../../models/basics/brand')
 
 module.exports = {
 	/**
@@ -18,6 +18,7 @@ module.exports = {
 		Server.addRoute('/models/:id/restore', this.restore, this).put(true)
 		Server.addRoute('/models/:id', this.change, this).put(true)
 		Server.addRoute('/models/:id', this.delete, this).delete(true)
+		Model.belongsTo(Brand, { foreignKey: 'brand_id', as: 'brands' })
 	},
 
 	/**

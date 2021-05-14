@@ -27,6 +27,4 @@ const Payment = sequelize.define('payments', {
 	},
 })
 
-Payment.belongsTo(Logist, { foreignKey: 'logist_id', as: 'logists' })
-
 module.exports = Payment

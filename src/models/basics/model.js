@@ -28,6 +28,4 @@ const Model = sequelize.define('models', {
 	}
 })
 
-Model.belongsTo(Brand, { foreignKey: 'brand_id', as: 'brands' })
-
 module.exports = Model
