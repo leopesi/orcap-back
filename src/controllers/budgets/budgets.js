@@ -24,6 +24,14 @@ module.exports = {
 		Server.addRoute('/payments/:id', this.change, this).put(true)
 		Server.addRoute('/payments/:id', this.delete, this).delete(true)
 
+		this.setForeignKey()
+	},
+
+	/**
+	 * @function
+	 * Seta as as chaves dos models
+	 */
+	async setForeignKey() {
 		Budget.belongsTo(Logist, { foreignKey: 'logist_id', as: 'logists' })
 		Budget.belongsTo(Seller, { foreignKey: 'seller_id', as: 'sellers' })
 		Budget.belongsTo(Client, { foreignKey: 'client_id', as: 'clients' })

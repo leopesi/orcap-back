@@ -18,6 +18,14 @@ module.exports = {
 		Server.addRoute('/payments/:id/restore', this.restore, this).put(true)
 		Server.addRoute('/payments/:id', this.change, this).put(true)
 		Server.addRoute('/payments/:id', this.delete, this).delete(true)
+		this.setForeignKey()
+	},
+
+	/**
+	 * @function
+	 * Seta as as chaves dos models
+	 */
+	async setForeignKey() {
 		Payment.belongsTo(Logist, { foreignKey: 'logist_id', as: 'logists' })
 	},
 

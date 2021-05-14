@@ -53,16 +53,16 @@ module.exports = {
 		let data = {}
 		data.type = []
 		if (session.users) {
-			data.type.push(session.users.type_id)
+			data.type.push(session.users.user_type)
 		}
 		if (session.logists) {
-			data.type.push(session.logists.type_id)
+			data.type.push(session.logists.user_type)
 		}
 		if (session.sellers) {
-			data.type.push(session.sellers.type_id)
+			data.type.push(session.sellers.user_type)
 		}
 		if (session.clients) {
-			data.type.push(session.clients.type_id)
+			data.type.push(session.clients.user_type)
 		}
 		return data
 	},

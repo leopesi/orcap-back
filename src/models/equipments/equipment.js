@@ -47,8 +47,4 @@ const Equipment = sequelize.define('equipments', {
 	},
 })
 
-Equipment.belongsTo(Provider, { foreignKey: 'provider_id', as: 'providers' })
-Equipment.belongsTo(Brand, { foreignKey: 'brand_id', as: 'brands' })
-Equipment.belongsTo(Model, { foreignKey: 'model_id', as: 'models' })
-
 module.exports = Equipment

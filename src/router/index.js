@@ -19,6 +19,7 @@ const TypesBudgets = require('../controllers/basics/types_budgets')
 const Dimensions = require('../controllers/defaults/dimensions')
 
 const Filters = require('../controllers/equipments/filters')
+const Engines = require('../controllers/equipments/engines')
 
 module.exports = {
 	
@@ -41,6 +42,7 @@ module.exports = {
 		TypesBudgets.setRoutes()
 
 		Filters.setRoutes()
+		Engines.setRoutes()
 
 		Dimensions.setRoutes()
 

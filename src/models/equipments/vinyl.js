@@ -25,6 +25,4 @@ const Vinyl = sequelize.define('vinyls', {
 	}
 })
 
-Vinyl.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
-
 module.exports = Vinyl

@@ -1,12 +1,12 @@
 /**
- * @module FiltersController
+ * @module EnginesController
  */
 const sequelize = require('sequelize')
 const Op = sequelize.Op
 const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
 const CrudBasicsController = require('../defaults/crud-basics')
-const Filter = require('../../models/equipments/filter')
+const Engine = require('../../models/equipments/engine')
 const Equipment = require('../../models/equipments/equipment')
 
 module.exports = {
@@ -15,13 +15,13 @@ module.exports = {
 	 * Seta as rotas do Controller
 	 */
 	setRoutes() {
-		Server.addRoute('/filters-by-dimension', this.filtersByDimension, this).post(true)
-		Server.addRoute('/filters/:id', this.get, this).get(true)
-		Server.addRoute('/filters/', this.list, this).get(true)
-		Server.addRoute('/filters', this.create, this).post(true)
-		Server.addRoute('/filters/:id/restore', this.restore, this).put(true)
-		Server.addRoute('/filters/:id', this.change, this).put(true)
-		Server.addRoute('/filters/:id', this.delete, this).delete(true)
+		Server.addRoute('/engines-by-dimension', this.enginesByDimension, this).post(true)
+		Server.addRoute('/engines/:id', this.get, this).get(true)
+		Server.addRoute('/engines/', this.list, this).get(true)
+		Server.addRoute('/engines', this.create, this).post(true)
+		Server.addRoute('/engines/:id/restore', this.restore, this).put(true)
+		Server.addRoute('/engines/:id', this.change, this).put(true)
+		Server.addRoute('/engines/:id', this.delete, this).delete(true)
 		this.setForeignKey()
 	},
 
@@ -30,22 +30,22 @@ module.exports = {
 	 * Seta as as chaves dos models
 	 */
 	async setForeignKey() {
-		Filter.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
+		Engine.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
 	},
 
-	async filtersByDimension(req, res, self) {
-		if (await Permissions.check(req.token, 'filters', 'select')) {
-			const md = await Filter.findAll({
+	async enginesByDimension(req, res, self) {
+		if (await Permissions.check(req.token, 'engines', 'select')) {
+			const md = await Engine.findAll({
 				where: { max_capacity: { [Op.lte]: 100 } },
 				include: 'equipments'
 			})
 			if (md && md[0]) {
-				res.send({ status: 'FILTERS_GET_SUCCESS', data: md })
+				res.send({ status: 'ENGINES_GET_SUCCESS', data: md })
 			} else {
-				res.send({ status: 'FILTERS_NOT_FOUND', error: 'filters not found' })
+				res.send({ status: 'ENGINES_NOT_FOUND', error: 'engines not found' })
 			}
 		} else {
-			res.send({ status: 'FILTERS_PERMISSION_ERROR', error: 'Action not allowed' })
+			res.send({ status: 'ENGINES_PERMISSION_ERROR', error: 'Action not allowed' })
 		}
 	},
 
@@ -57,7 +57,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		await CrudBasicsController.get(req, res, Filter)
+		await CrudBasicsController.get(req, res, Engine)
 	},
 
 	/**
@@ -68,7 +68,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		await CrudBasicsController.list(req, res, Filter)
+		await CrudBasicsController.list(req, res, Engine)
 	},
 
 	/**
@@ -79,7 +79,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		await CrudBasicsController.create(req, res, Filter)
+		await CrudBasicsController.create(req, res, Engine)
 	},
 
 	/**
@@ -90,7 +90,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		await CrudBasicsController.change(req, res, Filter)
+		await CrudBasicsController.change(req, res, Engine)
 	},
 
 	/**
@@ -101,7 +101,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async delete(req, res, self) {
-		await CrudBasicsController.delete(req, res, Filter)
+		await CrudBasicsController.delete(req, res, Engine)
 	},
 
 	/**
@@ -112,11 +112,11 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async restore(req, res, self) {
-		await CrudBasicsController.restore(req, res, Filter)
+		await CrudBasicsController.restore(req, res, Engine)
 	},
 
-	getFiltersByDimension(dimension) {
-		const filters = Filter.findAll()
+	getEnginesByDimension(dimension) {
+		const engines = Engine.findAll()
 
 		// for filtro in filtros:
 		//     if dimensao.m3real() < filtro['capacidade maxima']:

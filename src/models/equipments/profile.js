@@ -25,6 +25,4 @@ const Profile = sequelize.define('profiles', {
 	}
 })
 
-Profile.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
-
 module.exports = Profile

@@ -18,6 +18,14 @@ module.exports = {
 		Server.addRoute('/brands/:id/restore', this.restore, this).put(true)
 		Server.addRoute('/brands/:id', this.change, this).put(true)
 		Server.addRoute('/brands/:id', this.delete, this).delete(true)
+		this.setForeignKey()
+	},
+
+	/**
+	 * @function
+	 * Seta as as chaves dos models
+	 */
+	async setForeignKey() {
 		Brand.belongsTo(Provider, { foreignKey: 'provider_id', as: 'providers' })
 	},
 

@@ -18,6 +18,14 @@ module.exports = {
 		Server.addRoute('/users/:id/restore', this.restore, this).put(true)
 		Server.addRoute('/users/:id', this.change, this).put(true)
 		Server.addRoute('/users/:id', this.delete, this).delete(true)
+		this.setForeignKey()
+	},
+
+	/**
+	 * @function
+	 * Seta as as chaves dos models
+	 */
+	async setForeignKey() {
 		User.belongsTo(Session, { foreignKey: 'session_id', as: 'sessions' })
 	},
 

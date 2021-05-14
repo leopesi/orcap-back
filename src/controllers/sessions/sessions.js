@@ -91,13 +91,13 @@ module.exports = {
 							}
 						)
 						if (session.users) {
-							res.send({ token, type: session.users.type_id })
+							res.send({ token, type: session.users.user_type })
 						} else if (session.logists) {
-							res.send({ token, type: session.logists.type_id })
+							res.send({ token, type: session.logists.user_type })
 						} else if (session.sellers) {
-							res.send({ token, type: session.sellers.type_id })
+							res.send({ token, type: session.sellers.user_type })
 						} else if (session.clients) {
-							res.send({ token, type: session.clients.type_id })
+							res.send({ token, type: session.clients.user_type })
 						} else {
 							res.send({
 								status: (session.type ? session.type.toUpperCase() : '_') + 'SESSION_NOT_FOUND',
