@@ -3,6 +3,7 @@
  */
 const Server = require('../../helpers/server')
 const Permissions = require('./permissions')
+const Sessions = require('./sessions')
 const Logist = require('../../models/sessions/logist')
 
 module.exports = {
