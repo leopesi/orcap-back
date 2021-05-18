@@ -6,6 +6,8 @@ const Op = sequelize.Op
 const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
 const CrudBasicsController = require('../defaults/crud-basics')
+const Dimensions = require('../defaults/dimensions')
+
 const Engine = require('../../models/equipments/engine')
 const Equipment = require('../../models/equipments/equipment')
 
@@ -35,8 +37,10 @@ module.exports = {
 
 	async enginesByDimension(req, res, self) {
 		if (await Permissions.check(req.token, 'engines', 'select')) {
+			const dimension = Dimensions.creatDimension(req.body.length, req.body.width, req.body.initial_depth, req.body.final_depth, req.body.sidewalk_width)
+			const max_capacity = Dimensions.getM3Real(dimension)
 			const md = await Engine.findAll({
-				where: { max_capacity: { [Op.lte]: 100 } },
+				where: { max_capacity: { [Op.gte]: !isNaN(max_capacity) ? max_capacity : 0 } },
 				include: 'equipments'
 			})
 			if (md && md[0]) {

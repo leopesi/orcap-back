@@ -6,6 +6,8 @@ const Op = sequelize.Op
 const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
 const CrudBasicsController = require('../defaults/crud-basics')
+const Dimensions = require('../defaults/dimensions')
+
 const Filter = require('../../models/equipments/filter')
 const Equipment = require('../../models/equipments/equipment')
 
@@ -35,9 +37,17 @@ module.exports = {
 
 	async filtersByDimension(req, res, self) {
 		if (await Permissions.check(req.token, 'filters', 'select')) {
+			const dimension = Dimensions.creatDimension(
+				req.body.length,
+				req.body.width,
+				req.body.initial_depth,
+				req.body.final_depth,
+				req.body.sidewalk_width
+			)
+			const max_capacity = Dimensions.getM3Real(dimension)
 			const md = await Filter.findAll({
-				where: { max_capacity: { [Op.lte]: 100 } },
-				include: 'equipments'
+				where: { max_capacity: { [Op.gte]: !isNaN(max_capacity) ? max_capacity : 0 } },
+				include: 'equipments',
 			})
 			if (md && md[0]) {
 				res.send({ status: 'FILTERS_GET_SUCCESS', data: md })

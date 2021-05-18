@@ -8,6 +8,7 @@ insert into sessions (id, "table", mail, password) values ('98121754-4a25-4b02-a
 insert into sessions (id, "table", mail, password) values ('3d7615ae-d514-48a0-b269-6e563984c6ba', 'logists', 'contato@logista.com.br', '$2a$08$Bu55m3xl4UUyV7j8cFX1n.GCC/HiqkBzDmTbLxFzjN52A2f/KzWfC');
 insert into sessions (id, "table", mail, password) values ('584ead51-a3d8-49d7-b69e-32380bb31825', 'sellers', 'vendedor@logista.com.br', '$2a$08$Bu55m3xl4UUyV7j8cFX1n.GCC/HiqkBzDmTbLxFzjN52A2f/KzWfC');
 insert into sessions (id, "table", mail, password) values ('2a1a5117-b923-436f-9b46-8a0869013796', 'clients', 'contato@cliente.com.br', '$2a$08$Bu55m3xl4UUyV7j8cFX1n.GCC/HiqkBzDmTbLxFzjN52A2f/KzWfC');
+insert into sessions (id, "table", mail, password) values ('bd5eb3d9-e4b8-4b65-a365-adf0ceb12473', 'clients', 'contato@cliente-novo.com.br', '$2a$08$Bu55m3xl4UUyV7j8cFX1n.GCC/HiqkBzDmTbLxFzjN52A2f/KzWfC');
 
 insert into permissions (name, type, "table") values ('admin', 'select', 'sessions');
 insert into permissions (name, type, "table") values ('admin', 'insert', 'sessions');
@@ -87,6 +88,8 @@ insert into permissions (name, type, "table") values ('logist', 'restore', 'sell
 -- ==========================================================================================
 
 insert into clients (id, session_id, user_type, name, phone, active) values ('2a1a5117-b923-436f-9b46-8a0869013796', '2a1a5117-b923-436f-9b46-8a0869013796', 'client', 'Cliente', '', false);
+insert into clients (id, session_id, user_type, name, phone, active) values ('bd5eb3d9-e4b8-4b65-a365-adf0ceb12473', 'bd5eb3d9-e4b8-4b65-a365-adf0ceb12473', 'client', 'José dos Santos de Deus', '9898-9898', true);
+
 
 insert into permissions (name, type, "table") values ('admin', 'select', 'clients');
 insert into permissions (name, type, "table") values ('admin', 'insert', 'clients');
