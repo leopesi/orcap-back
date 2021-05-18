@@ -5,6 +5,7 @@ const Server = require('../../helpers/server')
 const Permissions = require('./permissions')
 const Sessions = require('./sessions')
 const Logist = require('../../models/sessions/logist')
+const Session = require('../../models/sessions/session')
 
 module.exports = {
 	/**
@@ -18,6 +19,7 @@ module.exports = {
 		Server.addRoute('/logists/:id/restore', this.restore, this).put(true)
 		Server.addRoute('/logists/:id', this.change, this).put(true)
 		Server.addRoute('/logists/:id', this.delete, this).delete(true)
+		Logist.belongsTo(Session, { foreignKey: 'session_id', as: 'sessions' })
 	},
 
 	/**
