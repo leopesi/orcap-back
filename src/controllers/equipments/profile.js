@@ -1,5 +1,5 @@
 /**
- * @module EnginesController
+ * @module ProfilesController
  */
 const sequelize = require('sequelize')
 const Op = sequelize.Op
@@ -8,7 +8,7 @@ const Permissions = require('../sessions/permissions')
 const CrudBasicsController = require('../defaults/crud-basics')
 const Dimensions = require('../defaults/dimensions')
 
-const Engine = require('../../models/equipments/engine')
+const Profile = require('../../models/equipments/profile')
 const Equipment = require('../../models/equipments/equipment')
 
 module.exports = {
@@ -17,13 +17,13 @@ module.exports = {
 	 * Seta as rotas do Controller
 	 */
 	setRoutes() {
-		Server.addRoute('/engines-by-dimension', this.enginesByDimension, this).post(true)
-		Server.addRoute('/engines/:id', this.get, this).get(true)
-		Server.addRoute('/engines/', this.list, this).get(true)
-		Server.addRoute('/engines', this.create, this).post(true)
-		Server.addRoute('/engines/:id/restore', this.restore, this).put(true)
-		Server.addRoute('/engines/:id', this.change, this).put(true)
-		Server.addRoute('/engines/:id', this.delete, this).delete(true)
+		Server.addRoute('/profiles-by-dimension', this.profilesByDimension, this).post(true)
+		Server.addRoute('/profiles/:id', this.get, this).get(true)
+		Server.addRoute('/profiles/', this.list, this).get(true)
+		Server.addRoute('/profiles', this.create, this).post(true)
+		Server.addRoute('/profiles/:id/restore', this.restore, this).put(true)
+		Server.addRoute('/profiles/:id', this.change, this).put(true)
+		Server.addRoute('/profiles/:id', this.delete, this).delete(true)
 		this.setForeignKey()
 	},
 
@@ -32,24 +32,30 @@ module.exports = {
 	 * Seta as as chaves dos models
 	 */
 	async setForeignKey() {
-		Engine.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
+		Profile.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
 	},
 
-	async enginesByDimension(req, res, self) {
-		if (await Permissions.check(req.token, 'engines', 'select')) {
-			const dimension = Dimensions.creatDimension(req.body.length, req.body.width, req.body.initial_depth, req.body.final_depth, req.body.sidewalk_width)
+	async profilesByDimension(req, res, self) {
+		if (await Permissions.check(req.token, 'profiles', 'select')) {
+			const dimension = Dimensions.creatDimension(
+				req.body.length,
+				req.body.width,
+				req.body.initial_depth,
+				req.body.final_depth,
+				req.body.sidewalk_width
+			)
 			const max_capacity = Dimensions.getM3Real(dimension)
-			const md = await Engine.findAll({
+			const md = await Profile.findAll({
 				where: { max_capacity: { [Op.gte]: !isNaN(max_capacity) ? max_capacity : 0 } },
-				include: 'equipments'
+				include: 'equipments',
 			})
 			if (md && md[0]) {
-				res.send({ status: 'ENGINES_GET_SUCCESS', data: md })
+				res.send({ status: 'PROFILES_GET_SUCCESS', data: md })
 			} else {
-				res.send({ status: 'ENGINES_NOT_FOUND', error: 'engines not found' })
+				res.send({ status: 'PROFILES_NOT_FOUND', error: 'profiles not found' })
 			}
 		} else {
-			res.send({ status: 'ENGINES_PERMISSION_ERROR', error: 'Action not allowed' })
+			res.send({ status: 'PROFILES_PERMISSION_ERROR', error: 'Action not allowed' })
 		}
 	},
 
@@ -61,7 +67,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		await CrudBasicsController.get(req, res, Engine)
+		await CrudBasicsController.get(req, res, Profile)
 	},
 
 	/**
@@ -72,7 +78,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		await CrudBasicsController.list(req, res, Engine)
+		await CrudBasicsController.list(req, res, Profile)
 	},
 
 	/**
@@ -83,7 +89,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		await CrudBasicsController.create(req, res, Engine)
+		await CrudBasicsController.create(req, res, Profile)
 	},
 
 	/**
@@ -94,7 +100,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		await CrudBasicsController.change(req, res, Engine)
+		await CrudBasicsController.change(req, res, Profile)
 	},
 
 	/**
@@ -105,7 +111,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async delete(req, res, self) {
-		await CrudBasicsController.delete(req, res, Engine)
+		await CrudBasicsController.delete(req, res, Profile)
 	},
 
 	/**
@@ -116,6 +122,6 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async restore(req, res, self) {
-		await CrudBasicsController.restore(req, res, Engine)
+		await CrudBasicsController.restore(req, res, Profile)
 	},
 }
