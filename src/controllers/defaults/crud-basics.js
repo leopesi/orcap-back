@@ -13,7 +13,7 @@ module.exports = {
 	 * @param {Object} model
 	 */
 	async get(req, res, model) {
-		if (await Permissions.check(req.token, model, 'select')) {
+		if (await Permissions.check(req.token, model.tableName, 'select')) {
 			if (req.params.id) {
 				const md = await model.findOne({ where: { id: req.params.id } })
 				if (md && md.dataValues && md.dataValues.id) {
@@ -63,16 +63,10 @@ module.exports = {
 				.build(req.body)
 				.save()
 				.then(async (data) => {
-					Sessions.create(req, (result) => {
-						if (result.status == 'SESSION_INSERT_SUCCESS') {
-							res.send({ status: model.tableName.toUpperCase() + '_INSERT_SUCCESS', data })
-						} else {
-							res.send({ status: model.tableName.toUpperCase() + '_INSERT_ERROR', error: result.error })
-						}
-					})
+					res.send({ status: model.tableName.toUpperCase() + '_INSERT_SUCCESS', data })
 				})
 				.catch((error) => {
-					res.send({ status: model.tableName.toUpperCase() + '_INSERT_ERROR', error: error.parent.detail })
+					res.send({ status: model.tableName.toUpperCase() + '_INSERT_ERROR', error: error.parent?error.parent.detail:error })
 				})
 		} else {
 			res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })

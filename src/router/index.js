@@ -13,8 +13,10 @@ const Formats = require('../controllers/basics/formats')
 const Models = require('../controllers/basics/models')
 const Payments = require('../controllers/basics/payments')
 const Providers = require('../controllers/basics/providers')
+
 const StatusBudgets = require('../controllers/basics/status_budgets')
 const TypesBudgets = require('../controllers/basics/types_budgets')
+const Budgets = require('../controllers/budgets/budgets')
 
 const Dimensions = require('../controllers/defaults/dimensions')
 
@@ -43,8 +45,10 @@ module.exports = {
 		Models.setRoutes()
 		Payments.setRoutes()
 		Providers.setRoutes()
+
 		StatusBudgets.setRoutes()
 		TypesBudgets.setRoutes()
+		Budgets.setRoutes()
 
 		Equipments.setRoutes()
 		Filters.setRoutes()

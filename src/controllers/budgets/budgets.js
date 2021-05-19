@@ -17,12 +17,12 @@ module.exports = {
 	 * Seta as rotas do Controller
 	 */
 	setRoutes() {
-		Server.addRoute('/payments/:id', this.get, this).get(true)
-		Server.addRoute('/payments/', this.list, this).get(true)
-		Server.addRoute('/payments', this.create, this).post(true)
-		Server.addRoute('/payments/:id/restore', this.restore, this).put(true)
-		Server.addRoute('/payments/:id', this.change, this).put(true)
-		Server.addRoute('/payments/:id', this.delete, this).delete(true)
+		Server.addRoute('/budgets/:id', this.get, this).get(true)
+		Server.addRoute('/budgets/', this.list, this).get(true)
+		Server.addRoute('/budgets', this.create, this).post(true)
+		Server.addRoute('/budgets/:id/restore', this.restore, this).put(true)
+		Server.addRoute('/budgets/:id', this.change, this).put(true)
+		Server.addRoute('/budgets/:id', this.delete, this).delete(true)
 
 		this.setForeignKey()
 	},

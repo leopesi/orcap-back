@@ -180,6 +180,18 @@ insert into permissions (name, type, "table") values ('admin', 'restore', 'payme
 
 -- ==========================================================================================
 --
+--                     BUDGETS
+--
+-- ==========================================================================================
+
+insert into permissions (name, type, "table") values ('admin', 'select', 'budgets');
+insert into permissions (name, type, "table") values ('admin', 'insert', 'budgets');
+insert into permissions (name, type, "table") values ('admin', 'update', 'budgets');
+insert into permissions (name, type, "table") values ('admin', 'delete', 'budgets');
+insert into permissions (name, type, "table") values ('admin', 'restore', 'budgets');
+
+-- ==========================================================================================
+--
 --                     STATUS_BUDGETS
 --
 -- ==========================================================================================
