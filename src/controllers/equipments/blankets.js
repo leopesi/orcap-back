@@ -7,6 +7,7 @@ const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
 const CrudBasicsController = require('../defaults/crud-basics')
 const Dimensions = require('../defaults/dimensions')
+const Equipments = require('./equipments')
 
 const Blanket = require('../../models/equipments/blanket')
 const Equipment = require('../../models/equipments/equipment')
@@ -35,22 +36,22 @@ module.exports = {
 		Blanket.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
 	},
 
+	/**
+	 * @function
+	 * Busca mantas com precos atualizados de acordo com a dimensao
+	 * @param {Object} req
+	 * @param {Object} res
+	 * @param {Object} self
+	 */
 	async blanketsByDimension(req, res, self) {
 		if (await Permissions.check(req.token, 'blankets', 'select')) {
-			const dimension = Dimensions.creatDimension(
-				req.body.length,
-				req.body.width,
-				req.body.initial_depth,
-				req.body.final_depth,
-				req.body.sidewalk_width
-			)
-			const max_capacity = Dimensions.getM3Real(dimension)
-			const md = await Blanket.findAll({
-				where: { max_capacity: { [Op.gte]: !isNaN(max_capacity) ? max_capacity : 0 } },
+			const blankets = await Blanket.findAll({
+				where: { },
 				include: 'equipments',
 			})
-			if (md && md[0]) {
-				res.send({ status: 'BLANKETS_GET_SUCCESS', data: md })
+			if (blankets && blankets[0]) {
+				await Equipments.updateRelations(blankets)
+				res.send({ status: 'BLANKETS_GET_SUCCESS', data: blankets })
 			} else {
 				res.send({ status: 'BLANKETS_NOT_FOUND', error: 'blankets not found' })
 			}

@@ -18,8 +18,13 @@ const TypesBudgets = require('../controllers/basics/types_budgets')
 
 const Dimensions = require('../controllers/defaults/dimensions')
 
+const Equipments = require('../controllers/equipments/equipments')
 const Filters = require('../controllers/equipments/filters')
 const Engines = require('../controllers/equipments/engines')
+const Blankets = require('../controllers/equipments/blankets')
+const Lids = require('../controllers/equipments/lid')
+const Profiles = require('../controllers/equipments/profile')
+const Vinyls = require('../controllers/equipments/vinyl')
 
 module.exports = {
 	
@@ -41,8 +46,13 @@ module.exports = {
 		StatusBudgets.setRoutes()
 		TypesBudgets.setRoutes()
 
+		Equipments.setRoutes()
 		Filters.setRoutes()
 		Engines.setRoutes()
+		Blankets.setRoutes()
+		Lids.setRoutes()
+		Profiles.setRoutes()
+		Vinyls.setRoutes()
 
 		Dimensions.setRoutes()
 

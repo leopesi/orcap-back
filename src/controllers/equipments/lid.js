@@ -7,6 +7,7 @@ const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
 const CrudBasicsController = require('../defaults/crud-basics')
 const Dimensions = require('../defaults/dimensions')
+const Equipments = require('./equipments')
 
 const Lid = require('../../models/equipments/lid')
 const Equipment = require('../../models/equipments/equipment')
@@ -17,7 +18,7 @@ module.exports = {
 	 * Seta as rotas do Controller
 	 */
 	setRoutes() {
-		Server.addRoute('/lids-by-dimension', this.lidsByDimension, this).post(true)
+		Server.addRoute('/lids-by-filters', this.lidsByFilters, this).post(true)
 		Server.addRoute('/lids/:id', this.get, this).get(true)
 		Server.addRoute('/lids/', this.list, this).get(true)
 		Server.addRoute('/lids', this.create, this).post(true)
@@ -35,7 +36,7 @@ module.exports = {
 		Lid.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
 	},
 
-	async lidsByDimension(req, res, self) {
+	async lidsByFilters(req, res, self) {
 		if (await Permissions.check(req.token, 'lids', 'select')) {
 			const dimension = Dimensions.creatDimension(
 				req.body.length,
@@ -45,12 +46,13 @@ module.exports = {
 				req.body.sidewalk_width
 			)
 			const max_capacity = Dimensions.getM3Real(dimension)
-			const md = await Lid.findAll({
+			const lids = await Lid.findAll({
 				where: { max_capacity: { [Op.gte]: !isNaN(max_capacity) ? max_capacity : 0 } },
 				include: 'equipments',
 			})
-			if (md && md[0]) {
-				res.send({ status: 'LIDS_GET_SUCCESS', data: md })
+			if (lids && lids[0]) {
+				await Equipments.updateRelations(lids)
+				res.send({ status: 'LIDS_GET_SUCCESS', data: lids })
 			} else {
 				res.send({ status: 'LIDS_NOT_FOUND', error: 'lids not found' })
 			}

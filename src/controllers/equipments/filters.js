@@ -7,9 +7,11 @@ const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
 const CrudBasicsController = require('../defaults/crud-basics')
 const Dimensions = require('../defaults/dimensions')
+const Equipments = require('./equipments')
 
 const Filter = require('../../models/equipments/filter')
 const Equipment = require('../../models/equipments/equipment')
+const Brand = require('../../models/basics/brand')
 
 module.exports = {
 	/**
@@ -35,6 +37,13 @@ module.exports = {
 		Filter.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
 	},
 
+	/**
+	 * @function
+	 * Busca os filtros pela dimensao da piscina
+	 * @param {Object} req
+	 * @param {Object} res
+	 * @param {Object} self
+	 */
 	async filtersByDimension(req, res, self) {
 		if (await Permissions.check(req.token, 'filters', 'select')) {
 			const dimension = Dimensions.creatDimension(
@@ -45,12 +54,13 @@ module.exports = {
 				req.body.sidewalk_width
 			)
 			const max_capacity = Dimensions.getM3Real(dimension)
-			const md = await Filter.findAll({
+			const filters = await Filter.findAll({
 				where: { max_capacity: { [Op.gte]: !isNaN(max_capacity) ? max_capacity : 0 } },
 				include: 'equipments',
 			})
-			if (md && md[0]) {
-				res.send({ status: 'FILTERS_GET_SUCCESS', data: md })
+			if (filters && filters[0]) {
+				await Equipments.updateRelations(filters)
+				res.send({ status: 'FILTERS_GET_SUCCESS', data: filters })
 			} else {
 				res.send({ status: 'FILTERS_NOT_FOUND', error: 'filters not found' })
 			}

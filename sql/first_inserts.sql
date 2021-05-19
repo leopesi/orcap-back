@@ -269,3 +269,29 @@ insert into permissions (name, type, "table") values ('admin', 'update', 'engine
 insert into permissions (name, type, "table") values ('admin', 'delete', 'engines');
 insert into permissions (name, type, "table") values ('admin', 'restore', 'engines');
 insert into permissions (name, type, "table") values ('logist', 'select', 'engines');
+
+
+-- ==========================================================================================
+--
+--                     BLANKETS
+--
+-- ==========================================================================================
+
+insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('81aaba6b-4161-4ab2-9a22-e781fb6cfe68','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Manta Revestimento 00001', 'Manta Revestimento 1 m2', 400, 440);
+insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('07987938-b4b5-4a62-a2dc-ee5ffea2e056','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Manta Revestimento 00004', 'Manta Revestimento 1 m2', 500, 540);
+insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('b2826395-f5b9-4cb3-9b25-fc62ec41a4fa','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Manta Revestimento 00005', 'Manta Revestimento 1.5 m2', 600, 640);
+insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('a2a476a4-82cf-4ed0-802b-f25d0f6c36df','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Manta Revestimento 00006', 'Manta Revestimento 1.75 m2', 800, 840);
+insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('ee73e83a-059a-463c-aaeb-790beac43262','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Manta Revestimento 00007', 'Manta Revestimento 2 m2', 100, 140);
+
+insert into blankets (id, equipment_id, m2_size) values ('584ead51-a3d8-49d7-b69e-32380bb31825','81aaba6b-4161-4ab2-9a22-e781fb6cfe68', 1);
+insert into blankets (id, equipment_id, m2_size) values ('f8116283-a8e6-46cc-bfbf-35b149a7d58d','07987938-b4b5-4a62-a2dc-ee5ffea2e056', 1);
+insert into blankets (id, equipment_id, m2_size) values ('094353ac-9373-417d-956e-f477ead9b844','b2826395-f5b9-4cb3-9b25-fc62ec41a4fa', 1.5);
+insert into blankets (id, equipment_id, m2_size) values ('ca65ad80-7a0f-40c6-a093-fe6dda2c392e','a2a476a4-82cf-4ed0-802b-f25d0f6c36df', 1.75);
+insert into blankets (id, equipment_id, m2_size) values ('a92032fc-e83c-4771-af15-f2438ff11dfd','ee73e83a-059a-463c-aaeb-790beac43262', 2);
+
+insert into permissions (name, type, "table") values ('admin', 'select', 'blankets');
+insert into permissions (name, type, "table") values ('admin', 'insert', 'blankets');
+insert into permissions (name, type, "table") values ('admin', 'update', 'blankets');
+insert into permissions (name, type, "table") values ('admin', 'delete', 'blankets');
+insert into permissions (name, type, "table") values ('admin', 'restore', 'blankets');
+insert into permissions (name, type, "table") values ('logist', 'select', 'blankets');

@@ -15,6 +15,9 @@ const Blanket = sequelize.define('blankets', {
 			key: 'id',
 		},
 	},
+	m2_size: {
+		type: DataTypes.DECIMAL,
+	},
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW
