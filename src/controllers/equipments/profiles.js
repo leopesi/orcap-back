@@ -38,16 +38,9 @@ module.exports = {
 
 	async profilesByDimension(req, res, self) {
 		if (await Permissions.check(req.token, 'profiles', 'select')) {
-			const dimension = Dimensions.creatDimension(
-				req.body.length,
-				req.body.width,
-				req.body.initial_depth,
-				req.body.final_depth,
-				req.body.sidewalk_width
-			)
-			const max_capacity = Dimensions.getM3Real(dimension)
+			const max_depth = (req.body.initial_depth > req.body.final_depth) ? req.body.initial_depth : req.body.final_depth
 			const profiles = await Profile.findAll({
-				where: { max_capacity: { [Op.gte]: !isNaN(max_capacity) ? max_capacity : 0 } },
+				where: { size: { [Op.gte]: !isNaN(max_depth) ? max_depth : 0 } },
 				include: 'equipments',
 			})
 			if (profiles && profiles[0]) {

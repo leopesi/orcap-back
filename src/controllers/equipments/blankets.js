@@ -11,6 +11,7 @@ const Equipments = require('./equipments')
 
 const Blanket = require('../../models/equipments/blanket')
 const Equipment = require('../../models/equipments/equipment')
+const { getM2Facial } = require('../defaults/dimensions')
 
 module.exports = {
 	/**
@@ -46,7 +47,7 @@ module.exports = {
 	async blanketsByDimension(req, res, self) {
 		if (await Permissions.check(req.token, 'blankets', 'select')) {
 			const blankets = await Blanket.findAll({
-				where: { },
+				where: {},
 				include: 'equipments',
 			})
 			if (blankets && blankets[0]) {

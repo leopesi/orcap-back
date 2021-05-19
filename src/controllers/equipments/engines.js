@@ -38,11 +38,17 @@ module.exports = {
 
 	async enginesByDimension(req, res, self) {
 		if (await Permissions.check(req.token, 'engines', 'select')) {
-			const dimension = Dimensions.creatDimension(req.body.length, req.body.width, req.body.initial_depth, req.body.final_depth, req.body.sidewalk_width)
+			const dimension = Dimensions.creatDimension(
+				req.body.length,
+				req.body.width,
+				req.body.initial_depth,
+				req.body.final_depth,
+				req.body.sidewalk_width
+			)
 			const max_capacity = Dimensions.getM3Real(dimension)
 			const engines = await Engine.findAll({
 				where: { max_capacity: { [Op.gte]: !isNaN(max_capacity) ? max_capacity : 0 } },
-				include: 'equipments'
+				include: 'equipments',
 			})
 			if (engines && engines[0]) {
 				await Equipments.updateRelations(engines)

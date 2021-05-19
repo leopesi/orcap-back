@@ -22,9 +22,9 @@ const Equipments = require('../controllers/equipments/equipments')
 const Filters = require('../controllers/equipments/filters')
 const Engines = require('../controllers/equipments/engines')
 const Blankets = require('../controllers/equipments/blankets')
-const Lids = require('../controllers/equipments/lid')
-const Profiles = require('../controllers/equipments/profile')
-const Vinyls = require('../controllers/equipments/vinyl')
+const Lids = require('../controllers/equipments/lids')
+const Profiles = require('../controllers/equipments/profiles')
+const Vinyls = require('../controllers/equipments/vinyls')
 
 module.exports = {
 	
