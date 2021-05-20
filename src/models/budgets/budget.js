@@ -55,6 +55,14 @@ const Budget = sequelize.define('budgets', {
 			key: 'id',
 		},
 	},
+	
+	payment_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'payments',
+			key: 'id',
+		},
+	},
 	length: DataTypes.DECIMAL(10, 2), 
 	width: DataTypes.DECIMAL(10, 2), 
 	initial_depth: DataTypes.DECIMAL(10, 2), 

@@ -2,6 +2,7 @@
  * @module BudgetsController
  */
 const Server = require('../../helpers/server')
+const Permissions = require('../sessions/permissions')
 const CrudBasicsController = require('../defaults/crud-basics')
 const Budget = require('../../models/budgets/budget')
 const Logist = require('../../models/sessions/logist')
@@ -10,6 +11,7 @@ const Client = require('../../models/sessions/Client')
 const Format = require('../../models/basics/format')
 const StatusBudget = require('../../models/basics/status_budget')
 const TypeBudget = require('../../models/basics/type_budget')
+const Payment = require('../../models/basics/payment')
 
 module.exports = {
 	/**
@@ -38,6 +40,7 @@ module.exports = {
 		Budget.belongsTo(Format, { foreignKey: 'format_id', as: 'formats' })
 		Budget.belongsTo(StatusBudget, { foreignKey: 'status_budget_id', as: 'status_budgets' })
 		Budget.belongsTo(TypeBudget, { foreignKey: 'type_budget_id', as: 'types_budgets' })
+		Budget.belongsTo(Payment, { foreignKey: 'payment_id', as: 'payments' })
 	},
 
 	/**
@@ -59,7 +62,8 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		await CrudBasicsController.list(req, res, Budget)
+		const include = ['clients', 'sellers', 'payments', 'status_budgets', 'types_budgets']
+		await CrudBasicsController.list(req, res, Budget, include)
 	},
 
 	/**
@@ -81,7 +85,30 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		await CrudBasicsController.change(req, res, Budget)
+		if (await Permissions.check(req.token, 'budgets', 'update')) {
+			const budgets = await Budget.findOne({ where: { id: req.params.id } })
+			if (budgets) {
+				req.body.id = budgets.dataValues.id
+				console.log(req.body.equipments)
+				budgets.update(req.body)
+					.then((data) => {
+						res.send({ status: 'BUDGETS_UPDATE_SUCCESS', data })
+					})
+					.catch((error) => {
+						res.send({
+							status: 'BUDGETS_UPDATE_ERROR',
+							error: error.parent.detail,
+						})
+					})
+			} else {
+				res.send({
+					status: 'BUDGETS_NOT_FOUND',
+					error: req.params,
+				})
+			}
+		} else {
+			res.send({ status: 'BUDGETS_PERMISSION_ERROR', error: 'Action not allowed' })
+		}
 	},
 
 	/**

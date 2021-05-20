@@ -12,10 +12,10 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} model
 	 */
-	async get(req, res, model) {
+	async get(req, res, model, include) {
 		if (await Permissions.check(req.token, model.tableName, 'select')) {
 			if (req.params.id) {
-				const md = await model.findOne({ where: { id: req.params.id } })
+				const md = await model.findOne({ where: { id: req.params.id }, include })
 				if (md && md.dataValues && md.dataValues.id) {
 					res.send({ status: model.tableName.toUpperCase() + '_GET_SUCCESS', data: md })
 				} else {
@@ -36,9 +36,9 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} model
 	 */
-	async list(req, res, model) {
+	async list(req, res, model, include) {
 		if (await Permissions.check(req.token, model.tableName, 'select')) {
-			const md = await model.findAll({ where: {} })
+			const md = await model.findAll({ where: {}, include })
 			if (md && md.length > 0) {
 				res.send({ status: model.tableName.toUpperCase() + '_LIST_SUCCESS', data: md })
 			} else {
