@@ -5,6 +5,7 @@ const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
 const CrudBasicsController = require('../defaults/crud-basics')
 const Budget = require('../../models/budgets/budget')
+const BudgetEquipment = require('../../models/budgets/budget_equipment')
 const Logist = require('../../models/sessions/logist')
 const Seller = require('../../models/sessions/Seller')
 const Client = require('../../models/sessions/Client')
@@ -89,9 +90,12 @@ module.exports = {
 			const budgets = await Budget.findOne({ where: { id: req.params.id } })
 			if (budgets) {
 				req.body.id = budgets.dataValues.id
-				console.log(req.body.equipments)
 				budgets.update(req.body)
 					.then((data) => {
+						for (const i in req.body.equipments) {
+							// const equipment = req.body.equipments[i]
+							// BudgetEquipment
+						}
 						res.send({ status: 'BUDGETS_UPDATE_SUCCESS', data })
 					})
 					.catch((error) => {
