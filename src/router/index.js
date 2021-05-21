@@ -10,7 +10,6 @@ const Clients = require('../controllers/sessions/clients')
 
 const Brands = require('../controllers/basics/brands')
 const Formats = require('../controllers/basics/formats')
-const Models = require('../controllers/basics/models')
 const Payments = require('../controllers/basics/payments')
 const Providers = require('../controllers/basics/providers')
 
@@ -42,7 +41,6 @@ module.exports = {
 
 		Brands.setRoutes()
 		Formats.setRoutes()
-		Models.setRoutes()
 		Payments.setRoutes()
 		Providers.setRoutes()
 

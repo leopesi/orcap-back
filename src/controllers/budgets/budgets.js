@@ -6,6 +6,7 @@ const Permissions = require('../sessions/permissions')
 const CrudBasicsController = require('../defaults/crud-basics')
 const Budget = require('../../models/budgets/budget')
 const BudgetEquipment = require('../../models/budgets/budget_equipment')
+const Equipment = require('../../models/equipments/equipment')
 const Logist = require('../../models/sessions/logist')
 const Seller = require('../../models/sessions/Seller')
 const Client = require('../../models/sessions/Client')
@@ -90,11 +91,11 @@ module.exports = {
 			const budgets = await Budget.findOne({ where: { id: req.params.id } })
 			if (budgets) {
 				req.body.id = budgets.dataValues.id
-				budgets.update(req.body)
-					.then((data) => {
+				budgets
+					.update(req.body)
+					.then(async (data) => {
 						for (const i in req.body.equipments) {
-							// const equipment = req.body.equipments[i]
-							// BudgetEquipment
+							await self.saveEquipment(req.body.equipments[i])
 						}
 						res.send({ status: 'BUDGETS_UPDATE_SUCCESS', data })
 					})
@@ -135,5 +136,12 @@ module.exports = {
 	 */
 	async restore(req, res, self) {
 		await CrudBasicsController.restore(req, res, Budget)
+	},
+
+	async saveEquipment(equipment) {
+		const equip = await Equipment.findOne({ where: { id: equipment.id } })
+		if (equip) {
+			console.log(equip)
+		}
 	},
 }

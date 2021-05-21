@@ -7,11 +7,19 @@ const BudgetMaterial = sequelize.define('budgets_materials', {
 		primaryKey: true,
 		defaultValue: DataTypes.UUIDV4
 	},
-	budget: {
-		type: DataTypes.UUID
+	budget_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'budgets',
+			key: 'id',
+		},
 	},
-	material: {
-		type: DataTypes.UUID
+	material_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'budgets_materials',
+			key: 'id',
+		},
 	},
 	createdAt: {
 		type: DataTypes.DATE,

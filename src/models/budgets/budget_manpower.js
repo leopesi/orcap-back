@@ -7,11 +7,19 @@ const BudgetManpower = sequelize.define('budgets_manpowers', {
 		primaryKey: true,
 		defaultValue: DataTypes.UUIDV4
 	},
-	budget: {
-		type: DataTypes.UUID
+	budget_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'budgets',
+			key: 'id',
+		},
 	},
-	manpower: {
-		type: DataTypes.UUID
+	manpower_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'budgets_manpowers',
+			key: 'id',
+		},
 	},
 	createdAt: {
 		type: DataTypes.DATE,

@@ -2,7 +2,6 @@ const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = require('../../helpers/postgres')
 const Provider = require('../basics/provider')
 const Brand = require('../basics/brand')
-const Model = require('../basics/model')
 
 const Equipment = sequelize.define('equipments', {
 	id: {
@@ -21,13 +20,6 @@ const Equipment = sequelize.define('equipments', {
 		type: DataTypes.UUID,
 		references: {
 			model: 'brands',
-			key: 'id',
-		},
-	},
-	model_id: {
-		type: DataTypes.UUID,
-		references: {
-			model: 'models',
 			key: 'id',
 		},
 	},

@@ -150,21 +150,6 @@ insert into permissions (name, type, "table") values ('admin', 'restore', 'brand
 
 -- ==========================================================================================
 --
---                     MODELS
---
--- ==========================================================================================
-
-insert into models (id, brand_id, name) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','584ead51-a3d8-49d7-b69e-32380bb31825','Modelo A');
-insert into models (id, brand_id, name) values ('584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Modelo B');
-
-insert into permissions (name, type, "table") values ('admin', 'select', 'models');
-insert into permissions (name, type, "table") values ('admin', 'insert', 'models');
-insert into permissions (name, type, "table") values ('admin', 'update', 'models');
-insert into permissions (name, type, "table") values ('admin', 'delete', 'models');
-insert into permissions (name, type, "table") values ('admin', 'restore', 'models');
-
--- ==========================================================================================
---
 --                     PAYMENTS
 --
 -- ==========================================================================================
@@ -238,11 +223,11 @@ insert into permissions (name, type, "table") values ('admin', 'restore', 'equip
 --
 -- ==========================================================================================
 
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Filtro 00001', 'Autofiltragem automatica de 15 horas', 100, 140);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('4129c52f-3d7e-414e-8624-538c1ff859cd','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Filtro 00004', 'Autofiltragem automatica de 18 horas', 400, 440);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('732f6432-adaf-4fea-9dae-e613c19942ca','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Filtro 00005', 'Filtragem manual de 15 horas', 500, 540);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('57c94d89-4a6d-4537-b083-70eea96ef760','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Filtro 00006', 'Filtragem automatica de 46 horas', 600, 640);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('950cdc92-5b1f-471c-9269-9c56e57f778c','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Filtro 00007', 'Autofiltragem manual de 15 horas', 700, 740);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Filtro 00001', 'Autofiltragem automatica de 15 horas', 100, 140);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('4129c52f-3d7e-414e-8624-538c1ff859cd','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Filtro 00004', 'Autofiltragem automatica de 18 horas', 400, 440);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('732f6432-adaf-4fea-9dae-e613c19942ca','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Filtro 00005', 'Filtragem manual de 15 horas', 500, 540);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('57c94d89-4a6d-4537-b083-70eea96ef760','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Filtro 00006', 'Filtragem automatica de 46 horas', 600, 640);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('950cdc92-5b1f-471c-9269-9c56e57f778c','3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba','Filtro 00007', 'Autofiltragem manual de 15 horas', 700, 740);
 
 insert into filters (id, equipment_id, max_capacity) values ('3d7615ae-d514-48a0-b269-6e563984c6ba','3d7615ae-d514-48a0-b269-6e563984c6ba', 40.50);
 insert into filters (id, equipment_id, max_capacity) values ('4129c52f-3d7e-414e-8624-538c1ff859cd','4129c52f-3d7e-414e-8624-538c1ff859cd', 60.50);
@@ -263,11 +248,11 @@ insert into permissions (name, type, "table") values ('logist', 'select', 'filte
 --
 -- ==========================================================================================
 
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Motor 00001', 'Motor 110v de alumínio', 400, 440);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('f8116283-a8e6-46cc-bfbf-35b149a7d58d','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Motor 00004', 'Motor 110v de bronze', 500, 540);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('094353ac-9373-417d-956e-f477ead9b844','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Motor 00005', 'Motor 110v de ferro', 600, 640);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('ca65ad80-7a0f-40c6-a093-fe6dda2c392e','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Motor 00006', 'Motor 220v de alumínio', 800, 840);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('a92032fc-e83c-4771-af15-f2438ff11dfd','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Motor 00007', 'Motor 220v de ferro', 100, 140);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Motor 00001', 'Motor 110v de alumínio', 400, 440);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('f8116283-a8e6-46cc-bfbf-35b149a7d58d','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Motor 00004', 'Motor 110v de bronze', 500, 540);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('094353ac-9373-417d-956e-f477ead9b844','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Motor 00005', 'Motor 110v de ferro', 600, 640);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('ca65ad80-7a0f-40c6-a093-fe6dda2c392e','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Motor 00006', 'Motor 220v de alumínio', 800, 840);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('a92032fc-e83c-4771-af15-f2438ff11dfd','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Motor 00007', 'Motor 220v de ferro', 100, 140);
 
 insert into engines (id, equipment_id, max_capacity) values ('584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825', 10);
 insert into engines (id, equipment_id, max_capacity) values ('f8116283-a8e6-46cc-bfbf-35b149a7d58d','f8116283-a8e6-46cc-bfbf-35b149a7d58d', 40);
@@ -289,11 +274,11 @@ insert into permissions (name, type, "table") values ('logist', 'select', 'engin
 --
 -- ==========================================================================================
 
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('81aaba6b-4161-4ab2-9a22-e781fb6cfe68','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Manta Revestimento 00001', 'Manta Revestimento 1 m2', 4, 4.5);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('07987938-b4b5-4a62-a2dc-ee5ffea2e056','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Manta Revestimento 00004', 'Manta Revestimento 1 m2', 5, 5.4);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('b2826395-f5b9-4cb3-9b25-fc62ec41a4fa','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Manta Revestimento 00005', 'Manta Revestimento 1.5 m2', 6, 6.4);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('a2a476a4-82cf-4ed0-802b-f25d0f6c36df','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Manta Revestimento 00006', 'Manta Revestimento 1.75 m2', 8, 8.4);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('ee73e83a-059a-463c-aaeb-790beac43262','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Manta Revestimento 00007', 'Manta Revestimento 2 m2', 10, 14);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('81aaba6b-4161-4ab2-9a22-e781fb6cfe68','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Manta Revestimento 00001', 'Manta Revestimento 1 m2', 4, 4.5);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('07987938-b4b5-4a62-a2dc-ee5ffea2e056','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Manta Revestimento 00004', 'Manta Revestimento 1 m2', 5, 5.4);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('b2826395-f5b9-4cb3-9b25-fc62ec41a4fa','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Manta Revestimento 00005', 'Manta Revestimento 1.5 m2', 6, 6.4);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('a2a476a4-82cf-4ed0-802b-f25d0f6c36df','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Manta Revestimento 00006', 'Manta Revestimento 1.75 m2', 8, 8.4);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('ee73e83a-059a-463c-aaeb-790beac43262','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Manta Revestimento 00007', 'Manta Revestimento 2 m2', 10, 14);
 
 insert into blankets (id, equipment_id, m2_size) values ('584ead51-a3d8-49d7-b69e-32380bb31825','81aaba6b-4161-4ab2-9a22-e781fb6cfe68', 1);
 insert into blankets (id, equipment_id, m2_size) values ('f8116283-a8e6-46cc-bfbf-35b149a7d58d','07987938-b4b5-4a62-a2dc-ee5ffea2e056', 1);
@@ -314,11 +299,11 @@ insert into permissions (name, type, "table") values ('logist', 'select', 'blank
 --
 -- ==========================================================================================
 
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('de7438f3-46c4-4688-a097-47c81d9e12ea','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Perfil de 1 metros', '1 metro', 4, 4.5);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('83c0fb2c-088f-4246-9655-959d2c5d6eec','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Perfil de 2 metros', '2 metros', 5, 5.4);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('e402c546-9ef6-4590-9380-e1a71d824dc6','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Perfil de 4 metros', '4 metros', 6, 6.4);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('e3504084-2349-485f-97a3-04e9a1d0ee4f','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Perfil de 5 metros', '5 metros', 8, 8.4);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('8861e375-db98-4de8-a061-daf6125f74b2','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Perfil de 6 metros', '6 metros', 10, 14);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('de7438f3-46c4-4688-a097-47c81d9e12ea','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Perfil de 1 metros', '1 metro', 4, 4.5);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('83c0fb2c-088f-4246-9655-959d2c5d6eec','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Perfil de 2 metros', '2 metros', 5, 5.4);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('e402c546-9ef6-4590-9380-e1a71d824dc6','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Perfil de 4 metros', '4 metros', 6, 6.4);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('e3504084-2349-485f-97a3-04e9a1d0ee4f','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Perfil de 5 metros', '5 metros', 8, 8.4);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('8861e375-db98-4de8-a061-daf6125f74b2','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Perfil de 6 metros', '6 metros', 10, 14);
 
 insert into profiles (id, equipment_id, size) values ('584ead51-a3d8-49d7-b69e-32380bb31825','de7438f3-46c4-4688-a097-47c81d9e12ea', 1);
 insert into profiles (id, equipment_id, size) values ('f8116283-a8e6-46cc-bfbf-35b149a7d58d','83c0fb2c-088f-4246-9655-959d2c5d6eec', 1);
@@ -339,11 +324,11 @@ insert into permissions (name, type, "table") values ('logist', 'select', 'profi
 --
 -- ==========================================================================================
 
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('b751bc99-208c-49e6-9ffe-02fa2cc56a13','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Tampa de 1x1 metros', '1x1 metro de aço', 4, 4.5);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('b17b4064-accf-4429-a482-7d9183df0f43','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Tampa de 2x2 metros', '2 metros de ferro', 5, 5.4);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('3d591fb8-a991-44f7-a729-41b8058e2c91','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Tampa de 4x4 metros', '4x4 metros de aço', 6, 6.4);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('ace039aa-1179-42d4-8d2f-9057c92006ca','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Tampa de 5x5 metros', '5x5 metros de ferro', 8, 8.4);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('9086b35e-a87a-4b89-ab99-f1a012c03ada','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Tampa de 6x6 metros', '6x6 metros de aço', 10, 14);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('b751bc99-208c-49e6-9ffe-02fa2cc56a13','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Tampa de 1x1 metros', '1x1 metro de aço', 4, 4.5);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('b17b4064-accf-4429-a482-7d9183df0f43','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Tampa de 2x2 metros', '2 metros de ferro', 5, 5.4);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('3d591fb8-a991-44f7-a729-41b8058e2c91','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Tampa de 4x4 metros', '4x4 metros de aço', 6, 6.4);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('ace039aa-1179-42d4-8d2f-9057c92006ca','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Tampa de 5x5 metros', '5x5 metros de ferro', 8, 8.4);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('9086b35e-a87a-4b89-ab99-f1a012c03ada','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Tampa de 6x6 metros', '6x6 metros de aço', 10, 14);
 
 insert into lids (id, equipment_id) values ('584ead51-a3d8-49d7-b69e-32380bb31825','b751bc99-208c-49e6-9ffe-02fa2cc56a13');
 insert into lids (id, equipment_id) values ('f8116283-a8e6-46cc-bfbf-35b149a7d58d','b17b4064-accf-4429-a482-7d9183df0f43');
@@ -364,11 +349,11 @@ insert into permissions (name, type, "table") values ('logist', 'select', 'lids'
 --
 -- ==========================================================================================
 
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('bdcd27b8-a759-4cdc-947e-b10dfc7691c3','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Vinil 00001', 'Vinil 1 m2', 24, 25.5);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('c2ee98ea-9198-4cd4-91a2-a72474c0b610','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Vinil 00004', 'Vinil 1 m2', 25, 27.4);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('97cab750-7d65-4d30-aa1a-a5907c0b54df','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Vinil 00005', 'Vinil 1.5 m2', 46, 48.4);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('1b12cd19-7bb6-44ed-a67f-2b1191a3a3e9','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Vinil 00006', 'Vinil 1.75 m2', 48, 50.4);
-insert into equipments (id, provider_id, brand_id, model_id, name, description, cash_price, forward_price) values ('6002dfb8-cb81-4caa-8ac7-3eca78321fb4','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Vinil 00007', 'Vinil 2 m2', 50, 54);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('bdcd27b8-a759-4cdc-947e-b10dfc7691c3','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Vinil 00001', 'Vinil 1 m2', 24, 25.5);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('c2ee98ea-9198-4cd4-91a2-a72474c0b610','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Vinil 00004', 'Vinil 1 m2', 25, 27.4);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('97cab750-7d65-4d30-aa1a-a5907c0b54df','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Vinil 00005', 'Vinil 1.5 m2', 46, 48.4);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('1b12cd19-7bb6-44ed-a67f-2b1191a3a3e9','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Vinil 00006', 'Vinil 1.75 m2', 48, 50.4);
+insert into equipments (id, provider_id, brand_id, name, description, cash_price, forward_price) values ('6002dfb8-cb81-4caa-8ac7-3eca78321fb4','584ead51-a3d8-49d7-b69e-32380bb31825','584ead51-a3d8-49d7-b69e-32380bb31825','Vinil 00007', 'Vinil 2 m2', 50, 54);
 
 insert into vinyls (id, equipment_id, m2_size) values ('584ead51-a3d8-49d7-b69e-32380bb31825','bdcd27b8-a759-4cdc-947e-b10dfc7691c3', 1);
 insert into vinyls (id, equipment_id, m2_size) values ('f8116283-a8e6-46cc-bfbf-35b149a7d58d','c2ee98ea-9198-4cd4-91a2-a72474c0b610', 1);

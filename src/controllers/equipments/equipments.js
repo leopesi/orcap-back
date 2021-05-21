@@ -3,7 +3,6 @@
  */
 const Server = require('../../helpers/server')
 const Brand = require("../../models/basics/brand")
-const Model = require("../../models/basics/model")
 const Provider = require("../../models/basics/provider")
 const Equipment = require("../../models/equipments/equipment")
 
@@ -20,16 +19,13 @@ module.exports = {
 	async setForeignKey() {
 		Equipment.belongsTo(Provider, { foreignKey: 'provider_id', as: 'providers' })
 		Equipment.belongsTo(Brand, { foreignKey: 'brand_id', as: 'brands' })
-		Equipment.belongsTo(Model, { foreignKey: 'model_id', as: 'models' })
 	},
 
 	async updateRelations(list) {
 		const rel_brands = await this.getListRelations(Brand)
-		const rel_models = await this.getListRelations(Model)
 		const rel_providers = await this.getListRelations(Provider)
 		for (const i in list) {
 			list[i].dataValues.brands = rel_brands[list[i].equipments.brand_id]
-			list[i].dataValues.models = rel_models[list[i].equipments.model_id]
 			list[i].dataValues.providers = rel_providers[list[i].equipments.provider_id]
 		}
 		return list
