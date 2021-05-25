@@ -5,7 +5,7 @@ const sequelize = require('sequelize')
 const Op = sequelize.Op
 const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
-const CrudBasicsController = require('../defaults/crud-basics')
+const EquipmentBasicsController = require('../defaults/equipment-basics')
 const Dimensions = require('../defaults/dimensions')
 const Equipments = require('./equipments')
 
@@ -59,7 +59,7 @@ module.exports = {
 				include: 'equipments',
 			})
 			if (filters && filters[0]) {
-				await Equipments.updateRelations(filters)
+				await Equipments.updateAllRelations(filters)
 				res.send({ status: 'FILTERS_GET_SUCCESS', data: filters })
 			} else {
 				res.send({ status: 'FILTERS_NOT_FOUND', error: 'filters not found' })
@@ -77,7 +77,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		await CrudBasicsController.get(req, res, Filter)
+		await EquipmentBasicsController.get(req, res, Filter, 'equipments')
 	},
 
 	/**
@@ -88,7 +88,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		await CrudBasicsController.list(req, res, Filter)
+		await EquipmentBasicsController.list(req, res, Filter, 'equipments')
 	},
 
 	/**
@@ -99,7 +99,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		await CrudBasicsController.create(req, res, Filter)
+		await EquipmentBasicsController.create(req, res, Filter)
 	},
 
 	/**
@@ -110,7 +110,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		await CrudBasicsController.change(req, res, Filter)
+		await EquipmentBasicsController.change(req, res, Filter)
 	},
 
 	/**
@@ -121,7 +121,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async delete(req, res, self) {
-		await CrudBasicsController.delete(req, res, Filter)
+		await EquipmentBasicsController.delete(req, res, Filter)
 	},
 
 	/**
@@ -132,6 +132,6 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async restore(req, res, self) {
-		await CrudBasicsController.restore(req, res, Filter)
+		await EquipmentBasicsController.restore(req, res, Filter)
 	},
 }

@@ -1,17 +1,19 @@
 const fs = require('fs')
 const { Pool } = require('pg')
+const sequelize = require('../src/helpers/postgres')
 const Config = require('../src/config/database')
 
 const pool = new Pool(Config)
 
 exec_sequelize = async () => {
 	const dirs = require('../src/models/sequelize-config')['models']
+	await sequelize.sync({ force: true })
 	for (const i in dirs) {
 		const files = dirs[i]
 		for (const j in files) {
 			const model = require('../src/models/' + i + '/' + files[j])
 			console.log(model.tableName)
-			await model.sync({ force: false })
+			await model.sync({ force: true })
 			const data = await model.findAll({})
 			console.log('FIND ALL')
 			const data_json_text = JSON.stringify(data, null, '\t')
@@ -37,63 +39,10 @@ exec_sequelize = async () => {
 				sql.push(values.join(','))
 				sql.push(');')
 				console.log(sql.join(' '))
-				await pool.query(sql.join(' '), (error, results) => {})
+				await pool.query(sql.join(' '), (error, results) => {
+					console.log(error)
+				})
 			}
-		}
-	}
-}
-
-controllers_sequelize = async () => {
-	const dirs = fs.readdirSync('./src/controllers')
-	for (const i in dirs) {
-		const subdirs = fs.readdirSync('./src/controllers/' + dirs[i])
-		for (const j in subdirs) {
-			const files = subdirs[j]
-			console.log(files)
-			if (subdirs[j].indexOf('.js') !== -1) {
-				const controller = require('../src/controllers/' + dirs[i] + '/' + subdirs[j])
-				if (typeof controller.setForeignKey === 'function') {
-					await controller.setForeignKey()
-				}
-			}
-		}
-	}
-}
-
-models_sequelize = async (params) => {
-	const dirs = require('../src/models/sequelize-config')['models']
-	for (const i in dirs) {
-		const files = dirs[i]
-		for (const j in files) {
-			console.log('../src/models/' + i + '/' + files[j])
-			const model = require('../src/models/' + i + '/' + files[j])
-			if (params && params.indexOf('--force') !== -1) {
-				await model.sync({ force: true })
-			} else {
-				await model.sync()
-			}
-		}
-	}
-}
-
-exec_first_sql = async () => {
-	console.log('EXEC FIRST SQL')
-	const sqls = fs.readFileSync('./sql/first_inserts.sql', 'utf-8', false).split('\n')
-	for (const i in sqls) {
-		console.log(sqls[i])
-		try {
-			await pool.query(sqls[i], (error, results) => {
-				if (error) {
-					// throw error
-					if (error.parent) {
-						console.log(error.parent.detail)
-					} else {
-						console.log(error.toString().split('\n')[0])
-					}
-				}
-			})
-		} catch (e) {
-			console.log('ERRO NO SQL')
 		}
 	}
 }

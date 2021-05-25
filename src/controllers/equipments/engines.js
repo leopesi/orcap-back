@@ -5,7 +5,7 @@ const sequelize = require('sequelize')
 const Op = sequelize.Op
 const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
-const CrudBasicsController = require('../defaults/crud-basics')
+const EquipmentBasicsController = require('../defaults/equipment-basics')
 const Dimensions = require('../defaults/dimensions')
 const Equipments = require('./equipments')
 
@@ -51,7 +51,7 @@ module.exports = {
 				include: 'equipments',
 			})
 			if (engines && engines[0]) {
-				await Equipments.updateRelations(engines)
+				await Equipments.updateAllRelations(engines)
 				res.send({ status: 'ENGINES_GET_SUCCESS', data: engines })
 			} else {
 				res.send({ status: 'ENGINES_NOT_FOUND', error: 'engines not found' })
@@ -69,7 +69,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		await CrudBasicsController.get(req, res, Engine)
+		await EquipmentBasicsController.get(req, res, Engine, 'equipments')
 	},
 
 	/**
@@ -80,7 +80,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		await CrudBasicsController.list(req, res, Engine)
+		await EquipmentBasicsController.list(req, res, Engine, 'equipments')
 	},
 
 	/**
@@ -91,7 +91,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		await CrudBasicsController.create(req, res, Engine)
+		await EquipmentBasicsController.create(req, res, Engine, 'equipments')
 	},
 
 	/**
@@ -102,7 +102,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		await CrudBasicsController.change(req, res, Engine)
+		await EquipmentBasicsController.change(req, res, Engine, 'equipments')
 	},
 
 	/**
@@ -113,7 +113,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async delete(req, res, self) {
-		await CrudBasicsController.delete(req, res, Engine)
+		await EquipmentBasicsController.delete(req, res, Engine, 'equipments')
 	},
 
 	/**
@@ -124,6 +124,6 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async restore(req, res, self) {
-		await CrudBasicsController.restore(req, res, Engine)
+		await EquipmentBasicsController.restore(req, res, Engine, 'equipments')
 	},
 }

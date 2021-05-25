@@ -5,7 +5,7 @@ const sequelize = require('sequelize')
 const Op = sequelize.Op
 const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
-const CrudBasicsController = require('../defaults/crud-basics')
+const EquipmentBasicsController = require('../defaults/equipment-basics')
 const Dimensions = require('../defaults/dimensions')
 const Equipments = require('./equipments')
 
@@ -43,7 +43,7 @@ module.exports = {
 				include: 'equipments',
 			})
 			if (lids && lids[0]) {
-				await Equipments.updateRelations(lids)
+				await Equipments.updateAllRelations(lids)
 				res.send({ status: 'LIDS_GET_SUCCESS', data: lids })
 			} else {
 				res.send({ status: 'LIDS_NOT_FOUND', error: 'lids not found' })
@@ -61,7 +61,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		await CrudBasicsController.get(req, res, Lid)
+		await EquipmentBasicsController.get(req, res, Lid, 'equipments')
 	},
 
 	/**
@@ -72,7 +72,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		await CrudBasicsController.list(req, res, Lid)
+		await EquipmentBasicsController.list(req, res, Lid, 'equipments')
 	},
 
 	/**
@@ -83,7 +83,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		await CrudBasicsController.create(req, res, Lid)
+		await EquipmentBasicsController.create(req, res, Lid, 'equipments')
 	},
 
 	/**
@@ -94,7 +94,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		await CrudBasicsController.change(req, res, Lid)
+		await EquipmentBasicsController.change(req, res, Lid, 'equipments')
 	},
 
 	/**
@@ -105,7 +105,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async delete(req, res, self) {
-		await CrudBasicsController.delete(req, res, Lid)
+		await EquipmentBasicsController.delete(req, res, Lid, 'equipments')
 	},
 
 	/**
@@ -116,6 +116,6 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async restore(req, res, self) {
-		await CrudBasicsController.restore(req, res, Lid)
+		await EquipmentBasicsController.restore(req, res, Lid, 'equipments')
 	},
 }

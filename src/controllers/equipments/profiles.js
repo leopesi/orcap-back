@@ -5,8 +5,7 @@ const sequelize = require('sequelize')
 const Op = sequelize.Op
 const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
-const CrudBasicsController = require('../defaults/crud-basics')
-const Dimensions = require('../defaults/dimensions')
+const EquipmentBasicsController = require('../defaults/equipment-basics')
 const Equipments = require('./equipments')
 
 const Profile = require('../../models/equipments/profile')
@@ -44,7 +43,7 @@ module.exports = {
 				include: 'equipments',
 			})
 			if (profiles && profiles[0]) {
-				await Equipments.updateRelations(profiles)
+				await Equipments.updateAllRelations(profiles)
 				res.send({ status: 'PROFILES_GET_SUCCESS', data: profiles })
 			} else {
 				res.send({ status: 'PROFILES_NOT_FOUND', error: 'profiles not found' })
@@ -61,8 +60,8 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	async get(req, res, self) {
-		await CrudBasicsController.get(req, res, Profile)
+	 async get(req, res, self) {
+		await EquipmentBasicsController.get(req, res, Profile, 'equipments')
 	},
 
 	/**
@@ -73,7 +72,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		await CrudBasicsController.list(req, res, Profile)
+		await EquipmentBasicsController.list(req, res, Profile, 'equipments')
 	},
 
 	/**
@@ -84,7 +83,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		await CrudBasicsController.create(req, res, Profile)
+		await EquipmentBasicsController.create(req, res, Profile, 'equipments')
 	},
 
 	/**
@@ -95,7 +94,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		await CrudBasicsController.change(req, res, Profile)
+		await EquipmentBasicsController.change(req, res, Profile, 'equipments')
 	},
 
 	/**
@@ -106,7 +105,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async delete(req, res, self) {
-		await CrudBasicsController.delete(req, res, Profile)
+		await EquipmentBasicsController.delete(req, res, Profile, 'equipments')
 	},
 
 	/**
@@ -117,6 +116,6 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async restore(req, res, self) {
-		await CrudBasicsController.restore(req, res, Profile)
+		await EquipmentBasicsController.restore(req, res, Profile, 'equipments')
 	},
 }

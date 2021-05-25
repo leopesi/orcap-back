@@ -21,7 +21,6 @@ const Session = sequelize.define(
 			unique: true,
 		},
 		password: DataTypes.STRING,
-		phone: DataTypes.STRING,
 		active: {
 			type: DataTypes.BOOLEAN,
 			defaultValue: false,

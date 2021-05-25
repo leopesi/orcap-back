@@ -141,7 +141,7 @@ module.exports = {
 	async saveEquipment(equipment) {
 		const equip = await Equipment.findOne({ where: { id: equipment.id } })
 		if (equip) {
-			console.log(equip)
+			
 		}
 	},
 }

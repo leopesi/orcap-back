@@ -1,17 +1,13 @@
 /**
  * @module BlanketsController
  */
-const sequelize = require('sequelize')
-const Op = sequelize.Op
 const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
-const CrudBasicsController = require('../defaults/crud-basics')
-const Dimensions = require('../defaults/dimensions')
+const EquipmentBasicsController = require('../defaults/equipment-basics')
 const Equipments = require('./equipments')
 
 const Blanket = require('../../models/equipments/blanket')
 const Equipment = require('../../models/equipments/equipment')
-const { getM2Facial } = require('../defaults/dimensions')
 
 module.exports = {
 	/**
@@ -51,7 +47,7 @@ module.exports = {
 				include: 'equipments',
 			})
 			if (blankets && blankets[0]) {
-				await Equipments.updateRelations(blankets)
+				await Equipments.updateAllRelations(blankets)
 				res.send({ status: 'BLANKETS_GET_SUCCESS', data: blankets })
 			} else {
 				res.send({ status: 'BLANKETS_NOT_FOUND', error: 'blankets not found' })
@@ -68,8 +64,8 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	async get(req, res, self) {
-		await CrudBasicsController.get(req, res, Blanket)
+	 async get(req, res, self) {
+		await EquipmentBasicsController.get(req, res, Blanket, 'equipments')
 	},
 
 	/**
@@ -80,7 +76,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		await CrudBasicsController.list(req, res, Blanket)
+		await EquipmentBasicsController.list(req, res, Blanket, 'equipments')
 	},
 
 	/**
@@ -91,7 +87,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		await CrudBasicsController.create(req, res, Blanket)
+		await EquipmentBasicsController.create(req, res, Blanket, 'equipments')
 	},
 
 	/**
@@ -102,7 +98,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		await CrudBasicsController.change(req, res, Blanket)
+		await EquipmentBasicsController.change(req, res, Blanket, 'equipments')
 	},
 
 	/**
@@ -113,7 +109,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async delete(req, res, self) {
-		await CrudBasicsController.delete(req, res, Blanket)
+		await EquipmentBasicsController.delete(req, res, Blanket, 'equipments')
 	},
 
 	/**
@@ -124,6 +120,6 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async restore(req, res, self) {
-		await CrudBasicsController.restore(req, res, Blanket)
+		await EquipmentBasicsController.restore(req, res, Blanket, 'equipments')
 	},
 }

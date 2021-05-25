@@ -1,12 +1,9 @@
 /**
  * @module VinylsController
  */
-const sequelize = require('sequelize')
-const Op = sequelize.Op
 const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
-const CrudBasicsController = require('../defaults/crud-basics')
-const Dimensions = require('../defaults/dimensions')
+const EquipmentBasicsController = require('../defaults/equipment-basics')
 const Equipments = require('./equipments')
 
 const Vinyl = require('../../models/equipments/vinyl')
@@ -43,7 +40,7 @@ module.exports = {
 				include: 'equipments',
 			})
 			if (vinyls && vinyls[0]) {
-				await Equipments.updateRelations(vinyls)
+				await Equipments.updateAllRelations(vinyls)
 				res.send({ status: 'VINYLS_GET_SUCCESS', data: vinyls })
 			} else {
 				res.send({ status: 'VINYLS_NOT_FOUND', error: 'vinyls not found' })
@@ -60,8 +57,8 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	async get(req, res, self) {
-		await CrudBasicsController.get(req, res, Vinyl)
+	 async get(req, res, self) {
+		await EquipmentBasicsController.get(req, res, Vinyl, 'equipments')
 	},
 
 	/**
@@ -72,7 +69,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		await CrudBasicsController.list(req, res, Vinyl)
+		await EquipmentBasicsController.list(req, res, Vinyl, 'equipments')
 	},
 
 	/**
@@ -83,7 +80,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		await CrudBasicsController.create(req, res, Vinyl)
+		await EquipmentBasicsController.create(req, res, Vinyl, 'equipments')
 	},
 
 	/**
@@ -94,7 +91,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		await CrudBasicsController.change(req, res, Vinyl)
+		await EquipmentBasicsController.change(req, res, Vinyl, 'equipments')
 	},
 
 	/**
@@ -105,7 +102,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async delete(req, res, self) {
-		await CrudBasicsController.delete(req, res, Vinyl)
+		await EquipmentBasicsController.delete(req, res, Vinyl, 'equipments')
 	},
 
 	/**
@@ -116,6 +113,6 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async restore(req, res, self) {
-		await CrudBasicsController.restore(req, res, Vinyl)
+		await EquipmentBasicsController.restore(req, res, Vinyl, 'equipments')
 	},
 }

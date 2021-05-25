@@ -8,6 +8,13 @@ const Brand = sequelize.define('brands', {
 		primaryKey: true,
 		defaultValue: DataTypes.UUIDV4,
 	},
+	logist_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'providers',
+			key: 'id',
+		},
+	},
 	provider_id: {
 		type: DataTypes.UUID,
 		references: {

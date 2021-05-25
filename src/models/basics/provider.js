@@ -7,6 +7,13 @@ const Provider = sequelize.define('providers', {
 		primaryKey: true,
 		defaultValue: DataTypes.UUIDV4
 	},
+	logist_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'providers',
+			key: 'id',
+		},
+	},
 	name: DataTypes.STRING(50),
 	description: DataTypes.STRING(50),
 	createdAt: {
