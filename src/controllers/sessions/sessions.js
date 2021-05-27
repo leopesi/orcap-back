@@ -305,8 +305,8 @@ module.exports = {
 			const session = await Session.findOne({
 				where: { id: req.params.id },
 			})
-			delete session.password
 			if (session && session.id) {
+				delete session.password
 				res.send({ status: 'SESSION_GET_SUCCESS', data: session })
 			} else {
 				res.send({ status: 'SESSION_NOT_FOUND', error: 'Session not found' })

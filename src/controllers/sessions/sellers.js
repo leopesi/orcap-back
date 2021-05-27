@@ -39,7 +39,8 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		SessionBasicsController.get(req, res, Seller)
+		const logist_id = Server.decodedIdByToken(req.token)
+		SessionBasicsController.get(req, res, Seller, { where: { logist_id } })
 	},
 
 	/**
@@ -50,7 +51,6 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		console.log('SELLER LIST')
 		const logist_id = Server.decodedIdByToken(req.token)
 		SessionBasicsController.list(req, res, Seller, { where: { logist_id } })
 	},
@@ -75,7 +75,13 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		SessionBasicsController.change(req, res, Seller)
+		const logist_id = Server.decodedIdByToken(req.token)
+		const result = await Seller.findOne({ where: { id: req.body.id, logist_id } })
+		if (result) {
+			SessionBasicsController.change(req, res, Seller)
+		} else {
+			res.send({ status: 'SELLER_UPDATE_SESSION_ERROR', error: 'Data not found' })
+		}
 	},
 
 	/**
@@ -86,7 +92,8 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async delete(req, res, self) {
-		SessionBasicsController.delete(req, res, Seller)
+		const logist_id = Server.decodedIdByToken(req.token)
+		SessionBasicsController.delete(req, res, Seller, { where: { logist_id } })
 	},
 
 	/**
@@ -97,6 +104,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async restore(req, res, self) {
-		SessionBasicsController.restore(req, res, Seller)
+		const logist_id = Server.decodedIdByToken(req.token)
+		SessionBasicsController.restore(req, res, Seller, { where: { logist_id } })
 	},
 }

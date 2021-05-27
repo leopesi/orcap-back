@@ -13,17 +13,21 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	async get(req, res, model) {
+	async get(req, res, model, options) {
 		if (await Permissions.check(req.token, model.tableName, 'select')) {
+			const where = Object.assign({ id: req.params.id }, options.where)
 			const md = await model.findOne({
-				where: { id: req.params.id },
+				where,
 				include: 'sessions',
 			})
-			delete md.password
 			if (md && md.id) {
+				delete md.password
 				res.send({ status: model.tableName.toUpperCase() + '_GET_SUCCESS', data: md })
 			} else {
-				res.send({ status: model.tableName.toUpperCase() + '_NOT_FOUND', error: model.tableName + ' not found' })
+				res.send({
+					status: model.tableName.toUpperCase() + '_NOT_FOUND',
+					error: model.tableName + ' not found',
+				})
 			}
 		} else {
 			res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
@@ -38,19 +42,16 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, model, options) {
-		console.log(model.tableName)
-		// if (await Permissions.check(req.token, model.tableName, 'select')) {
-		// 	const md = await model.findAll({ where: options.where, include: 'sessions' })
-		// 	console.log(md)
-		// 	if (md && md.length > 0) {
-		// 		res.send({ status: model.tableName.toUpperCase() + '_LIST_SUCCESS', data: md })
-		// 	} else {
-		// 		res.send({ status: 'USERS_QUERY_EMPTY', error: model.tableName + ' not found' })
-		// 	}
-		// } else {
-		// 	res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
-		// }
-		res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
+		if (await Permissions.check(req.token, model.tableName, 'select')) {
+			const md = await model.findAll({ where: options.where, include: 'sessions' })
+			if (md && md.length > 0) {
+				res.send({ status: model.tableName.toUpperCase() + '_LIST_SUCCESS', data: md })
+			} else {
+				res.send({ status: 'USERS_QUERY_EMPTY', error: model.tableName + ' not found' })
+			}
+		} else {
+			res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
+		}
 	},
 
 	/**
@@ -60,7 +61,7 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	async create(req, res, model) {
+	async create(req, res, model, options) {
 		delete req.body.id
 		if (await Permissions.check(req.token, model.tableName, 'insert')) {
 			req.body.password = await Server.getHash(req.body.password)
@@ -96,7 +97,7 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	async change(req, res, model) {
+	async change(req, res, model, options) {
 		if (await Permissions.check(req.token, model.tableName, 'update')) {
 			const result = await model.findOne({ where: { id: req.params.id } })
 			if (result) {
@@ -132,7 +133,7 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	async delete(req, res, model) {
+	async delete(req, res, model, options) {
 		if (await Permissions.check(req.token, model.tableName, 'delete')) {
 			const result = await model.findOne({ where: { id: req.params.id } })
 			if (result) {
@@ -168,7 +169,7 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	async restore(req, res, model) {
+	async restore(req, res, model, options) {
 		if (await Permissions.check(req.token, model.tableName, 'restore')) {
 			const result = await model.findOne({ where: { id: req.params.id } })
 			if (result) {
