@@ -38,25 +38,17 @@ module.exports = {
 	async create(req, callback) {
 		if (await Permissions.check(req.token, 'sessions', 'insert')) {
 			req.body.password = await Server.getHash(req.body.password)
-			const session = await Session.findOne({ where: { mail: req.body.mail } })
-			if (!session.dataValues.mail) {
-				Session.build(req.body)
-					.save()
-					.then((data) => {
-						callback({ status: 'SESSION_INSERT_SUCCESS', data })
-					})
-					.catch((error) => {
-						callback({
-							status: 'SESSION_INSERT_ERROR',
-							error: error.parent.detail,
-						})
-					})
-			} else {
-				callback({
-					status: 'SESSION_INSERT_SUCCESS',
-					data: session.dataValues,
+			Session.build(req.body)
+				.save()
+				.then((data) => {
+					callback({ status: 'SESSION_INSERT_SUCCESS', data })
 				})
-			}
+				.catch((error) => {
+					callback({
+						status: 'SESSION_INSERT_ERROR',
+						error: error.parent.detail,
+					})
+				})
 		} else {
 			callback({
 				status: 'SESSION_PERMISSION_ERROR',

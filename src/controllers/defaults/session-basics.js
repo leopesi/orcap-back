@@ -37,17 +37,20 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	async list(req, res, model) {
-		if (await Permissions.check(req.token, model.tableName, 'select')) {
-			const md = await model.findAll({ where: {}, include: 'sessions' })
-			if (md && md.length > 0) {
-				res.send({ status: model.tableName.toUpperCase() + '_LIST_SUCCESS', data: md })
-			} else {
-				res.send({ status: 'USERS_QUERY_EMPTY', error: model.tableName + ' not found' })
-			}
-		} else {
-			res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
-		}
+	async list(req, res, model, options) {
+		console.log(model.tableName)
+		// if (await Permissions.check(req.token, model.tableName, 'select')) {
+		// 	const md = await model.findAll({ where: options.where, include: 'sessions' })
+		// 	console.log(md)
+		// 	if (md && md.length > 0) {
+		// 		res.send({ status: model.tableName.toUpperCase() + '_LIST_SUCCESS', data: md })
+		// 	} else {
+		// 		res.send({ status: 'USERS_QUERY_EMPTY', error: model.tableName + ' not found' })
+		// 	}
+		// } else {
+		// 	res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
+		// }
+		res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
 	},
 
 	/**
@@ -61,7 +64,6 @@ module.exports = {
 		delete req.body.id
 		if (await Permissions.check(req.token, model.tableName, 'insert')) {
 			req.body.password = await Server.getHash(req.body.password)
-			req.body.type = 'admin'
 			req.body.table = model.tableName
 			Sessions.create(req, (result) => {
 				if (result.status == 'SESSION_INSERT_SUCCESS') {

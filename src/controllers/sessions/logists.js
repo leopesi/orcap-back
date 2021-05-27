@@ -13,6 +13,7 @@ module.exports = {
 	 */
 	setRoutes() {
 		Server.addRoute('/logists/:id', this.get, this).get(true)
+		Server.addRoute('/logists-by-token/:id', this.getByToken, this).get(true)
 		Server.addRoute('/logists/', this.list, this).get(true)
 		Server.addRoute('/logists', this.create, this).post(true)
 		Server.addRoute('/logists/:id/restore', this.restore, this).put(true)
@@ -36,7 +37,19 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	async get(req, res, self) {
+	 async get(req, res, self) {
+		SessionBasicsController.get(req, res, Logist)
+	},
+
+	/**
+	 * @function
+	 * Retorna um Logista pelo Token de autenticação
+	 * @param {Object} req
+	 * @param {Object} res
+	 * @param {Object} self
+	 */
+	 async getByToken(req, res, self) {
+		req.params.id = Server.decodedIdByToken(req.token)
 		SessionBasicsController.get(req, res, Logist)
 	},
 

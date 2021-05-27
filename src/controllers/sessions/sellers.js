@@ -5,6 +5,7 @@ const Server = require('../../helpers/server')
 const SessionBasicsController = require('../defaults/session-basics')
 const Session = require('../../models/sessions/session')
 const Seller = require('../../models/sessions/seller')
+const Logist = require('../../models/sessions/logist')
 
 module.exports = {
 	/**
@@ -27,6 +28,7 @@ module.exports = {
 	 */
 	async setForeignKey() {
 		Seller.belongsTo(Session, { foreignKey: 'session_id', as: 'sessions' })
+		Seller.belongsTo(Logist, { foreignKey: 'logist_id', as: 'logists' })
 	},
 
 	/**
@@ -48,7 +50,9 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		SessionBasicsController.list(req, res, Seller)
+		console.log('SELLER LIST')
+		const logist_id = Server.decodedIdByToken(req.token)
+		SessionBasicsController.list(req, res, Seller, { where: { logist_id } })
 	},
 
 	/**
@@ -59,6 +63,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
+		req.body.logist_id = Server.decodedIdByToken(req.token)
 		SessionBasicsController.create(req, res, Seller)
 	},
 

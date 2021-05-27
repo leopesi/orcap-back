@@ -15,6 +15,13 @@ const Client = sequelize.define('clients', {
 			key: 'id',
 		},
 	},
+	logist_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'logists',
+			key: 'id',
+		},
+	},
 	user_type: {
 		type: DataTypes.STRING(50)
 	},

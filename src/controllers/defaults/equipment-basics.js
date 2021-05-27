@@ -108,11 +108,9 @@ module.exports = {
 					brand_id: req.body.brand_id,
 					provider_id: req.body.provider_id,
 				}
-				console.log(EquipmentData)
 				const EquipmentModel = await Equipment.findOne({ where: { id: md.dataValues.equipment_id } })
 				EquipmentModel.update(EquipmentData)
 					.then((result) => {
-						console.log(result)
 						md.update(req.body)
 							.then((data) => {
 								res.send({ status: model.tableName.toUpperCase() + '_UPDATE_SUCCESS', data })

@@ -18,6 +18,7 @@ const Logist = sequelize.define('logists', {
 		type: DataTypes.STRING(50)
 	},
 	name: DataTypes.STRING(50),
+	document: DataTypes.STRING,
 	phone: DataTypes.STRING,
 	active: {
 		type: DataTypes.BOOLEAN,
