@@ -54,8 +54,9 @@ module.exports = {
 				req.body.sidewalk_width
 			)
 			const max_capacity = Dimensions.getM3Real(dimension)
+			const logist_id = Server.decodedIdByToken(req.token)
 			const filters = await Filter.findAll({
-				where: { max_capacity: { [Op.gte]: !isNaN(max_capacity) ? max_capacity : 0 } },
+				where: { max_capacity: { [Op.gte]: !isNaN(max_capacity) ? max_capacity : 0 }, logist_id },
 				include: 'equipments',
 			})
 			if (filters && filters[0]) {
@@ -77,7 +78,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		await EquipmentBasicsController.get(req, res, Filter, 'equipments')
+		await EquipmentBasicsController.get(req, res, Filter)
 	},
 
 	/**
@@ -88,7 +89,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		await EquipmentBasicsController.list(req, res, Filter, 'equipments')
+		await EquipmentBasicsController.list(req, res, Filter)
 	},
 
 	/**

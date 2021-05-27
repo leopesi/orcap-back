@@ -69,7 +69,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		await EquipmentBasicsController.get(req, res, Engine, 'equipments')
+		await EquipmentBasicsController.get(req, res, Engine)
 	},
 
 	/**
@@ -80,7 +80,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		await EquipmentBasicsController.list(req, res, Engine, 'equipments')
+		await EquipmentBasicsController.list(req, res, Engine)
 	},
 
 	/**
@@ -91,7 +91,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		await EquipmentBasicsController.create(req, res, Engine, 'equipments')
+		await EquipmentBasicsController.create(req, res, Engine)
 	},
 
 	/**
@@ -102,7 +102,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		await EquipmentBasicsController.change(req, res, Engine, 'equipments')
+		await EquipmentBasicsController.change(req, res, Engine)
 	},
 
 	/**
@@ -113,7 +113,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async delete(req, res, self) {
-		await EquipmentBasicsController.delete(req, res, Engine, 'equipments')
+		await EquipmentBasicsController.delete(req, res, Engine)
 	},
 
 	/**
@@ -124,6 +124,6 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async restore(req, res, self) {
-		await EquipmentBasicsController.restore(req, res, Engine, 'equipments')
+		await EquipmentBasicsController.restore(req, res, Engine)
 	},
 }

@@ -14,18 +14,34 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} model
 	 */
-	async get(req, res, model, include) {
+	async get(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'select')) {
 			if (req.params.id) {
-				const md = await model.findOne({ where: { id: req.params.id }, include })
+				const logist_id = Server.decodedIdByToken(req.token)
+				const md = await model.findOne({
+					where: { id: req.params.id },
+					include: [
+						{
+							model: Equipment,
+							as: 'equipments',
+							where: { logist_id },
+						},
+					],
+				})
 				if (md && md.dataValues && md.dataValues.id) {
 					await Equipments.updateSingleRelations(md.dataValues)
 					res.send({ status: model.tableName.toUpperCase() + '_GET_SUCCESS', data: md })
 				} else {
-					res.send({ status: model.tableName.toUpperCase() + '_NOT_FOUND', error: model.tableName + ' not found' })
+					res.send({
+						status: model.tableName.toUpperCase() + '_NOT_FOUND',
+						error: model.tableName + ' not found',
+					})
 				}
 			} else {
-				res.send({ status: model.tableName.toUpperCase() + '_NOT_FOUND', error: model.tableName + ' not found' })
+				res.send({
+					status: model.tableName.toUpperCase() + '_NOT_FOUND',
+					error: model.tableName + ' not found',
+				})
 			}
 		} else {
 			res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
@@ -39,16 +55,16 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} model
 	 */
-	async list(req, res, model, include) {
+	async list(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'select')) {
-			const id = Server.decodedIdByToken(req.token)
+			const logist_id = Server.decodedIdByToken(req.token)
 			const md = await model.findAll({
 				where: {},
 				include: [
 					{
 						model: Equipment,
 						as: 'equipments',
-						where: { logist_id: id },
+						where: { logist_id },
 					},
 				],
 			})
@@ -56,7 +72,10 @@ module.exports = {
 				await Equipments.updateAllRelations(md)
 				res.send({ status: model.tableName.toUpperCase() + '_LIST_SUCCESS', data: md })
 			} else {
-				res.send({ status: model.tableName.toUpperCase() + '_QUERY_EMPTY', error: model.tableName + ' not found' })
+				res.send({
+					status: model.tableName.toUpperCase() + '_QUERY_EMPTY',
+					error: model.tableName + ' not found',
+				})
 			}
 		} else {
 			res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
@@ -73,15 +92,26 @@ module.exports = {
 	async create(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'insert')) {
 			delete req.body.id
-			model
-				.build(req.body)
+			req.body.logist_id = Server.decodedIdByToken(req.token)
+			Equipment.build(req.body)
 				.save()
-				.then(async (data) => {
-					res.send({ status: model.tableName.toUpperCase() + '_INSERT_SUCCESS', data })
+				.then(async (result) => {
+					model
+						.build(req.body)
+						.save()
+						.then(async (data) => {
+							res.send({ status: model.tableName.toUpperCase() + '_INSERT_SUCCESS', data })
+						})
+						.catch((error) => {
+							res.send({
+								status: model.tableName.toUpperCase() + '_INSERT_ERROR',
+								error: error.parent ? error.parent.detail : error,
+							})
+						})
 				})
 				.catch((error) => {
 					res.send({
-						status: model.tableName.toUpperCase() + '_INSERT_ERROR',
+						status: 'EQUIPMENT_INSERT_ERROR',
 						error: error.parent ? error.parent.detail : error,
 					})
 				})
@@ -99,7 +129,17 @@ module.exports = {
 	 */
 	async change(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'update')) {
-			const md = await model.findOne({ where: { id: req.params.id }, include: 'equipments' })
+			const logist_id = Server.decodedIdByToken(req.token)
+			const md = await model.findOne({
+				where: { id: req.params.id },
+				include: [
+					{
+						model: Equipment,
+						as: 'equipments',
+						where: { logist_id: id },
+					},
+				],
+			})
 			if (md) {
 				req.body.id = md.dataValues.id
 				const EquipmentData = {
