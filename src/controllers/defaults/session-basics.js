@@ -15,7 +15,7 @@ module.exports = {
 	 */
 	async get(req, res, model, options) {
 		if (await Permissions.check(req.token, model.tableName, 'select')) {
-			const where = Object.assign({ id: req.params.id }, options.where)
+			const where = Object.assign({ id: req.params.id }, options ? options.where : {})
 			const md = await model.findOne({
 				where,
 				include: 'sessions',
