@@ -6,11 +6,29 @@ const Config = require('../src/config/database')
 const pool = new Pool(Config)
 
 exec_sequelize = async () => {
-	const dirs = require('../src/models/sequelize-config')['models']
+	const type = JSON.parse(process.env.npm_config_argv).original[2]
+	const modelName = JSON.parse(process.env.npm_config_argv).original[3]
+	if (!type) {
+		console.log('\n***** Parâmetro não encontrado *****')
+		console.log('\n- Para atualizar todos os models:')
+		console.log('\nnpm run sequelize all')
+		console.log('\n- Para atualizar apenas um model:')
+		console.log('\nnpm run sequelize PASTA MODEL\n\n')
+		return
+	}
+	let dirs = {}
+	if (type == 'all') {
+		dirs = require('../src/models/sequelize-config')['models']
+		console.log(dirs)
+	} else if (modelName) {
+		dirs[type] = [modelName]
+	} else {
+		return
+	}
 	await sequelize.sync({ force: true })
 	try {
 		const dir = fs.readdirSync('./database/')
-	} catch(e) {
+	} catch (e) {
 		fs.mkdirSync('./database/')
 	}
 	for (const i in dirs) {
@@ -18,14 +36,9 @@ exec_sequelize = async () => {
 		for (const j in files) {
 			const model = require('../src/models/' + i + '/' + files[j])
 			console.log(model.tableName)
-			await model.sync({ force: true })
 			const data = await model.findAll({})
 			console.log('FIND ALL')
 			try {
-				const data_json_text = JSON.stringify(data, null, '\t')
-				if (data && data.length > 0 && data_json_text && data_json_text.trim() != '' && data_json_text.trim() != []) {
-					fs.writeFileSync('./database/' + model.tableName + '.json', data_json_text, 'utf8')
-				}
 				const data_by_file = fs.readFileSync('./database/' + model.tableName + '.json', null, 'utf8')
 				await model.sync({ force: true })
 				console.log(model.tableName + ' finish sync')
@@ -49,7 +62,12 @@ exec_sequelize = async () => {
 						console.log(error)
 					})
 				}
-			} catch(e) {
+				const data_final = await model.findAll({})
+				const data_json_text = JSON.stringify(data_final, null, '\t')
+				if (data_final && data_final.length > 0 && data_json_text && data_json_text.trim() != '' && data_json_text.trim() != []) {
+					fs.writeFileSync('./database/' + model.tableName + '.json', data_json_text, 'utf8')
+				}
+			} catch (e) {
 				console.log('ERRO NO ARQUIVO ' + model.tableName)
 			}
 		}

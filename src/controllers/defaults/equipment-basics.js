@@ -136,7 +136,7 @@ module.exports = {
 					{
 						model: Equipment,
 						as: 'equipments',
-						where: { logist_id: id },
+						where: { logist_id },
 					},
 				],
 			})

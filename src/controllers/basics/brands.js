@@ -37,7 +37,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		await CrudBasicsController.get(req, res, Brand)
+		await CrudBasicsController.get(req, res, Brand, 'providers')
 	},
 
 	/**
