@@ -96,6 +96,7 @@ module.exports = {
 			Equipment.build(req.body)
 				.save()
 				.then(async (result) => {
+					req.body.equipment_id = result.dataValues.id
 					model
 						.build(req.body)
 						.save()
