@@ -11,9 +11,6 @@ const Logist = require('../../models/sessions/logist')
 const Seller = require('../../models/sessions/Seller')
 const Client = require('../../models/sessions/Client')
 const Format = require('../../models/basics/format')
-const StatusBudget = require('../../models/basics/status_budget')
-const TypeBudget = require('../../models/basics/type_budget')
-const Payment = require('../../models/basics/payment')
 
 module.exports = {
 	/**
@@ -40,9 +37,6 @@ module.exports = {
 		Budget.belongsTo(Seller, { foreignKey: 'seller_id', as: 'sellers' })
 		Budget.belongsTo(Client, { foreignKey: 'client_id', as: 'clients' })
 		Budget.belongsTo(Format, { foreignKey: 'format_id', as: 'formats' })
-		Budget.belongsTo(StatusBudget, { foreignKey: 'status_budget_id', as: 'status_budgets' })
-		Budget.belongsTo(TypeBudget, { foreignKey: 'type_budget_id', as: 'types_budgets' })
-		Budget.belongsTo(Payment, { foreignKey: 'payment_id', as: 'payments' })
 	},
 
 	/**
@@ -64,7 +58,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		const include = ['clients', 'sellers', 'payments', 'status_budgets', 'types_budgets']
+		const include = ['clients', 'sellers']
 		await CrudBasicsController.list(req, res, Budget, include)
 	},
 

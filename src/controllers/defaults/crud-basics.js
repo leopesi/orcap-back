@@ -12,8 +12,8 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} model
 	 */
-	async get(req, res, model, include) {
-		if (await Permissions.check(req.token, model.tableName, 'select')) {
+	async get(req, res, model, include, check_permission) {
+		if (check_permission === false || (await Permissions.check(req.token, model.tableName, 'select'))) {
 			if (req.params.id) {
 				const md = await model.findOne({ where: { id: req.params.id }, include })
 				if (md && md.dataValues && md.dataValues.id) {
@@ -36,8 +36,8 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} model
 	 */
-	async list(req, res, model, include) {
-		if (await Permissions.check(req.token, model.tableName, 'select')) {
+	async list(req, res, model, include, check_permission) {
+		if (check_permission === false || (await Permissions.check(req.token, model.tableName, 'select'))) {
 			const md = await model.findAll({ where: {}, include })
 			if (md && md.length > 0) {
 				res.send({ status: model.tableName.toUpperCase() + '_LIST_SUCCESS', data: md })
@@ -66,7 +66,7 @@ module.exports = {
 					res.send({ status: model.tableName.toUpperCase() + '_INSERT_SUCCESS', data })
 				})
 				.catch((error) => {
-					res.send({ status: model.tableName.toUpperCase() + '_INSERT_ERROR', error: error.parent?error.parent.detail:error })
+					res.send({ status: model.tableName.toUpperCase() + '_INSERT_ERROR', error: error.parent ? error.parent.detail : error })
 				})
 		} else {
 			res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })

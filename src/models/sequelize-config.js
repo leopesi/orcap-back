@@ -6,9 +6,6 @@ module.exports = {
       "provider",
       "brand",
       "format",
-      "payment",
-      "status_budget",
-      "type_budget",
     ],
     equipments: [
       "equipment",

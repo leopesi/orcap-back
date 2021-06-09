@@ -1,18 +1,12 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = require('../../helpers/postgres')
-const Logist = require('../sessions/logist')
-const Seller = require('../sessions/seller')
-const Client = require('../sessions/client')
-const Format = require('../basics/format')
-const StatusBudget = require('../basics/status_budget')
-const TypeBudget = require('../basics/type_budget')
 
 const Budget = sequelize.define('budgets', {
 	id: {
 		type: DataTypes.UUID,
 		primaryKey: true,
-		defaultValue: DataTypes.UUIDV4
-	},	
+		defaultValue: DataTypes.UUIDV4,
+	},
 	logist_id: {
 		type: DataTypes.UUID,
 		references: {
@@ -41,41 +35,31 @@ const Budget = sequelize.define('budgets', {
 			key: 'id',
 		},
 	},
-	status_budget_id: {
-		type: DataTypes.UUID,
-		references: {
-			model: 'status_budgets',
-			key: 'id',
-		},
-	},
-	type_budget_id: {
-		type: DataTypes.UUID,
-		references: {
-			model: 'types_budgets',
-			key: 'id',
-		},
-	},
-	
-	payment_id: {
-		type: DataTypes.UUID,
-		references: {
-			model: 'payments',
-			key: 'id',
-		},
-	},
-	length: DataTypes.DECIMAL(10, 2), 
-	width: DataTypes.DECIMAL(10, 2), 
-	initial_depth: DataTypes.DECIMAL(10, 2), 
-	final_depth: DataTypes.DECIMAL(10, 2), 
-	sidewalk_width: DataTypes.DECIMAL(10, 2), 
+	status: DataTypes.STRING,
+	layout: DataTypes.STRING,
+	payment: DataTypes.STRING,
+	expiration_date: DataTypes.DATE,
+	discount: DataTypes.DECIMAL(10, 2),
+	length: DataTypes.DECIMAL(10, 2),
+	width: DataTypes.DECIMAL(10, 2),
+	initial_depth: DataTypes.DECIMAL(10, 2),
+	final_depth: DataTypes.DECIMAL(10, 2),
+	sidewalk_width: DataTypes.DECIMAL(10, 2),
+	beach: DataTypes.BOOLEAN,
+	beach_width: DataTypes.DECIMAL(10, 2),
+	beach_initial_depth: DataTypes.DECIMAL(10, 2),
+	beach_final_depth: DataTypes.DECIMAL(10, 2),
+	beach_sidewalk_width: DataTypes.DECIMAL(10, 2),
+	steps: DataTypes.BOOLEAN,
+	number_steps: DataTypes.INTEGER,
 	createdAt: {
 		type: DataTypes.DATE,
-		defaultValue: Sequelize.NOW
+		defaultValue: Sequelize.NOW,
 	},
 	updatedAt: {
 		type: DataTypes.DATE,
-		defaultValue: Sequelize.NOW
-	}
+		defaultValue: Sequelize.NOW,
+	},
 })
 
 module.exports = Budget
