@@ -18,7 +18,7 @@ module.exports = {
 		Server.addRoute('/sessions/send-mail-active/:mail', this.sendMailActive, this).get(false)
 		Server.addRoute('/sessions/active-account/:hash/:mail', this.activeAccount, this).get(false)
 		Server.addRoute('/sessions/send-mail-password/:mail', this.sendMailPassword, this).get(false)
-		Server.addRoute('/sessions/change-password-mail/:hash/:mail/:password', this.changePasswordMail, this).post(
+		Server.addRoute('/sessions/change-password-mail/:hash/:mail/:password', this.changePasswordMail, this).get(
 			false
 		)
 		Server.addRoute('/sessions/change-password', this.changePassword, this).post(true)

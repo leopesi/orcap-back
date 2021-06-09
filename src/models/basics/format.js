@@ -7,6 +7,7 @@ const Format = sequelize.define('formats', {
 		primaryKey: true,
 		defaultValue: DataTypes.UUIDV4
 	},
+	name: DataTypes.STRING(50),
 	image: DataTypes.STRING(50),
 	length: DataTypes.DECIMAL(10, 2), 
 	width: DataTypes.DECIMAL(10, 2), 

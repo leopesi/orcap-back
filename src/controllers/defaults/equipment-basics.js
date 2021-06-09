@@ -148,6 +148,10 @@ module.exports = {
 					name: req.body.name,
 					brand_id: req.body.brand_id,
 					provider_id: req.body.provider_id,
+					cost: req.body.cost,
+					profit_margin: req.body.profit_margin,
+					cash_price: req.body.cash_price,
+					forward_price: req.body.forward_price,
 				}
 				const EquipmentModel = await Equipment.findOne({ where: { id: md.dataValues.equipment_id } })
 				EquipmentModel.update(EquipmentData)

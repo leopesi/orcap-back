@@ -28,7 +28,7 @@ module.exports = {
 		const rel_brands = await this.getListRelations(Brand)
 		const rel_providers = await this.getListRelations(Provider)
 		for (const i in list) {
-			if (list[i].equipments) {
+			if (list[i].equipments && list[i].dataValues) {
 				list[i].dataValues.logists = rel_logist[list[i].equipments.logist_id]
 				list[i].dataValues.brands = rel_brands[list[i].equipments.brand_id]
 				list[i].dataValues.providers = rel_providers[list[i].equipments.provider_id]
@@ -64,7 +64,8 @@ module.exports = {
 		const md = await model.findOne({
 			where: { id },
 		})
-		return md.dataValues
+		if (md) return md.dataValues
+		else return {}
 	},
 
 	/**
