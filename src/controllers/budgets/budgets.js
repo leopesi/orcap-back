@@ -70,6 +70,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
+		delete req.body.id
 		await CrudBasicsController.create(req, res, Budget)
 	},
 
@@ -85,6 +86,8 @@ module.exports = {
 			const budgets = await Budget.findOne({ where: { id: req.params.id } })
 			if (budgets) {
 				req.body.id = budgets.dataValues.id
+				req.body.expiration_date = new Date(req.body.expiration_date)
+				console.log(req.body.expiration_date)
 				budgets
 					.update(req.body)
 					.then(async (data) => {
