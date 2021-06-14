@@ -21,7 +21,6 @@ const Session = sequelize.define(
 			unique: true,
 		},
 		password: DataTypes.STRING,
-		phone: DataTypes.STRING,
 		active: {
 			type: DataTypes.BOOLEAN,
 			defaultValue: false,
@@ -53,5 +52,10 @@ const Session = sequelize.define(
 		},
 	}
 )
+
+Session.hasOne(User, { foreignKey: 'session_id', as: 'users' })
+Session.hasOne(Logist, { foreignKey: 'session_id', as: 'logists' })
+Session.hasOne(Seller, { foreignKey: 'session_id', as: 'sellers' })
+Session.hasOne(Client, { foreignKey: 'session_id', as: 'clients' })
 
 module.exports = Session

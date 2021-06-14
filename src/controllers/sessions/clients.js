@@ -2,15 +2,15 @@
  * @module ClientsController
  */
 const Server = require('../../helpers/server')
-const Permissions = require('./permissions')
-const Sessions = require('./sessions')
-const Client = require('../../models/sessions/client')
+const SessionBasicsController = require('../defaults/session-basics')
 const Session = require('../../models/sessions/session')
+const Client = require('../../models/sessions/client')
+const Logist = require('../../models/sessions/logist')
 
 module.exports = {
 	/**
 	 * @function
-	 * Seta as rotas dos Clientas
+	 * Seta as rotas dos Usuários
 	 */
 	setRoutes() {
 		Server.addRoute('/clients/:id', this.get, this).get(true)
@@ -19,206 +19,92 @@ module.exports = {
 		Server.addRoute('/clients/:id/restore', this.restore, this).put(true)
 		Server.addRoute('/clients/:id', this.change, this).put(true)
 		Server.addRoute('/clients/:id', this.delete, this).delete(true)
-		Client.belongsTo(Session, { foreignKey: 'session_id', as: 'sessions' })
+		this.setForeignKey()
 	},
 
 	/**
 	 * @function
-	 * Retorna um Clienta
+	 * Seta as as chaves dos models
+	 */
+	async setForeignKey() {
+		Client.belongsTo(Session, { foreignKey: 'session_id', as: 'sessions' })
+		Client.belongsTo(Logist, { foreignKey: 'logist_id', as: 'logists' })
+	},
+
+	/**
+	 * @function
+	 * Retorna um Usuário
 	 * @param {Object} req
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		if (await Permissions.check(req.token, 'clients', 'select')) {
-			const client = await Client.findOne({
-				where: { id: req.params.id },
-				include: 'sessions',
-			})
-			delete client.password
-			if (client && client.id) {
-				res.send({ status: 'CLIENT_GET_SUCCESS', data: client })
-			} else {
-				res.send({ status: 'CLIENT_NOT_FOUND', error: 'Client not found' })
-			}
-		} else {
-			res.send({ status: 'CLIENT_PERMISSION_ERROR', error: 'Action not allowed' })
-		}
+		const logist_id = Server.decodedIdByToken(req.token)
+		SessionBasicsController.get(req, res, Client, { where: { logist_id } })
 	},
 
 	/**
 	 * @function
-	 * Lista de Clienta
+	 * Lista de Usuário
 	 * @param {Object} req
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		if (await Permissions.check(req.token, 'clients', 'select')) {
-			const clients = await Client.findAll({ where: {}, include: 'sessions' })
-			if (clients && clients.length > 0) {
-				res.send({ status: 'CLIENT_LIST_SUCCESS', data: clients })
-			} else {
-				res.send({ status: 'CLIENTS_QUERY_EMPTY', error: 'Client not found' })
-			}
-		} else {
-			res.send({
-				status: 'CLIENT_PERMISSION_ERROR',
-				error: 'Action not allowed',
-			})
-		}
+		const logist_id = Server.decodedIdByToken(req.token)
+		SessionBasicsController.list(req, res, Client, { where: { logist_id } })
 	},
 
 	/**
 	 * @function
-	 * Cria um Clienta
+	 * Cria um Usuário
 	 * @param {Object} req
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		delete req.body.id
-		if (await Permissions.check(req.token, 'clients', 'insert')) {
-			req.body.password = await Server.getHash(req.body.password)
-			req.body.type = 'admin'
-			req.body.table = 'clients'
-			Sessions.create(req, (result) => {
-				if (result.status == 'SESSION_INSERT_SUCCESS') {
-					req.body.session_id = result.data.id
-					Client.build(req.body)
-						.save()
-						.then(async (data) => {
-							res.send({ status: 'CLIENT_INSERT_SUCCESS', data })
-						})
-						.catch((error) => {
-							res.send({
-								status: 'CLIENT_INSERT_ERROR',
-								error: error.parent.detail,
-							})
-						})
-				} else {
-					res.send({ status: 'SESSION_INSERT_ERROR', error: result.error })
-				}
-			})
-		} else {
-			res.send({ status: 'CLIENT_PERMISSION_ERROR', error: 'Action not allowed' })
-		}
+		req.body.logist_id = Server.decodedIdByToken(req.token)
+		SessionBasicsController.create(req, res, Client)
 	},
 
 	/**
 	 * @function
-	 * Altera um Clienta
+	 * Altera um Usuário
 	 * @param {Object} req
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		if (await Permissions.check(req.token, 'clients', 'update')) {
-			const result = await Client.findOne({ where: { id: req.params.id } })
-			if (result) {
-				req.body.id = result.dataValues.id
-				delete req.body.mail
-				delete req.body.password
-				result
-					.update(req.body)
-					.then((data) => {
-						res.send({ status: 'CLIENT_UPDATE_SUCCESS', data })
-					})
-					.catch((error) => {
-						res.send({
-							status: 'CLIENT_UPDATE_ERROR',
-							error: error.parent.detail,
-						})
-					})
-			} else {
-				res.send({
-					status: 'CLIENT_NOT_FOUND',
-					error: req.params,
-				})
-			}
+		const logist_id = Server.decodedIdByToken(req.token)
+		const result = await Client.findOne({ where: { id: req.body.id, logist_id } })
+		if (result) {
+			SessionBasicsController.change(req, res, Client)
 		} else {
-			res.send({
-				status: 'CLIENT_PERMISSION_ERROR',
-				error: 'Action not allowed',
-			})
+			res.send({ status: 'CLIENT_UPDATE_SESSION_ERROR', error: 'Data not found' })
 		}
 	},
 
 	/**
 	 * @function
-	 * Deleta um Clienta
+	 * Deleta um Usuário
 	 * @param {Object} req
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
 	async delete(req, res, self) {
-		if (await Permissions.check(req.token, 'clients', 'delete')) {
-			const result = await Client.findOne({ where: { id: req.params.id } })
-			if (result) {
-				delete req.body.mail
-				delete req.body.password
-				req.body.active = false
-				result
-					.update(req.body)
-					.then((data) => {
-						res.send({ status: 'CLIENT_DELETE_SUCCESS', data })
-					})
-					.catch((error) => {
-						res.send({
-							status: 'CLIENT_DELETE_ERROR',
-							error: error.parent.detail,
-						})
-					})
-			} else {
-				res.send({
-					status: 'CLIENT_NOT_FOUND',
-					error: req.params,
-				})
-			}
-		} else {
-			res.send({
-				status: 'CLIENT_PERMISSION_ERROR',
-				error: 'Action not allowed',
-			})
-		}
+		const logist_id = Server.decodedIdByToken(req.token)
+		SessionBasicsController.delete(req, res, Client, { where: { logist_id } })
 	},
 
 	/**
 	 * @function
-	 * Deleta um Clienta
+	 * Deleta um Usuário
 	 * @param {Object} req
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
 	async restore(req, res, self) {
-		if (await Permissions.check(req.token, 'clients', 'restore')) {
-			const result = await Client.findOne({ where: { id: req.params.id } })
-			if (result) {
-				delete req.body.mail
-				delete req.body.password
-				req.body.active = true
-				result
-					.update(req.body)
-					.then((data) => {
-						res.send({ status: 'CLIENT_RESTORE_SUCCESS', data })
-					})
-					.catch((error) => {
-						res.send({
-							status: 'CLIENT_RESTORE_ERROR',
-							error: error.parent.detail,
-						})
-					})
-			} else {
-				res.send({
-					status: 'CLIENT_NOT_FOUND',
-					error: req.params,
-				})
-			}
-		} else {
-			res.send({
-				status: 'CLIENT_PERMISSION_ERROR',
-				error: 'Action not allowed',
-			})
-		}
+		const logist_id = Server.decodedIdByToken(req.token)
+		SessionBasicsController.restore(req, res, Client, { where: { logist_id } })
 	},
 }

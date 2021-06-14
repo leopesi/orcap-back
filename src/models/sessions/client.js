@@ -1,5 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = require('../../helpers/postgres')
+const Session = require('./session')
 
 const Client = sequelize.define('clients', {
 	id: {
@@ -14,7 +15,14 @@ const Client = sequelize.define('clients', {
 			key: 'id',
 		},
 	},
-	type_id: {
+	logist_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'logists',
+			key: 'id',
+		},
+	},
+	user_type: {
 		type: DataTypes.STRING(50)
 	},
 	name: DataTypes.STRING(50),

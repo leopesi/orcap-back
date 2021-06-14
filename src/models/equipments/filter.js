@@ -15,6 +15,23 @@ const Filter = sequelize.define('filters', {
 			key: 'id',
 		},
 	},
+	engine_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'engines',
+			key: 'id',
+		},
+	},
+	lid_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'lids',
+			key: 'id',
+		},
+	},
+	max_capacity: {
+		type: DataTypes.DECIMAL,
+	},
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW
@@ -24,7 +41,5 @@ const Filter = sequelize.define('filters', {
 		defaultValue: Sequelize.NOW
 	}
 })
-
-Filter.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
 
 module.exports = Filter

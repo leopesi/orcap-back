@@ -14,10 +14,11 @@ const Logist = sequelize.define('logists', {
 			key: 'id',
 		},
 	},
-	type_id: {
+	user_type: {
 		type: DataTypes.STRING(50)
 	},
 	name: DataTypes.STRING(50),
+	document: DataTypes.STRING,
 	phone: DataTypes.STRING,
 	active: {
 		type: DataTypes.BOOLEAN,

@@ -15,6 +15,9 @@ const Profile = sequelize.define('profiles', {
 			key: 'id',
 		},
 	},
+	size: {
+		type: DataTypes.DECIMAL,
+	},
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW
@@ -24,7 +27,5 @@ const Profile = sequelize.define('profiles', {
 		defaultValue: Sequelize.NOW
 	}
 })
-
-Profile.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
 
 module.exports = Profile

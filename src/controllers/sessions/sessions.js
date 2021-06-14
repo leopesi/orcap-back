@@ -18,7 +18,10 @@ module.exports = {
 		Server.addRoute('/sessions/send-mail-active/:mail', this.sendMailActive, this).get(false)
 		Server.addRoute('/sessions/active-account/:hash/:mail', this.activeAccount, this).get(false)
 		Server.addRoute('/sessions/send-mail-password/:mail', this.sendMailPassword, this).get(false)
-		Server.addRoute('/sessions/change-password/:hash/:mail/:password', this.changePassword, this).post(false)
+		Server.addRoute('/sessions/change-password-mail/:hash/:mail/:password', this.changePasswordMail, this).get(
+			false
+		)
+		Server.addRoute('/sessions/change-password', this.changePassword, this).post(true)
 
 		Server.addRoute('/sessions/:id', this.get, this).get(true)
 		Server.addRoute('/sessions/', this.list, this).get(true)
@@ -83,18 +86,18 @@ module.exports = {
 							{ last_login: Date.now() },
 							{
 								where: {
-									id: session.id,
+									id: session.dataValues.id,
 								},
 							}
 						)
 						if (session.users) {
-							res.send({ token, type: session.users.type_id })
+							res.send({ token, type: session.users.user_type, name: session.users.name })
 						} else if (session.logists) {
-							res.send({ token, type: session.logists.type_id })
+							res.send({ token, type: session.logists.user_type, name: session.logists.name })
 						} else if (session.sellers) {
-							res.send({ token, type: session.sellers.type_id })
+							res.send({ token, type: session.sellers.user_type, name: session.sellers.name })
 						} else if (session.clients) {
-							res.send({ token, type: session.clients.type_id })
+							res.send({ token, type: session.clients.user_type, name: session.clients.name })
 						} else {
 							res.send({
 								status: (session.type ? session.type.toUpperCase() : '_') + 'SESSION_NOT_FOUND',
@@ -148,9 +151,9 @@ module.exports = {
 	async activeAccount(req, res, self) {
 		const session = await Session.findOne({
 			attributes: ['id', 'active_hash', 'active', 'updatedAt'],
-			where: { active_hash: req.params.hash, mail: req.params.mail, active: false },
+			where: { active_hash: req.params.hash, mail: req.params.mail },
 		})
-		if (session && session.id) {
+		if (session && session.dataValues.id) {
 			const d1 = new Date(session.updatedAt)
 			d1.setMinutes(d1.getMinutes() + 5)
 			const d2 = new Date(Date.now())
@@ -187,12 +190,12 @@ module.exports = {
 	async sendMailActive(req, res, self) {
 		const session = await Session.findOne({
 			attributes: ['id', 'active_hash', 'mail'],
-			where: { mail: req.params.mail, active: false },
+			where: { mail: req.params.mail },
 		})
-		if (session && session.id) {
+		if (session && session.dataValues.id) {
 			const result = await session
 				.update({
-					active_hash: Server.createToken(session.id + req.params.mail),
+					active_hash: Server.createToken(session.dataValues.id + req.params.mail),
 				})
 				.catch((error) => {
 					res.send({
@@ -223,7 +226,6 @@ module.exports = {
 			res.send({ status: 'SESSION_NOT_FOUND', error: 'Session not found' })
 		}
 	},
-
 	/**
 	 * @function
 	 * Modificar senha
@@ -232,11 +234,51 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async changePassword(req, res, self) {
+		const id = Server.decodedIdByToken(req.token)
+		const session = await Session.findOne({
+			attributes: ['id', 'password'],
+			where: { id, active: true },
+		})
+		if (session && session.dataValues.id) {
+			const token = await self.createLoginHash(session, req.body.actual_password)
+			if (token) {
+				const new_password = await Server.getHash(req.body.new_password)
+				session
+					.update({ password_hash: null, active: true, password: new_password })
+					.then((data) => {
+						delete data.password
+						res.send({
+							status: 'SESSION_PASSWORD_CHANGED',
+							data: data,
+						})
+					})
+					.catch((error) => {
+						res.send({
+							status: 'SESSION_UPDATE_ERROR',
+							error: error.parent.detail,
+						})
+					})
+			} else {
+				res.send({ status: 'SESSION_ERROR_PASSWORD', error: 'Session error password' })
+			}
+		} else {
+			res.send({ status: 'SESSION_ACTIVE_ERROR', error: 'Session not found' })
+		}
+	},
+
+	/**
+	 * @function
+	 * Modificar senha pelo Hash do Email
+	 * @param {Object} req
+	 * @param {Object} res
+	 * @param {Object} self
+	 */
+	async changePasswordMail(req, res, self) {
 		const session = await Session.findOne({
 			attributes: ['id', 'password_hash', 'active', 'updatedAt'],
 			where: { password_hash: req.params.hash, mail: req.params.mail, active: true },
 		})
-		if (session && session.id) {
+		if (session && session.dataValues.id) {
 			const d1 = new Date(session.updatedAt)
 			d1.setMinutes(d1.getMinutes() + 5)
 			const d2 = new Date(Date.now())
@@ -245,9 +287,10 @@ module.exports = {
 				session
 					.update({ password_hash: null, active: true, password })
 					.then((data) => {
+						delete data.password
 						res.send({
 							status: 'SESSION_ACTIVE_SUCCESS',
-							data: session,
+							data: data,
 						})
 					})
 					.catch((error) => {
@@ -276,10 +319,10 @@ module.exports = {
 			attributes: ['id', 'password_hash', 'mail'],
 			where: { mail: req.params.mail, active: true },
 		})
-		if (session && session.id) {
+		if (session && session.dataValues.id) {
 			session
 				.update({
-					password_hash: Server.createToken(session.id + req.params.mail),
+					password_hash: Server.createToken(session.dataValues.id + req.params.mail),
 				})
 				.then((data) => {
 					res.send({
@@ -310,8 +353,8 @@ module.exports = {
 			const session = await Session.findOne({
 				where: { id: req.params.id },
 			})
-			delete session.password
-			if (session && session.id) {
+			if (session && session.dataValues.id) {
+				delete session.password
 				res.send({ status: 'SESSION_GET_SUCCESS', data: session })
 			} else {
 				res.send({ status: 'SESSION_NOT_FOUND', error: 'Session not found' })

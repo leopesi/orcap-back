@@ -14,7 +14,7 @@ const User = sequelize.define('users', {
 			key: 'id',
 		},
 	},
-	type_id: {
+	user_type: {
 		type: DataTypes.STRING(50)
 	},
 	name: DataTypes.STRING(50),

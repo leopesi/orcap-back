@@ -15,6 +15,9 @@ const Engine = sequelize.define('engines', {
 			key: 'id',
 		},
 	},
+	max_capacity: {
+		type: DataTypes.DECIMAL,
+	},
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW,
@@ -24,7 +27,5 @@ const Engine = sequelize.define('engines', {
 		defaultValue: Sequelize.NOW,
 	},
 })
-
-Engine.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
 
 module.exports = Engine

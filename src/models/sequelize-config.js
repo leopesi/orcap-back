@@ -1,8 +1,26 @@
 module.exports = {
-	models: {
-		sessions: ['user', 'logist', 'seller', 'client', 'session'],
-		permissions: ['permission-group', 'permission'],
-		basics: ['provider', 'brand', 'model', 'format', 'payment', 'status_budget', 'type_budget'],
-		equipments: ['equipment', 'blanket', 'engine', 'filter', 'lid', 'profile', 'vinyl'],
-	},
-}
+  models: {
+    permissions: ["permission-group", "permission"],
+    sessions: ["session", "user", "logist", "seller", "client"],
+    basics: [
+      "provider",
+      "brand",
+      "format",
+    ],
+    equipments: [
+      "equipment",
+      "engine",
+	  "lid",
+      "filter",
+      "blanket",
+      "profile",
+      "vinyl",
+    ],
+    budgets: [
+      "budget",
+      "budget_equipment",
+      "budget_manpower",
+      "budget_material",
+    ],
+  },
+};

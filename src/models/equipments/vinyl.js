@@ -15,6 +15,12 @@ const Vinyl = sequelize.define('vinyls', {
 			key: 'id',
 		},
 	},
+	m2_size: {
+		type: DataTypes.DECIMAL,
+	},
+	thickness: {
+		type: DataTypes.DECIMAL,
+	},
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW
@@ -24,7 +30,5 @@ const Vinyl = sequelize.define('vinyls', {
 		defaultValue: Sequelize.NOW
 	}
 })
-
-Vinyl.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
 
 module.exports = Vinyl

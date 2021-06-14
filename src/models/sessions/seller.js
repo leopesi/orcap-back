@@ -14,7 +14,14 @@ const Seller = sequelize.define('sellers', {
 			key: 'id',
 		},
 	},
-	type_id: {
+	logist_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'logists',
+			key: 'id',
+		},
+	},
+	user_type: {
 		type: DataTypes.STRING(50)
 	},
 	name: DataTypes.STRING(50),

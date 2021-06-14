@@ -15,6 +15,9 @@ const Blanket = sequelize.define('blankets', {
 			key: 'id',
 		},
 	},
+	m2_size: {
+		type: DataTypes.DECIMAL,
+	},
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW
@@ -24,7 +27,5 @@ const Blanket = sequelize.define('blankets', {
 		defaultValue: Sequelize.NOW
 	}
 })
-
-Blanket.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
 
 module.exports = Blanket
