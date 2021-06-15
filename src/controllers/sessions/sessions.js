@@ -28,16 +28,15 @@ module.exports = {
 		Server.addRoute('/sessions/:id', this.change, this).put(true)
 		Server.addRoute('/sessions/:id', this.delete, this).delete(true)
 		this.setForeignKey()
+
 	},
 
 	/**
 	 * @function
 	 * Seta as as chaves dos models
 	 */
-	async setForeignKey() {
-		
-	},
-
+	async setForeignKey() {},
+	
 	/**
 	 * @function
 	 * Cria uma Sessão

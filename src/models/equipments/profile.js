@@ -15,9 +15,6 @@ const Profile = sequelize.define('profiles', {
 			key: 'id',
 		},
 	},
-	size: {
-		type: DataTypes.DECIMAL,
-	},
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW

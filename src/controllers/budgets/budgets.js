@@ -87,7 +87,6 @@ module.exports = {
 			if (budgets) {
 				req.body.id = budgets.dataValues.id
 				req.body.expiration_date = new Date(req.body.expiration_date)
-				console.log(req.body.expiration_date)
 				budgets
 					.update(req.body)
 					.then(async (data) => {

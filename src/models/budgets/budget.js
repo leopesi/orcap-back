@@ -55,7 +55,7 @@ const Budget = sequelize.define('budgets', {
 	m2_facial: DataTypes.DECIMAL(10, 2),
 	m2_total: DataTypes.DECIMAL(10, 2),
 	m3_total: DataTypes.DECIMAL(10, 2),
-	
+
 	beach: DataTypes.BOOLEAN,
 	beach_width: DataTypes.DECIMAL(10, 2),
 	beach_initial_depth: DataTypes.DECIMAL(10, 2),
@@ -66,6 +66,21 @@ const Budget = sequelize.define('budgets', {
 	beach_m2_facial: DataTypes.DECIMAL(10, 2),
 	beach_m2_total: DataTypes.DECIMAL(10, 2),
 	beach_m3_total: DataTypes.DECIMAL(10, 2),
+
+	side_wall: DataTypes.DECIMAL(10, 2),
+	subfloor: DataTypes.DECIMAL(10, 2),
+	baldrame: DataTypes.DECIMAL(10, 2),
+	mold: DataTypes.DECIMAL(10, 2),
+	heating: DataTypes.DECIMAL(10, 2),
+	cm_installation: DataTypes.DECIMAL(10, 2),
+	vinyl_installation: DataTypes.DECIMAL(10, 2),
+	excavation: DataTypes.DECIMAL(10, 2),
+	mortar: DataTypes.DECIMAL(10, 2),
+	reserve: DataTypes.DECIMAL(10, 2),
+	conduction: DataTypes.DECIMAL(10, 2),
+	material_placement: DataTypes.DECIMAL(10, 2),
+	earth_removal: DataTypes.DECIMAL(10, 2),
+	art: DataTypes.DECIMAL(10, 2),
 
 	steps: DataTypes.BOOLEAN,
 	number_steps: DataTypes.INTEGER,

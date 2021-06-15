@@ -15,9 +15,6 @@ const Vinyl = sequelize.define('vinyls', {
 			key: 'id',
 		},
 	},
-	m2_size: {
-		type: DataTypes.DECIMAL,
-	},
 	thickness: {
 		type: DataTypes.DECIMAL,
 	},
