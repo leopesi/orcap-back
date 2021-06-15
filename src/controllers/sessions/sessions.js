@@ -6,10 +6,10 @@ const Permissions = require('./permissions')
 const Session = require('../../models/sessions/session')
 
 const MailsSendActive = require('../mails/sessions/send-mail-active')
-// const User = require('../../models/sessions/user')
-// const Logist = require('../../models/sessions/logist')
-// const Seller = require('../../models/sessions/seller')
-// const Client = require('../../models/sessions/client')
+const User = require('../../models/sessions/user')
+const Logist = require('../../models/sessions/logist')
+const Seller = require('../../models/sessions/seller')
+const Client = require('../../models/sessions/client')
 
 module.exports = {
 	setRoutes() {
@@ -28,6 +28,7 @@ module.exports = {
 		Server.addRoute('/sessions/:id', this.change, this).put(true)
 		Server.addRoute('/sessions/:id', this.delete, this).delete(true)
 		this.setForeignKey()
+
 	},
 
 	/**
