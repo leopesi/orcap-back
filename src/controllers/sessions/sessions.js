@@ -18,9 +18,7 @@ module.exports = {
 		Server.addRoute('/sessions/send-mail-active/:mail', this.sendMailActive, this).get(false)
 		Server.addRoute('/sessions/active-account/:hash/:mail', this.activeAccount, this).get(false)
 		Server.addRoute('/sessions/send-mail-password/:mail', this.sendMailPassword, this).get(false)
-		Server.addRoute('/sessions/change-password-mail/:hash/:mail/:password', this.changePasswordMail, this).get(
-			false
-		)
+		Server.addRoute('/sessions/change-password-mail/:hash/:mail/:password', this.changePasswordMail, this).get(false)
 		Server.addRoute('/sessions/change-password', this.changePassword, this).post(true)
 
 		Server.addRoute('/sessions/:id', this.get, this).get(true)
@@ -29,11 +27,15 @@ module.exports = {
 		Server.addRoute('/sessions/:id/restore', this.restore, this).put(true)
 		Server.addRoute('/sessions/:id', this.change, this).put(true)
 		Server.addRoute('/sessions/:id', this.delete, this).delete(true)
+		this.setForeignKey()
+	},
 
-		Session.hasOne(User, { foreignKey: 'session_id', as: 'users' })
-		Session.hasOne(Logist, { foreignKey: 'session_id', as: 'logists' })
-		Session.hasOne(Seller, { foreignKey: 'session_id', as: 'sellers' })
-		Session.hasOne(Client, { foreignKey: 'session_id', as: 'clients' })
+	/**
+	 * @function
+	 * Seta as as chaves dos models
+	 */
+	async setForeignKey() {
+		
 	},
 
 	/**
