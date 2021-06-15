@@ -1,8 +1,6 @@
 /**
  * @module Middlewares
  */
-const jwt = require('jsonwebtoken');
-const { promisify } = require('util');
 
 module.exports = {
     
@@ -24,32 +22,27 @@ module.exports = {
             let authHeader = undefined
             if (req.headers) {
                 if (req.headers.authorization) {
-                    authHeader = req.headers.authorization;
+                    authHeader = req.headers.authorization
                 } else if (req.headers.Authorization) {
                     authHeader = req.headers.Authorization
                 }
             }
             
             if (!authHeader) {
-                return res.status(401).send({ error: 'Token não informado' });
+                return res.status(401).send({ error: 'TOKEN_NOT_FOUND' })
             }
 
-            const aut = authHeader.split(' ');
-            const token = aut.length === 2 ? aut[1] : aut[0];
-
-            const { key } = self.config.token;
+            const aut = authHeader.split(' ')
+            const token = aut.length === 2 ? aut[1] : ''
             try {
-                const decoded = await promisify(jwt.verify)(token, key);
-
-                req.tokenID = decoded.id;
-
-                return true; //next();
+                req.token = token
+                return true
             } catch (err) {
 
-                return res.status(401).send({ error: 'Token inválido' });
+                return res.status(401).send({ error: 'INVALID_TOKEN' })
             }
         } catch (e) {
-            return res.status(401).send({ error: 'Middlewares Autenticação Error: ' + e.message });
+            return res.status(401).send({ error: 'AUTH_CATCH_ERROR' + e.message })
         }
     },
 }

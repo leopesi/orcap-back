@@ -1,5 +1,4 @@
 const Server = require('./helpers/server')
-const Postgres = require('./helpers/postgres')
-
+const Router = require('./router')
 Server.start()
-Postgres.getClients()
+Router.start()

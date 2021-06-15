@@ -87,7 +87,7 @@ module.exports = {
 			},
 			/**
 			 * @function
-			 * Seta uma rota para o método POST
+			 * Seta uma rota para o método PUT
 			 * @param {Boolean} auth
 			 * Se auth = true será tratado pelo middleware de autenticacao
 			 */
@@ -105,7 +105,7 @@ module.exports = {
 			},
 			/**
 			 * @function
-			 * Seta uma rota para o método POST
+			 * Seta uma rota para o método DELETE
 			 * @param {Boolean} auth
 			 * Se auth = true será tratado pelo middleware de autenticacao
 			 */
@@ -152,7 +152,8 @@ module.exports = {
 	async compareHash(hash, str) {
 		try {
 			if (str === undefined) return false
-			return await bcrypt.compare(str.toString(), hash)
+			const result = await bcrypt.compare(str.toString(), hash)
+			return result
 		} catch (e) {
 			return false
 		}
@@ -161,10 +162,10 @@ module.exports = {
 	/**
 	 * @function
 	 * Cria uma string criptografada que pode ser descriptografada
-	 * @param {String} str 
-	 * String a ser encriptografada 
-	 * @returns 
-	 * 
+	 * @param {String} str
+	 * String a ser encriptografada
+	 * @returns
+	 *
 	 */
 	createToken(str) {
 		try {
@@ -177,8 +178,60 @@ module.exports = {
 
 	/**
 	 * @function
+	 * Retorna string descriptografada
+	 * @param {String} str
+	 * String a ser descriptografada
+	 * @returns
+	 *
+	 */
+	decodeToken(str) {
+		try {
+			return jwt.verify(str, Config.token.key).str
+		} catch (e) {
+			return undefined
+		}
+	},
+
+	/**
+	 * @function
+	 * Retorna o Id através do token
+	 * @param {Object} req
+	 * Request Express
+	 * @returns
+	 *
+	 */
+	decodedIdByRequestHeader(req) {
+		try {
+			const auth = req.headers.authorization.split(' ')
+			const token = auth.length === 2 ? auth[1] : ''
+			const id = jwt.decode(token, Config.token.key).str
+			return id
+		} catch (e) {
+			return undefined
+		}
+	},
+
+	/**
+	 * @function
+	 * Retorna o Id através do token
+	 * @param {String} token
+	 * Request Express
+	 * @returns
+	 *
+	 */
+	decodedIdByToken(token) {
+		try {
+			const id = jwt.decode(token, Config.token.key).str
+			return id
+		} catch (e) {
+			return undefined
+		}
+	},
+
+	/**
+	 * @function
 	 * Arruma o request do GET unindo o .body com o .query
-	 * @param {Object} request 
+	 * @param {Object} request
 	 * Request do Express
 	 * @returns {Object}
 	 * Request do Express arrumado
@@ -191,5 +244,4 @@ module.exports = {
 			return undefined
 		}
 	},
-
 }

@@ -1,0 +1,153 @@
+ , , 
+session,id,UUID
+session,table,VARCHAR(50)
+session,mail,VARCHAR(255)
+session,password,VARCHAR(255)
+session,phone,VARCHAR(255)
+session,active,BOOLEAN
+session,last_login,TIMESTAMP WITH TIME ZONE
+session,createdAt,TIMESTAMP WITH TIME ZONE
+session,updatedAt,TIMESTAMP WITH TIME ZONE
+ , , 
+user,id,UUID
+user,session_id,UUID
+user,type_id,VARCHAR(50)
+user,name,VARCHAR(50)
+user,phone,VARCHAR(255)
+user,active,BOOLEAN
+user,createdAt,TIMESTAMP WITH TIME ZONE
+user,updatedAt,TIMESTAMP WITH TIME ZONE
+ , , 
+logist,id,UUID
+logist,session_id,UUID
+logist,type_id,VARCHAR(50)
+logist,name,VARCHAR(50)
+logist,phone,VARCHAR(255)
+logist,active,BOOLEAN
+logist,createdAt,TIMESTAMP WITH TIME ZONE
+logist,updatedAt,TIMESTAMP WITH TIME ZONE
+ , , 
+seller,id,UUID
+seller,session_id,UUID
+seller,type_id,VARCHAR(50)
+seller,name,VARCHAR(50)
+seller,phone,VARCHAR(255)
+seller,active,BOOLEAN
+seller,createdAt,TIMESTAMP WITH TIME ZONE
+seller,updatedAt,TIMESTAMP WITH TIME ZONE
+ , , 
+client,id,UUID
+client,session_id,UUID
+client,type_id,VARCHAR(50)
+client,name,VARCHAR(50)
+client,phone,VARCHAR(255)
+client,active,BOOLEAN
+client,createdAt,TIMESTAMP WITH TIME ZONE
+client,updatedAt,TIMESTAMP WITH TIME ZONE
+ , , 
+permission-group,id,UUID
+permission-group,name,VARCHAR(50)
+permission-group,createdAt,TIMESTAMP WITH TIME ZONE
+permission-group,updatedAt,TIMESTAMP WITH TIME ZONE
+ , , 
+permission,name,VARCHAR(50)
+permission,table,VARCHAR(50)
+permission,type,VARCHAR(50)
+permission,text,VARCHAR(50)
+permission,createdAt,TIMESTAMP WITH TIME ZONE
+permission,updatedAt,TIMESTAMP WITH TIME ZONE
+ , , 
+equipment,id,UUID
+equipment,provider_id,UUID
+equipment,brand_id,UUID
+equipment,model_id,UUID
+equipment,name,VARCHAR(50)
+equipment,description,VARCHAR(50)
+equipment,cost,DECIMAL(10,2)
+equipment,profit_margin,DECIMAL(10,2)
+equipment,cash_price,DECIMAL(10,2)
+equipment,forward_price,DECIMAL(10,2)
+equipment,createdAt,TIMESTAMP WITH TIME ZONE
+equipment,updatedAt,TIMESTAMP WITH TIME ZONE
+ , , 
+blanket,id,UUID
+blanket,equipment_id,UUID
+blanket,createdAt,TIMESTAMP WITH TIME ZONE
+blanket,updatedAt,TIMESTAMP WITH TIME ZONE
+ , , 
+engine,id,UUID
+engine,equipment_id,UUID
+engine,createdAt,TIMESTAMP WITH TIME ZONE
+engine,updatedAt,TIMESTAMP WITH TIME ZONE
+ , , 
+filter,id,UUID
+filter,equipment_id,UUID
+filter,createdAt,TIMESTAMP WITH TIME ZONE
+filter,updatedAt,TIMESTAMP WITH TIME ZONE
+ , , 
+lid,id,UUID
+lid,equipment_id,UUID
+lid,createdAt,TIMESTAMP WITH TIME ZONE
+lid,updatedAt,TIMESTAMP WITH TIME ZONE
+ , , 
+profile,id,UUID
+profile,equipment_id,UUID
+profile,createdAt,TIMESTAMP WITH TIME ZONE
+profile,updatedAt,TIMESTAMP WITH TIME ZONE
+ , , 
+vinyl,id,UUID
+vinyl,equipment_id,UUID
+vinyl,createdAt,TIMESTAMP WITH TIME ZONE
+vinyl,updatedAt,TIMESTAMP WITH TIME ZONE
+ , , 
+provider,id,UUID
+provider,name,VARCHAR(50)
+provider,description,VARCHAR(50)
+provider,createdAt,TIMESTAMP WITH TIME ZONE
+provider,updatedAt,TIMESTAMP WITH TIME ZONE
+ , , 
+brand,id,UUID
+brand,provider_id,UUID
+brand,name,VARCHAR(50)
+brand,description,VARCHAR(50)
+brand,createdAt,TIMESTAMP WITH TIME ZONE
+brand,updatedAt,TIMESTAMP WITH TIME ZONE
+ , , 
+model,id,UUID
+model,brand_id,UUID
+model,name,VARCHAR(50)
+model,description,VARCHAR(50)
+model,createdAt,TIMESTAMP WITH TIME ZONE
+model,updatedAt,TIMESTAMP WITH TIME ZONE
+ , , 
+format,id,UUID
+format,image,VARCHAR(50)
+format,length,DECIMAL(10,2)
+format,width,DECIMAL(10,2)
+format,initial_depth,DECIMAL(10,2)
+format,final_depth,DECIMAL(10,2)
+format,average_depth,DECIMAL(10,2)
+format,sidewalk_width,DECIMAL(10,2)
+format,perimeter,DECIMAL(10,2)
+format,pool_area,DECIMAL(10,2)
+format,createdAt,TIMESTAMP WITH TIME ZONE
+format,updatedAt,TIMESTAMP WITH TIME ZONE
+ , , 
+payment,id,UUID
+payment,logist_id,UUID
+payment,name,VARCHAR(50)
+payment,description,VARCHAR(50)
+payment,createdAt,TIMESTAMP WITH TIME ZONE
+payment,updatedAt,TIMESTAMP WITH TIME ZONE
+ , , 
+status_budget,id,UUID
+status_budget,name,VARCHAR(50)
+status_budget,description,VARCHAR(50)
+status_budget,createdAt,TIMESTAMP WITH TIME ZONE
+status_budget,updatedAt,TIMESTAMP WITH TIME ZONE
+ , , 
+type_budget,id,UUID
+type_budget,name,VARCHAR(50)
+type_budget,description,VARCHAR(50)
+type_budget,createdAt,TIMESTAMP WITH TIME ZONE
+type_budget,updatedAt,TIMESTAMP WITH TIME ZONE
