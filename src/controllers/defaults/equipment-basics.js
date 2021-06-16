@@ -193,7 +193,16 @@ module.exports = {
 	 */
 	async delete(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'delete')) {
-			const md = await model.findOne({ where: { id: req.params.id } })
+			const md = await model.findOne({
+				where: { id: req.params.id },
+				include: [
+					{
+						model: Equipment,
+						as: 'equipments',
+						where: { logist_id },
+					},
+				],
+			})
 			if (md) {
 				req.body.active = false
 				md.update(req.body)
@@ -226,7 +235,16 @@ module.exports = {
 	 */
 	async restore(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'restore')) {
-			const md = await model.findOne({ where: { id: req.params.id } })
+			const md = await model.findOne({
+				where: { id: req.params.id },
+				include: [
+					{
+						model: Equipment,
+						as: 'equipments',
+						where: { logist_id },
+					},
+				],
+			})
 			if (md) {
 				req.body.active = true
 				md.update(req.body)

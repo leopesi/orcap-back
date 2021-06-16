@@ -56,8 +56,14 @@ module.exports = {
 			const max_capacity = Dimensions.getM3Real(dimension)
 			const logist_id = Server.decodedIdByToken(req.token)
 			const filters = await Filter.findAll({
-				where: { max_capacity: { [Op.gte]: !isNaN(max_capacity) ? max_capacity : 0 }, logist_id },
-				include: 'equipments',
+				where: { max_capacity: { [Op.gte]: !isNaN(max_capacity) ? max_capacity : 0 },  },
+				include: [
+					{
+						model: Equipment,
+						as: 'equipments',
+						where: { logist_id },
+					},
+				],
 			})
 			if (filters && filters[0]) {
 				await Equipments.updateAllRelations(filters)

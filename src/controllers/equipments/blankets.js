@@ -42,9 +42,16 @@ module.exports = {
 	 */
 	async blanketsByDimension(req, res, self) {
 		if (await Permissions.check(req.token, 'blankets', 'select')) {
+			const logist_id = Server.decodedIdByToken(req.token)
 			const blankets = await Blanket.findAll({
 				where: {},
-				include: 'equipments',
+				include: [
+					{
+						model: Equipment,
+						as: 'equipments',
+						where: { logist_id },
+					},
+				],
 			})
 			if (blankets && blankets[0]) {
 				await Equipments.updateAllRelations(blankets)
