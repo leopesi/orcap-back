@@ -21,6 +21,12 @@ const BudgetEquipment = sequelize.define('budgets_equipments', {
 			key: 'id',
 		},
 	},
+	index: {
+		type: DataTypes.INTEGER
+	},
+	type: {
+		type: DataTypes.STRING
+	},
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW

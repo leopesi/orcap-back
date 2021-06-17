@@ -55,7 +55,7 @@ module.exports = {
 				.catch((error) => {
 					callback({
 						status: 'SESSION_INSERT_ERROR',
-						error: error.parent.detail,
+						error: error.parent ? error.parent.detail : error,
 					})
 				})
 		} else {
@@ -170,7 +170,7 @@ module.exports = {
 					.catch((error) => {
 						res.send({
 							status: 'SESSION_UPDATE_ERROR',
-							error: error.parent.detail,
+							error: error.parent ? error.parent.detail : error,
 						})
 					})
 			} else {
@@ -201,7 +201,7 @@ module.exports = {
 				.catch((error) => {
 					res.send({
 						status: 'SESSION_UPDATE_ERROR',
-						error: error.parent.detail,
+						error: error.parent ? error.parent.detail : error,
 					})
 				})
 			if (result) {
@@ -256,7 +256,7 @@ module.exports = {
 					.catch((error) => {
 						res.send({
 							status: 'SESSION_UPDATE_ERROR',
-							error: error.parent.detail,
+							error: error.parent ? error.parent.detail : error,
 						})
 					})
 			} else {
@@ -297,7 +297,7 @@ module.exports = {
 					.catch((error) => {
 						res.send({
 							status: 'SESSION_UPDATE_ERROR',
-							error: error.parent.detail,
+							error: error.parent ? error.parent.detail : error,
 						})
 					})
 			} else {
@@ -334,7 +334,7 @@ module.exports = {
 				.catch((error) => {
 					res.send({
 						status: 'SESSION_UPDATE_ERROR',
-						error: error.parent.detail,
+						error: error.parent ? error.parent.detail : error,
 					})
 				})
 		} else {
@@ -415,7 +415,7 @@ module.exports = {
 						.catch((error) => {
 							res.send({
 								status: 'SESSION_INSERT_ERROR',
-								error: error.parent.detail,
+								error: error.parent ? error.parent.detail : error,
 							})
 						})
 				} else {
@@ -452,7 +452,7 @@ module.exports = {
 					.catch((error) => {
 						res.send({
 							status: 'SESSION_UPDATE_ERROR',
-							error: error.parent.detail,
+							error: error.parent ? error.parent.detail : error,
 						})
 					})
 			} else {
@@ -491,7 +491,7 @@ module.exports = {
 					.catch((error) => {
 						res.send({
 							status: 'SESSION_DELETE_ERROR',
-							error: error.parent.detail,
+							error: error.parent ? error.parent.detail : error,
 						})
 					})
 			} else {
@@ -530,7 +530,7 @@ module.exports = {
 					.catch((error) => {
 						res.send({
 							status: 'SESSION_RESTORE_ERROR',
-							error: error.parent.detail,
+							error: error.parent ? error.parent.detail : error,
 						})
 					})
 			} else {
