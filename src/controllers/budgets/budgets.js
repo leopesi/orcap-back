@@ -158,7 +158,15 @@ module.exports = {
 			const equip = await BudgetEquipment.findOne({
 				where: data,
 			})
+			const equipmentData = await Equipment.findOne({
+				where: { id: equipment.equipment_id },
+			})
+			console.log(equipment)
 			data.equipment_id = equipment.equipment_id
+			data.discount = equipment.discount
+			data.cost = equipmentData.dataValues.cost
+			data.profit_margin = equipmentData.dataValues.profit_margin
+			data.cash_price = equipmentData.dataValues.cash_price
 			if (equip) {
 				data.id = equip.dataValues.id
 				equip.update(data).then(async (result) => {
