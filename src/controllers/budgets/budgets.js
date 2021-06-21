@@ -152,8 +152,7 @@ module.exports = {
 		if (equipment.equipment_id) {
 			const data = {
 				budget_id,
-				index: equipment.index,
-				type: equipment.type,
+				index: equipment.index
 			}
 			const equip = await BudgetEquipment.findOne({
 				where: data,
@@ -161,7 +160,7 @@ module.exports = {
 			const equipmentData = await Equipment.findOne({
 				where: { id: equipment.equipment_id },
 			})
-			console.log(equipment)
+			data.type = equipment.type
 			data.equipment_id = equipment.equipment_id
 			data.discount = equipment.discount
 			data.cost = equipmentData.dataValues.cost
