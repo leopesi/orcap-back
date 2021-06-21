@@ -92,7 +92,7 @@ module.exports = {
 					.catch((error) => {
 						res.send({
 							status: model.tableName.toUpperCase() + '_UPDATE_ERROR',
-							error: error.parent.detail,
+							error: error.parent ? error.parent.detail : error,
 						})
 					})
 			} else {
@@ -125,7 +125,7 @@ module.exports = {
 					.catch((error) => {
 						res.send({
 							status: model.tableName.toUpperCase() + '_DELETE_ERROR',
-							error: error.parent.detail,
+							error: error.parent ? error.parent.detail : error,
 						})
 					})
 			} else {
@@ -158,7 +158,7 @@ module.exports = {
 					.catch((error) => {
 						res.send({
 							status: model.tableName.toUpperCase() + '_RESTORE_ERROR',
-							error: error.parent.detail,
+							error: error.parent ? error.parent.detail : error,
 						})
 					})
 			} else {

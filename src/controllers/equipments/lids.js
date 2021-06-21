@@ -38,9 +38,16 @@ module.exports = {
 
 	async lidsByFilters(req, res, self) {
 		if (await Permissions.check(req.token, 'lids', 'select')) {
+			const logist_id = Server.decodedIdByToken(req.token)
 			const lids = await Lid.findAll({
 				where: { },
-				include: 'equipments',
+				include: [
+					{
+						model: Equipment,
+						as: 'equipments',
+						where: { logist_id },
+					},
+				],
 			})
 			if (lids && lids[0]) {
 				await Equipments.updateAllRelations(lids)

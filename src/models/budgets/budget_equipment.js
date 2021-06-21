@@ -21,6 +21,16 @@ const BudgetEquipment = sequelize.define('budgets_equipments', {
 			key: 'id',
 		},
 	},
+	index: {
+		type: DataTypes.INTEGER
+	},
+	type: {
+		type: DataTypes.STRING
+	},
+	cost: DataTypes.DECIMAL(10, 2),
+	profit_margin: DataTypes.DECIMAL(10, 2),
+	cash_price: DataTypes.DECIMAL(10, 2),
+	discount: DataTypes.DECIMAL(10, 2),
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW

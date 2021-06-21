@@ -37,6 +37,7 @@ module.exports = {
 		Budget.belongsTo(Seller, { foreignKey: 'seller_id', as: 'sellers' })
 		Budget.belongsTo(Client, { foreignKey: 'client_id', as: 'clients' })
 		Budget.belongsTo(Format, { foreignKey: 'format_id', as: 'formats' })
+		Budget.hasMany(BudgetEquipment, { foreignKey: 'budget_id', as: 'equipments' })
 	},
 
 	/**
@@ -47,7 +48,20 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		await CrudBasicsController.get(req, res, Budget)
+		if (await Permissions.check(req.token, Budget.tableName, 'select')) {
+			if (req.params.id) {
+				const md = await Budget.findOne({ where: { id: req.params.id }, include: 'equipments' })
+				if (md && md.dataValues && md.dataValues.id) {
+					res.send({ status: Budget.tableName.toUpperCase() + '_GET_SUCCESS', data: md })
+				} else {
+					res.send({ status: Budget.tableName.toUpperCase() + '_NOT_FOUND', error: Budget.tableName + ' not found' })
+				}
+			} else {
+				res.send({ status: Budget.tableName.toUpperCase() + '_NOT_FOUND', error: Budget.tableName + ' not found' })
+			}
+		} else {
+			res.send({ status: Budget.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
+		}
 	},
 
 	/**
@@ -91,14 +105,14 @@ module.exports = {
 					.update(req.body)
 					.then(async (data) => {
 						for (const i in req.body.equipments) {
-							await self.saveEquipment(req.body.equipments[i])
+							await self.saveEquipment(req.body.id, req.body.equipments[i])
 						}
 						res.send({ status: 'BUDGETS_UPDATE_SUCCESS', data })
 					})
 					.catch((error) => {
 						res.send({
 							status: 'BUDGETS_UPDATE_ERROR',
-							error: error.parent.detail,
+							error: error.parent ? error.parent.detail : error,
 						})
 					})
 			} else {
@@ -134,10 +148,36 @@ module.exports = {
 		await CrudBasicsController.restore(req, res, Budget)
 	},
 
-	async saveEquipment(equipment) {
-		const equip = await Equipment.findOne({ where: { id: equipment.id } })
-		if (equip) {
-			
+	async saveEquipment(budget_id, equipment) {
+		if (equipment.equipment_id) {
+			const data = {
+				budget_id,
+				index: equipment.index
+			}
+			const equip = await BudgetEquipment.findOne({
+				where: data,
+			})
+			const equipmentData = await Equipment.findOne({
+				where: { id: equipment.equipment_id },
+			})
+			data.type = equipment.type
+			data.equipment_id = equipment.equipment_id
+			data.discount = equipment.discount
+			data.cost = equipmentData.dataValues.cost
+			data.profit_margin = equipmentData.dataValues.profit_margin
+			data.cash_price = equipmentData.dataValues.cash_price
+			if (equip) {
+				data.id = equip.dataValues.id
+				equip.update(data).then(async (result) => {
+					return result
+				})
+			} else {
+				BudgetEquipment.build(data)
+					.save()
+					.then(async (result) => {
+						return result
+					})
+			}
 		}
 	},
 }

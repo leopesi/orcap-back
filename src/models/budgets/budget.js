@@ -56,10 +56,10 @@ const Budget = sequelize.define('budgets', {
 	m2_total: DataTypes.DECIMAL(10, 2),
 	m3_total: DataTypes.DECIMAL(10, 2),
 
+	// Dados da Prainha
+
 	beach: DataTypes.BOOLEAN,
 	beach_width: DataTypes.DECIMAL(10, 2),
-	beach_initial_depth: DataTypes.DECIMAL(10, 2),
-	beach_final_depth: DataTypes.DECIMAL(10, 2),
 	beach_medium_depth: DataTypes.DECIMAL(10, 2),
 	beach_perimeter: DataTypes.DECIMAL(10, 2),
 	beach_m2_wall: DataTypes.DECIMAL(10, 2),
@@ -67,20 +67,17 @@ const Budget = sequelize.define('budgets', {
 	beach_m2_total: DataTypes.DECIMAL(10, 2),
 	beach_m3_total: DataTypes.DECIMAL(10, 2),
 
-	side_wall: DataTypes.DECIMAL(10, 2),
-	subfloor: DataTypes.DECIMAL(10, 2),
-	baldrame: DataTypes.DECIMAL(10, 2),
-	mold: DataTypes.DECIMAL(10, 2),
-	heating: DataTypes.DECIMAL(10, 2),
-	cm_installation: DataTypes.DECIMAL(10, 2),
-	vinyl_installation: DataTypes.DECIMAL(10, 2),
-	excavation: DataTypes.DECIMAL(10, 2),
-	mortar: DataTypes.DECIMAL(10, 2),
-	reserve: DataTypes.DECIMAL(10, 2),
-	conduction: DataTypes.DECIMAL(10, 2),
-	material_placement: DataTypes.DECIMAL(10, 2),
-	earth_removal: DataTypes.DECIMAL(10, 2),
+	// Mão de obra fixas do Orçamento
+
+	construction_labor: DataTypes.DECIMAL(10, 2),
+	excavation_labor: DataTypes.DECIMAL(10, 2),
+	earth_removal_labor: DataTypes.DECIMAL(10, 2),
+	short_wall_labor: DataTypes.DECIMAL(10, 2),
+	subfloor_labor: DataTypes.DECIMAL(10, 2),
+	material_placement_labor: DataTypes.DECIMAL(10, 2),
+	reserve: DataTypes.DECIMAL(10, 2),	
 	art: DataTypes.DECIMAL(10, 2),
+	job_monitoring_fee: DataTypes.DECIMAL(10, 2),
 
 	steps: DataTypes.BOOLEAN,
 	number_steps: DataTypes.INTEGER,

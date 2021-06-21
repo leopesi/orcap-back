@@ -37,10 +37,16 @@ module.exports = {
 
 	async profilesByDimension(req, res, self) {
 		if (await Permissions.check(req.token, 'profiles', 'select')) {
-			const max_depth = (req.body.initial_depth > req.body.final_depth) ? req.body.initial_depth : req.body.final_depth
+			const logist_id = Server.decodedIdByToken(req.token)
 			const profiles = await Profile.findAll({
-				where: { size: { [Op.gte]: !isNaN(max_depth) ? max_depth : 0 } },
-				include: 'equipments',
+				where: { },
+				include: [
+					{
+						model: Equipment,
+						as: 'equipments',
+						where: { logist_id },
+					},
+				],
 			})
 			if (profiles && profiles[0]) {
 				await Equipments.updateAllRelations(profiles)

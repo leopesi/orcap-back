@@ -35,9 +35,16 @@ module.exports = {
 
 	async vinylsByDimension(req, res, self) {
 		if (await Permissions.check(req.token, 'vinyls', 'select')) {
+			const logist_id = Server.decodedIdByToken(req.token)
 			const vinyls = await Vinyl.findAll({
 				where: {  },
-				include: 'equipments',
+				include: [
+					{
+						model: Equipment,
+						as: 'equipments',
+						where: { logist_id },
+					},
+				],
 			})
 			if (vinyls && vinyls[0]) {
 				await Equipments.updateAllRelations(vinyls)
