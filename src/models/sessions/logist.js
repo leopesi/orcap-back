@@ -20,6 +20,34 @@ const Logist = sequelize.define('logists', {
 	name: DataTypes.STRING(50),
 	document: DataTypes.STRING,
 	phone: DataTypes.STRING,
+	brand_filter_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'brands',
+			key: 'id',
+		},
+	},
+	brand_profile_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'brands',
+			key: 'id',
+		},
+	},
+	brand_blanket_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'brands',
+			key: 'id',
+		},
+	},
+	brand_vinyl_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'brands',
+			key: 'id',
+		},
+	},
 	active: {
 		type: DataTypes.BOOLEAN,
 		defaultValue: false
