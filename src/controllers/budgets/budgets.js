@@ -50,7 +50,16 @@ module.exports = {
 	async get(req, res, self) {
 		if (await Permissions.check(req.token, Budget.tableName, 'select')) {
 			if (req.params.id) {
-				const md = await Budget.findOne({ where: { id: req.params.id }, include: 'equipments' })
+				const md = await Budget.findOne({
+					where: { id: req.params.id },
+				})
+				const equipments = await BudgetEquipment.findAll({
+					where: { budget_id: req.params.id },
+					order: [
+						['index', 'ASC']
+					]
+				})
+				md.dataValues.equipments = equipments
 				if (md && md.dataValues && md.dataValues.id) {
 					res.send({ status: Budget.tableName.toUpperCase() + '_GET_SUCCESS', data: md })
 				} else {
@@ -152,7 +161,7 @@ module.exports = {
 		if (equipment.equipment_id) {
 			const data = {
 				budget_id,
-				index: equipment.index
+				index: equipment.index,
 			}
 			const equip = await BudgetEquipment.findOne({
 				where: data,
