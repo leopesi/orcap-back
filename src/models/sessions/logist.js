@@ -57,6 +57,19 @@ const Logist = sequelize.define(
 		by_financial: DataTypes.TEXT,
 		by_financial_down_payment: DataTypes.TEXT,
 		max_discount: DataTypes.DECIMAL,
+
+		// Configuração dos valore de Mão de obra fixas no Orçamento
+		
+		construction_labor: DataTypes.DECIMAL(10, 2),
+		excavation_labor: DataTypes.DECIMAL(10, 2),
+		earth_removal_labor: DataTypes.DECIMAL(10, 2),
+		short_wall_labor: DataTypes.DECIMAL(10, 2),
+		subfloor_labor: DataTypes.DECIMAL(10, 2),
+		material_placement_labor: DataTypes.DECIMAL(10, 2),
+		reserve: DataTypes.DECIMAL(10, 2),	
+		art: DataTypes.DECIMAL(10, 2),
+		job_monitoring_fee: DataTypes.DECIMAL(10, 2),
+		
 		active: {
 			type: DataTypes.BOOLEAN,
 			defaultValue: false,
