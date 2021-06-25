@@ -55,9 +55,7 @@ module.exports = {
 				})
 				const equipments = await BudgetEquipment.findAll({
 					where: { budget_id: req.params.id },
-					order: [
-						['index', 'ASC']
-					]
+					order: [['index', 'ASC']],
 				})
 				md.dataValues.equipments = equipments
 				if (md && md.dataValues && md.dataValues.id) {
@@ -119,6 +117,7 @@ module.exports = {
 						res.send({ status: 'BUDGETS_UPDATE_SUCCESS', data })
 					})
 					.catch((error) => {
+						console.log(error)
 						res.send({
 							status: 'BUDGETS_UPDATE_ERROR',
 							error: error.parent ? error.parent.detail : error,
@@ -172,9 +171,15 @@ module.exports = {
 			data.type = equipment.type
 			data.equipment_id = equipment.equipment_id
 			data.discount = equipment.discount
-			data.cost = equipmentData.dataValues.cost
-			data.profit_margin = equipmentData.dataValues.profit_margin
-			data.cash_price = equipmentData.dataValues.cash_price
+			if (equipmentData && equipmentData.dataValues) {
+				data.cost = equipmentData.dataValues.cost
+				data.profit_margin = equipmentData.dataValues.profit_margin
+				const profit_margin = parseFloat(equipmentData.dataValues.profit_margin)
+				const cost = parseFloat(equipmentData.dataValues.cost)
+				data.price = isNaN(cost) ? 0 : cost * (1 + (isNaN(profit_margin) ? 0 : profit_margin))
+				data.final_price = this.price - (isNaN(equipment.discount) ? 0 : equipment.discount)
+			}
+			console.log(data)
 			if (equip) {
 				data.id = equip.dataValues.id
 				equip.update(data).then(async (result) => {
