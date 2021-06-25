@@ -179,7 +179,6 @@ module.exports = {
 				data.price = isNaN(cost) ? 0 : cost * (1 + (isNaN(profit_margin) ? 0 : profit_margin))
 				data.final_price = this.price - (isNaN(equipment.discount) ? 0 : equipment.discount)
 			}
-			console.log(data)
 			if (equip) {
 				data.id = equip.dataValues.id
 				equip.update(data).then(async (result) => {
