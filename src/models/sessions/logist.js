@@ -59,7 +59,7 @@ const Logist = sequelize.define(
 		max_discount: DataTypes.DECIMAL,
 
 		// Configuração dos valore de Mão de obra fixas no Orçamento
-		
+
 		construction_labor: DataTypes.DECIMAL(10, 2),
 		excavation_labor: DataTypes.DECIMAL(10, 2),
 		earth_removal_labor: DataTypes.DECIMAL(10, 2),
@@ -67,7 +67,6 @@ const Logist = sequelize.define(
 		subfloor_labor: DataTypes.DECIMAL(10, 2),
 		material_placement_labor: DataTypes.DECIMAL(10, 2),
 		reserve: DataTypes.DECIMAL(10, 2),	
-		art: DataTypes.DECIMAL(10, 2),
 		job_monitoring_fee: DataTypes.DECIMAL(10, 2),
 		
 		active: {

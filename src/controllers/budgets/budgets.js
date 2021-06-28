@@ -117,7 +117,6 @@ module.exports = {
 						res.send({ status: 'BUDGETS_UPDATE_SUCCESS', data })
 					})
 					.catch((error) => {
-						console.log(error)
 						res.send({
 							status: 'BUDGETS_UPDATE_ERROR',
 							error: error.parent ? error.parent.detail : error,
