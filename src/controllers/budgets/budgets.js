@@ -175,7 +175,7 @@ module.exports = {
 				data.profit_margin = equipmentData.dataValues.profit_margin
 				const profit_margin = parseFloat(equipmentData.dataValues.profit_margin)
 				const cost = parseFloat(equipmentData.dataValues.cost)
-				data.price = isNaN(cost) ? 0 : cost * (1 + (isNaN(profit_margin) ? 0 : profit_margin))
+				data.price = isNaN(cost) ? 0 : isNaN(profit_margin) ? cost : cost + (cost * profit_margin) / 100
 				data.final_price = this.price - (isNaN(equipment.discount) ? 0 : equipment.discount)
 			}
 			if (equip) {
