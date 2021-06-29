@@ -1,4 +1,3 @@
-const fs = require('fs')
 const { Pool } = require('pg')
 const sequelize = require('../src/helpers/postgres')
 const Config = require('../src/config/database')
@@ -19,86 +18,72 @@ exec_sequelize = async () => {
 	let dirs = {}
 	if (type == 'all') {
 		dirs = require('../src/models/sequelize-config')['models']
-		// console.log(dirs)
 	} else if (modelName) {
 		dirs[type] = [modelName]
 	} else {
 		return
-	}
-	// await sequelize.sync({ alter: true })
-	try {
-		const dir = fs.readdirSync('./database/')
-	} catch (e) {
-		fs.mkdirSync('./database/')
 	}
 	for (const i in dirs) {
 		try {
 			const files = dirs[i]
 			for (const j in files) {
 				const model = require('../src/models/' + i + '/' + files[j])
-				await model.sync({ alter: true })
-				const data = await model.findAll({})
-				console.log('FIND ALL')
 				try {
-					const data_by_file = fs.readFileSync('./database/' + model.tableName + '.json', 'utf8')
-					console.log(model.tableName + ' finish sync')
-
-					const data_array = JSON.parse(data_by_file)
-					const data_json = {}
-					for (const item in data_array) {
-						data_json[data_array[item].id] = data_array[item]
-					}
 					// ATUALIZA DADOS DOS ARQUIVOS COM DADOS DO BANCO
-					const data_all = await model.findAll({})
-					for (const item in data_all) {
-						if (data_json[data_all[item].dataValues.id] && data_all[item].dataValues.id) {
-							data_json[data_all[item].dataValues.id] = data_all[item].dataValues
+					await pool.query('select * from ' + model.tableName + '', async (error, results) => {
+						const data_all = []
+						for (const i in results.rows) {
+							data_all.push(Object.assign({}, results.rows[i]))
 						}
-					}
-					await model.sync({ force: true })
-					for (const k in data_json) {
-						const fields = []
-						const values = []
-						const sql = []
-						sql.push('insert into ' + model.tableName + '(')
-						for (const l in data_json[k]) {
-							fields.push('"' + l + '"')
-							if (data_json[k][l]) {
-								if (data_json[k][l].toString().indexOf('GMT-') !== -1) {
-									values.push("'" + data_json[k][l].toString().split('GMT-')[0] + "'")
-								} else {
-									values.push("'" + data_json[k][l] + "'")
-								}
-							} else {
-								values.push('null')
-							}
-						}
-						sql.push(fields.join(','))
-						sql.push(') values (')
-						sql.push(values.join(','))
-						sql.push(');')
-						// console.log(sql.join(' '))
+						console.log(data_all)
+						await model.sync({ force: true })
 						try {
-							await pool.query(sql.join(' '), (error, results) => {
-								if (error) console.log(error)
+							await pool.query('select * from ' + model.tableName + ' where false', async (error, results) => {
+								const data_to_cols = []
+								for (const res in results.fields) {
+									data_to_cols.push(results.fields[res].name)
+								}
+								console.log(data_to_cols)
+								for (const i in data_all) {
+									const data = data_all[i]
+									console.log(data)
+									const sql = []
+									const fields = []
+									const values = []
+									sql.push('insert into ' + model.tableName + '(')
+									for (const k in data_to_cols) {
+										const col = data_to_cols[k]
+										if (data[col] != null && data[col] != undefined) {
+											fields.push('"' + col + '"')
+											try {
+												if (data[col].toString().indexOf('GMT-') !== -1) {
+													values.push("'" + data_all[col].toString().split('GMT-')[0].trim() + "'")
+												} else {
+													values.push("'" + data[col] + "'")
+												}
+											} catch (e) {
+												values.push('null')
+											}
+										}
+									}
+									sql.push(fields.join(','))
+									sql.push(') values (')
+									sql.push(values.join(','))
+									sql.push(');')
+									console.log(sql.join(' '))
+									try {
+										await pool.query(sql.join(' '), (error, results) => {
+											if (error) console.log(error)
+										})
+									} catch (e) {
+										console.log(e.stack)
+									}
+								}
 							})
 						} catch (e) {
 							console.log(e.stack)
 						}
-					}
-					setTimeout(async () => {
-						console.log('BUSCA REGISTRO PARA ATUALIZAR ' + model.tableName)
-						const data_final = []
-						const data_last_finded = await model.findAll({})
-						for (const item in data_last_finded) {
-							data_final.push(data_last_finded[item].dataValues)
-						}
-						const data_json_text = JSON.stringify(data_final, null, '\t')
-						if (data_final && data_final.length > 0 && data_json_text && data_json_text.trim() != '' && data_json_text.trim() != []) {
-							console.log('ESCREVENDO ARQUIVO FINAL ' + model.tableName)
-							fs.writeFileSync('./database/' + model.tableName + '.json', data_json_text, 'utf8')
-						}
-					}, 100)
+					})
 				} catch (e) {
 					console.log('ERRO NO ARQUIVO ' + model.tableName)
 					console.log(e.stack)
