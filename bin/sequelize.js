@@ -35,7 +35,6 @@ exec_sequelize = async () => {
 						for (const i in results.rows) {
 							data_all.push(Object.assign({}, results.rows[i]))
 						}
-						console.log(data_all)
 						await model.sync({ force: true })
 						try {
 							await pool.query('select * from ' + model.tableName + ' where false', async (error, results) => {
@@ -43,10 +42,8 @@ exec_sequelize = async () => {
 								for (const res in results.fields) {
 									data_to_cols.push(results.fields[res].name)
 								}
-								console.log(data_to_cols)
 								for (const i in data_all) {
 									const data = data_all[i]
-									console.log(data)
 									const sql = []
 									const fields = []
 									const values = []

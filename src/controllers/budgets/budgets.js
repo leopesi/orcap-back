@@ -92,6 +92,7 @@ module.exports = {
 	 */
 	async create(req, res, self) {
 		delete req.body.id
+		req.body.logist_id = Server.decodedIdByToken(req.token)
 		await CrudBasicsController.create(req, res, Budget)
 	},
 
@@ -112,7 +113,7 @@ module.exports = {
 					.update(req.body)
 					.then(async (data) => {
 						for (const i in req.body.equipments) {
-							await self.saveEquipment(req.body.id, req.body.equipments[i])
+							await self.saveEquipment(req.body.equipments[i])
 						}
 						res.send({ status: 'BUDGETS_UPDATE_SUCCESS', data })
 					})
@@ -155,36 +156,17 @@ module.exports = {
 		await CrudBasicsController.restore(req, res, Budget)
 	},
 
-	async saveEquipment(budget_id, equipment) {
+	async saveEquipment(equipment) {
 		if (equipment.equipment_id) {
-			const data = {
-				budget_id,
-				index: equipment.index,
-			}
 			const equip = await BudgetEquipment.findOne({
-				where: data,
+				where: { id: equipment.id},
 			})
-			const equipmentData = await Equipment.findOne({
-				where: { id: equipment.equipment_id },
-			})
-			data.type = equipment.type
-			data.equipment_id = equipment.equipment_id
-			data.discount = equipment.discount
-			if (equipmentData && equipmentData.dataValues) {
-				data.cost = equipmentData.dataValues.cost
-				data.profit_margin = equipmentData.dataValues.profit_margin
-				const profit_margin = parseFloat(equipmentData.dataValues.profit_margin)
-				const cost = parseFloat(equipmentData.dataValues.cost)
-				data.price = isNaN(cost) ? 0 : isNaN(profit_margin) ? cost : cost + (cost * profit_margin) / 100
-				data.final_price = this.price - (isNaN(equipment.discount) ? 0 : equipment.discount)
-			}
 			if (equip) {
-				data.id = equip.dataValues.id
-				equip.update(data).then(async (result) => {
+				equip.update(equipment).then(async (result) => {
 					return result
 				})
 			} else {
-				BudgetEquipment.build(data)
+				BudgetEquipment.build(equipment)
 					.save()
 					.then(async (result) => {
 						return result
