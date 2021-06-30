@@ -38,6 +38,9 @@ const Budget = sequelize.define('budgets', {
 	status: DataTypes.STRING,
 	layout: DataTypes.STRING,
 	payment: DataTypes.STRING,
+	installment_number: DataTypes.INTEGER,
+	installment_tax: DataTypes.DECIMAL(10, 2),
+
 	expiration_date: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW,
@@ -75,7 +78,7 @@ const Budget = sequelize.define('budgets', {
 	short_wall_labor: DataTypes.DECIMAL(10, 2),
 	subfloor_labor: DataTypes.DECIMAL(10, 2),
 	material_placement_labor: DataTypes.DECIMAL(10, 2),
-	reserve: DataTypes.DECIMAL(10, 2),	
+	reserve: DataTypes.DECIMAL(10, 2),
 	art: DataTypes.DECIMAL(10, 2),
 	job_monitoring_fee: DataTypes.DECIMAL(10, 2),
 
