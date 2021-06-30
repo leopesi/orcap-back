@@ -113,11 +113,12 @@ module.exports = {
 					.update(req.body)
 					.then(async (data) => {
 						for (const i in req.body.equipments) {
-							await self.saveEquipment(req.body.equipments[i])
+							await self.saveEquipment(req.body.id, req.body.equipments[i])
 						}
 						res.send({ status: 'BUDGETS_UPDATE_SUCCESS', data })
 					})
 					.catch((error) => {
+						console.log(error)
 						res.send({
 							status: 'BUDGETS_UPDATE_ERROR',
 							error: error.parent ? error.parent.detail : error,
@@ -156,20 +157,32 @@ module.exports = {
 		await CrudBasicsController.restore(req, res, Budget)
 	},
 
-	async saveEquipment(equipment) {
+	async saveEquipment(budget_id, equipment) {
 		if (equipment.equipment_id) {
-			const equip = await BudgetEquipment.findOne({
-				where: { id: equipment.id},
-			})
-			if (equip) {
-				equip.update(equipment).then(async (result) => {
-					return result
+			if (equipment.id) {
+				const equip = await BudgetEquipment.findOne({
+					where: { id: equipment.id },
 				})
+				if (equip) {
+					equip
+						.update(equipment)
+						.then(async (result) => {
+							return result
+						})
+						.catch((error) => {
+							console.log(error)
+						})
+				}
 			} else {
+				delete equipment.id
+				equipment.budget_id = budget_id
 				BudgetEquipment.build(equipment)
 					.save()
 					.then(async (result) => {
 						return result
+					})
+					.catch((error) => {
+						console.log(error)
 					})
 			}
 		}
