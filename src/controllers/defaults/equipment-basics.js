@@ -150,6 +150,8 @@ module.exports = {
 					provider_id: req.body.provider_id,
 					cost: req.body.cost,
 					profit_margin: req.body.profit_margin,
+					man_power_cost: req.body.man_power_cost,
+					man_power_profit_margin: req.body.man_power_profit_margin,
 					cash_price: req.body.cash_price,
 					forward_price: req.body.forward_price,
 				}

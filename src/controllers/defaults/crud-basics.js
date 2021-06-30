@@ -66,7 +66,7 @@ module.exports = {
 					res.send({ status: model.tableName.toUpperCase() + '_INSERT_SUCCESS', data })
 				})
 				.catch((error) => {
-					res.send({ status: model.tableName.toUpperCase() + '_INSERT_ERROR', error: error.parent ? error.parent.detail : error })
+					res.send({ status: model.tableName.toUpperCase() + '_INSERT_ERROR', error: error.parent ? error.parent.detail : JSON.stringify(error) })
 				})
 		} else {
 			res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })

@@ -50,7 +50,14 @@ module.exports = {
 	async get(req, res, self) {
 		if (await Permissions.check(req.token, Budget.tableName, 'select')) {
 			if (req.params.id) {
-				const md = await Budget.findOne({ where: { id: req.params.id }, include: 'equipments' })
+				const md = await Budget.findOne({
+					where: { id: req.params.id },
+				})
+				const equipments = await BudgetEquipment.findAll({
+					where: { budget_id: req.params.id },
+					order: [['index', 'ASC']],
+				})
+				md.dataValues.equipments = equipments
 				if (md && md.dataValues && md.dataValues.id) {
 					res.send({ status: Budget.tableName.toUpperCase() + '_GET_SUCCESS', data: md })
 				} else {
@@ -85,6 +92,7 @@ module.exports = {
 	 */
 	async create(req, res, self) {
 		delete req.body.id
+		req.body.logist_id = Server.decodedIdByToken(req.token)
 		await CrudBasicsController.create(req, res, Budget)
 	},
 
@@ -110,6 +118,7 @@ module.exports = {
 						res.send({ status: 'BUDGETS_UPDATE_SUCCESS', data })
 					})
 					.catch((error) => {
+						console.log(error)
 						res.send({
 							status: 'BUDGETS_UPDATE_ERROR',
 							error: error.parent ? error.parent.detail : error,
@@ -150,32 +159,30 @@ module.exports = {
 
 	async saveEquipment(budget_id, equipment) {
 		if (equipment.equipment_id) {
-			const data = {
-				budget_id,
-				index: equipment.index
-			}
-			const equip = await BudgetEquipment.findOne({
-				where: data,
-			})
-			const equipmentData = await Equipment.findOne({
-				where: { id: equipment.equipment_id },
-			})
-			data.type = equipment.type
-			data.equipment_id = equipment.equipment_id
-			data.discount = equipment.discount
-			data.cost = equipmentData.dataValues.cost
-			data.profit_margin = equipmentData.dataValues.profit_margin
-			data.cash_price = equipmentData.dataValues.cash_price
-			if (equip) {
-				data.id = equip.dataValues.id
-				equip.update(data).then(async (result) => {
-					return result
+			if (equipment.id) {
+				const equip = await BudgetEquipment.findOne({
+					where: { id: equipment.id },
 				})
+				if (equip) {
+					equip
+						.update(equipment)
+						.then(async (result) => {
+							return result
+						})
+						.catch((error) => {
+							console.log(error)
+						})
+				}
 			} else {
-				BudgetEquipment.build(data)
+				delete equipment.id
+				equipment.budget_id = budget_id
+				BudgetEquipment.build(equipment)
 					.save()
 					.then(async (result) => {
 						return result
+					})
+					.catch((error) => {
+						console.log(error)
 					})
 			}
 		}

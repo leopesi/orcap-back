@@ -77,3 +77,7 @@ insert into permissions (name, type, "table") values ('logist', 'insert', 'budge
 insert into permissions (name, type, "table") values ('logist', 'update', 'budgets');
 insert into permissions (name, type, "table") values ('logist', 'delete', 'budgets');
 insert into permissions (name, type, "table") values ('logist', 'restore', 'budgets');
+
+insert into permissions (name, type, "table") values ('logist', 'select', 'sessions');
+insert into permissions (name, type, "table") values ('logist', 'insert', 'sessions');
+insert into permissions (name, type, "table") values ('logist', 'update', 'sessions');
