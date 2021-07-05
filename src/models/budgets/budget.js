@@ -40,6 +40,7 @@ const Budget = sequelize.define('budgets', {
 	payment: DataTypes.STRING,
 	installment_number: DataTypes.INTEGER,
 	installment_tax: DataTypes.DECIMAL(10, 2),
+	down_payment: DataTypes.DECIMAL(10, 2),
 
 	expiration_date: {
 		type: DataTypes.DATE,
