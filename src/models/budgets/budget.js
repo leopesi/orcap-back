@@ -63,6 +63,7 @@ const Budget = sequelize.define('budgets', {
 	// Dados da Prainha
 
 	beach: DataTypes.BOOLEAN,
+	beach_length: DataTypes.DECIMAL(10, 2),
 	beach_width: DataTypes.DECIMAL(10, 2),
 	beach_medium_depth: DataTypes.DECIMAL(10, 2),
 	beach_perimeter: DataTypes.DECIMAL(10, 2),
