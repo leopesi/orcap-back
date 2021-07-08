@@ -25,6 +25,7 @@ const Client = sequelize.define('clients', {
 	user_type: {
 		type: DataTypes.STRING(50)
 	},
+	document: DataTypes.STRING(50),
 	name: DataTypes.STRING(50),
 	phone: DataTypes.STRING,
 	active: {

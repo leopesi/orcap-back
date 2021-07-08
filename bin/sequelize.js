@@ -20,6 +20,17 @@ exec_sequelize = async () => {
 		dirs = require('../src/models/sequelize-config')['models']
 	} else if (modelName) {
 		dirs[type] = [modelName]
+	} else if (type == 'force') {
+		dirs = require('../src/models/sequelize-config')['models']
+		for (const i in dirs) {
+			const files = dirs[i]
+			for (const j in files) {
+				const model = require('../src/models/' + i + '/' + files[j])
+				model.sync({ force: true })
+			}
+		}
+		sequelize.sync({ force: true })
+		return
 	} else {
 		return
 	}

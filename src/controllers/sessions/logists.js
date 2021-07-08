@@ -5,6 +5,7 @@ const Server = require('../../helpers/server')
 const SessionBasicsController = require('../defaults/session-basics')
 const Session = require('../../models/sessions/session')
 const Logist = require('../../models/sessions/logist')
+const Permissions = require('./permissions')
 
 module.exports = {
 	/**
@@ -37,7 +38,7 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	 async get(req, res, self) {
+	async get(req, res, self) {
 		SessionBasicsController.get(req, res, Logist)
 	},
 
@@ -48,9 +49,25 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	 async getByToken(req, res, self) {
+	async getByToken(req, res, self) {
 		req.params.id = Server.decodedIdByToken(req.token)
-		SessionBasicsController.get(req, res, Logist)
+		if (await Permissions.check(req.token, 'logists', 'select')) {
+			const md = await Logist.findOne({
+				where: { session_id: req.params.id },
+				include: 'sessions',
+			})
+			if (md && md.id) {
+				delete md.password
+				res.send({ status: 'LOGIST_GET_SUCCESS', data: md })
+			} else {
+				res.send({
+					status: 'LOGIST_NOT_FOUND',
+					error: 'Logist not found',
+				})
+			}
+		} else {
+			res.send({ status: 'LOGIST_PERMISSION_ERROR', error: 'Action not allowed' })
+		}
 	},
 
 	/**
@@ -72,7 +89,31 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		SessionBasicsController.create(req, res, Logist)
+		delete req.body.id
+		req.body.password = await Server.getHash(req.body.password)
+		req.body.table = Logist.tableName
+		Session.build(req.body)
+			.save()
+			.then((data) => {
+				req.body.session_id = data.id
+				Logist.build(req.body)
+					.save()
+					.then(async (data) => {
+						res.send({ status: 'LOGIST_INSERT_SUCCESS', data })
+					})
+					.catch((error) => {
+						res.send({
+							status: 'LOGIST_INSERT_ERROR',
+							error: error.parent ? error.parent.detail : error,
+						})
+					})
+			})
+			.catch((error) => {
+				res.send({
+					status: 'SESSION_INSERT_ERROR',
+					error: error.parent ? error.parent.detail : error,
+				})
+			})
 	},
 
 	/**
