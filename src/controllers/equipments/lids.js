@@ -4,9 +4,9 @@
 const sequelize = require('sequelize')
 const Op = sequelize.Op
 const Server = require('../../helpers/server')
+const Sessions = require('../sessions/sessions')
 const Permissions = require('../sessions/permissions')
 const EquipmentBasicsController = require('../defaults/equipment-basics')
-const Dimensions = require('../defaults/dimensions')
 const Equipments = require('./equipments')
 
 const Lid = require('../../models/equipments/lid')
@@ -38,7 +38,7 @@ module.exports = {
 
 	async lidsByFilters(req, res, self) {
 		if (await Permissions.check(req.token, 'lids', 'select')) {
-			const logist_id = Server.decodedIdByToken(req.token)
+			const logist_id = await Sessions.getSessionIdByLogist(req.token)
 			const lids = await Lid.findAll({
 				where: { },
 				include: [

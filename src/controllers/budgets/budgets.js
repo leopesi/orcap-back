@@ -3,10 +3,10 @@
  */
 const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
+const Sessions = require('../sessions/sessions')
 const CrudBasicsController = require('../defaults/crud-basics')
 const Budget = require('../../models/budgets/budget')
 const BudgetEquipment = require('../../models/budgets/budget_equipment')
-const Equipment = require('../../models/equipments/equipment')
 const Logist = require('../../models/sessions/logist')
 const Seller = require('../../models/sessions/Seller')
 const Client = require('../../models/sessions/Client')
@@ -92,7 +92,7 @@ module.exports = {
 	 */
 	async create(req, res, self) {
 		delete req.body.id
-		req.body.logist_id = Server.decodedIdByToken(req.token)
+		req.body.logist_id = await Sessions.getSessionIdByLogist(req.token)
 		await CrudBasicsController.create(req, res, Budget)
 	},
 

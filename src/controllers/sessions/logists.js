@@ -2,6 +2,7 @@
  * @module LogistsController
  */
 const Server = require('../../helpers/server')
+const Sessions = require('../sessions/sessions')
 const SessionBasicsController = require('../defaults/session-basics')
 const Session = require('../../models/sessions/session')
 const Logist = require('../../models/sessions/logist')
@@ -50,7 +51,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async getByToken(req, res, self) {
-		req.params.id = Server.decodedIdByToken(req.token)
+		req.params.id = await Sessions.getSessionIdByLogist(req.token)
 		if (await Permissions.check(req.token, 'logists', 'select')) {
 			const md = await Logist.findOne({
 				where: { session_id: req.params.id },

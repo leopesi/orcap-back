@@ -2,6 +2,7 @@
  * @module SessionBasicsController
  */
 const Server = require('../../helpers/server')
+const Session = require('../../models/sessions/session')
 const Permissions = require('../sessions/permissions')
 const Sessions = require('../sessions/sessions')
 
@@ -65,6 +66,7 @@ module.exports = {
 		delete req.body.id
 		const permission = await Permissions.check(req.token, model.tableName, 'insert')
 		if (permission) {
+			req.body.logist_id = await Sessions.getSessionIdByLogist(req.token)
 			req.body.password = await Server.getHash(req.body.password)
 			req.body.table = model.tableName
 			Sessions.create(req, (result) => {
@@ -76,11 +78,13 @@ module.exports = {
 						.then(async (data) => {
 							res.send({ status: model.tableName.toUpperCase() + '_INSERT_SUCCESS', data })
 						})
-						.catch((error) => {
+						.catch(async (error) => {
+							await Session.destroy({ where: { id: req.body.session_id } })
 							res.send({
 								status: model.tableName.toUpperCase() + '_INSERT_ERROR',
 								error: error.parent ? error.parent.detail : error,
 							})
+							return
 						})
 				} else {
 					res.send({ status: 'SESSION_INSERT_ERROR', error: result.error })

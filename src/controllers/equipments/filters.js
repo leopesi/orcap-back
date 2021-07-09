@@ -4,6 +4,7 @@
 const sequelize = require('sequelize')
 const Op = sequelize.Op
 const Server = require('../../helpers/server')
+const Sessions = require('../sessions/sessions')
 const Permissions = require('../sessions/permissions')
 const EquipmentBasicsController = require('../defaults/equipment-basics')
 const Dimensions = require('../defaults/dimensions')
@@ -13,7 +14,6 @@ const Filter = require('../../models/equipments/filter')
 const Engine = require('../../models/equipments/engine')
 const Lid = require('../../models/equipments/lid')
 const Equipment = require('../../models/equipments/equipment')
-const Brand = require('../../models/basics/brand')
 
 module.exports = {
 	/**
@@ -52,7 +52,7 @@ module.exports = {
 		if (await Permissions.check(req.token, 'filters', 'select')) {
 			const dimension = Dimensions.creatDimension(req.body.length, req.body.width, req.body.initial_depth, req.body.final_depth, req.body.sidewalk_width)
 			const max_capacity = Dimensions.getM3Real(dimension)
-			const logist_id = Server.decodedIdByToken(req.token)
+			const logist_id = await Sessions.getSessionIdByLogist(req.token)
 			const filters = await Filter.findAll({
 				where: { max_capacity: { [Op.gte]: !isNaN(max_capacity) ? max_capacity : 0 } },
 				include: [

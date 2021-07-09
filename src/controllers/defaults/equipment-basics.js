@@ -1,7 +1,7 @@
 /**
  * @module CrudBasicsController
  */
-const Server = require('../../helpers/server')
+const Sessions = require('../sessions/sessions')
 const Equipments = require('../../controllers/equipments/equipments')
 const Equipment = require('../../models/equipments/equipment')
 const Permissions = require('../sessions/permissions')
@@ -17,7 +17,7 @@ module.exports = {
 	async get(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'select')) {
 			if (req.params.id) {
-				const logist_id = Server.decodedIdByToken(req.token)
+				const logist_id = await Sessions.getSessionIdByLogist(req.token)
 				const md = await model.findOne({
 					where: { id: req.params.id },
 					include: [
@@ -57,7 +57,7 @@ module.exports = {
 	 */
 	async list(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'select')) {
-			const logist_id = Server.decodedIdByToken(req.token)
+			const logist_id = await Sessions.getSessionIdByLogist(req.token)
 			const md = await model.findAll({
 				where: {},
 				include: [
@@ -92,7 +92,7 @@ module.exports = {
 	async create(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'insert')) {
 			delete req.body.id
-			req.body.logist_id = Server.decodedIdByToken(req.token)
+			req.body.logist_id = await Sessions.getSessionIdByLogist(req.token)
 			Equipment.build(req.body)
 				.save()
 				.then(async (result) => {
@@ -130,7 +130,7 @@ module.exports = {
 	 */
 	async change(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'update')) {
-			const logist_id = Server.decodedIdByToken(req.token)
+			const logist_id = await Sessions.getSessionIdByLogist(req.token)
 			const md = await model.findOne({
 				where: { id: req.params.id },
 				include: [

@@ -2,6 +2,7 @@
  * @module SessionsController
  */
 const Server = require('../../helpers/server')
+const Sessions = require('../sessions/sessions')
 const Permissions = require('./permissions')
 const Session = require('../../models/sessions/session')
 
@@ -28,7 +29,6 @@ module.exports = {
 		Server.addRoute('/sessions/:id', this.change, this).put(true)
 		Server.addRoute('/sessions/:id', this.delete, this).delete(true)
 		this.setForeignKey()
-
 	},
 
 	/**
@@ -36,7 +36,55 @@ module.exports = {
 	 * Seta as as chaves dos models
 	 */
 	async setForeignKey() {},
-	
+
+	async getSessionIdByLogist(token) {
+		const session_id = Server.decodedIdByToken(token)
+		const md = await Logist.findOne({
+			where: { session_id },
+		})
+		if (md && md.dataValues) {
+			return md.dataValues.id
+		} else {
+			return null
+		}
+	},
+
+	async getSessionIdByClient(token) {
+		const session_id = Server.decodedIdByToken(token)
+		const md = await Client.findOne({
+			where: { session_id },
+		})
+		if (md && md.dataValues) {
+			return md.dataValues.id
+		} else {
+			return null
+		}
+	},
+
+	async getSessionIdBySeller(token) {
+		const session_id = Server.decodedIdByToken(token)
+		const md = await Seller.findOne({
+			where: { session_id },
+		})
+		if (md && md.dataValues) {
+			return md.dataValues.id
+		} else {
+			return null
+		}
+	},
+
+	async getSessionIdByUser(token) {
+		const session_id = Server.decodedIdByToken(token)
+		const md = await User.findOne({
+			where: { session_id },
+		})
+		if (md && md.dataValues) {
+			return md.dataValues.id
+		} else {
+			return null
+		}
+	},
+
 	/**
 	 * @function
 	 * Cria uma Sessão
@@ -45,6 +93,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, callback) {
+		console.log('CREATE ON SESSIONS CONTROLLER ')
 		if (await Permissions.check(req.token, 'sessions', 'insert')) {
 			req.body.password = await Server.getHash(req.body.password)
 			Session.build(req.body)
