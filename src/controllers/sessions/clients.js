@@ -3,6 +3,7 @@
  */
 const Server = require('../../helpers/server')
 const Sessions = require('../sessions/sessions')
+const Permissions = require('../sessions/permissions')
 const SessionBasicsController = require('../defaults/session-basics')
 const Session = require('../../models/sessions/session')
 const Client = require('../../models/sessions/client')
@@ -15,6 +16,7 @@ module.exports = {
 	 */
 	setRoutes() {
 		Server.addRoute('/clients/:id', this.get, this).get(true)
+		Server.addRoute('/clients-by-documents/:document', this.getClientsByDocument, this).get(true)
 		Server.addRoute('/clients/', this.list, this).get(true)
 		Server.addRoute('/clients', this.create, this).post(true)
 		Server.addRoute('/clients/:id/restore', this.restore, this).put(true)
@@ -87,6 +89,59 @@ module.exports = {
 
 	/**
 	 * @function
+	 * Altera ou Cria um cliente
+	 * @param {Object} req
+	 * @param {Object} res
+	 * @param {Object} self
+	 */
+	async saveByBudget(req, res, self) {
+		const logist_id = await Sessions.getSessionIdByLogist(req.token)
+		const result = await Client.findOne({ where: { id: req.body.id, logist_id } })
+		if (result) {
+			delete req.body.clients.mail
+			delete req.body.clients.password
+			result
+				.update(req.body.clients)
+				.then(async () => {
+					return true
+				})
+				.catch(async () => {
+					return false
+				})
+		} else {
+			delete req.body.clients.id
+			req.body.clients.logist_id = logist_id
+			if (await Permissions.check(req.token, 'sessions', 'insert')) {
+				req.body.clients.password = await Server.getHash(Date.now())
+				await Session.build(req.body.clients)
+					.save()
+					.then(async (result) => {
+						if (result) {
+							req.body.clients.session_id = result.dataValues.id
+							await Client.build(req.body.clients)
+								.save()
+								.then(async (result2) => {
+									return { id: result2.dataValues.id }
+								})
+								.catch(async () => {
+									await Session.destroy({ where: { id: result.dataValues.id } })
+									return false
+								})
+						} else {
+							return false
+						}
+					})
+					.catch(async () => {
+						return false
+					})
+			} else {
+				return false
+			}
+		}
+	},
+
+	/**
+	 * @function
 	 * Deleta um Usuário
 	 * @param {Object} req
 	 * @param {Object} res
@@ -107,5 +162,17 @@ module.exports = {
 	async restore(req, res, self) {
 		const logist_id = await Sessions.getSessionIdByLogist(req.token)
 		SessionBasicsController.restore(req, res, Client, { where: { logist_id } })
+	},
+
+	/**
+	 * @function
+	 * Busca um cliente pelo documento (CPF/CNPJ)
+	 * @param {Object} req
+	 * @param {Object} res
+	 * @param {Object} self
+	 */
+	async getClientsByDocument(req, res, self) {
+		const logist_id = await Sessions.getSessionIdByLogist(req.token)
+		SessionBasicsController.list(req, res, Client, { where: { logist_id, document: req.params.document } })
 	},
 }

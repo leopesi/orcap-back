@@ -4,12 +4,14 @@
 const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
 const Sessions = require('../sessions/sessions')
+const Clients = require('../sessions/clients')
 const CrudBasicsController = require('../defaults/crud-basics')
 const Budget = require('../../models/budgets/budget')
 const BudgetEquipment = require('../../models/budgets/budget_equipment')
 const Logist = require('../../models/sessions/logist')
 const Seller = require('../../models/sessions/Seller')
 const Client = require('../../models/sessions/Client')
+const Session = require('../../models/sessions/session')
 const Format = require('../../models/basics/format')
 
 module.exports = {
@@ -36,6 +38,7 @@ module.exports = {
 		Budget.belongsTo(Logist, { foreignKey: 'logist_id', as: 'logists' })
 		Budget.belongsTo(Seller, { foreignKey: 'seller_id', as: 'sellers' })
 		Budget.belongsTo(Client, { foreignKey: 'client_id', as: 'clients' })
+		Client.belongsTo(Session, { foreignKey: 'session_id', as: 'sessions' })
 		Budget.belongsTo(Format, { foreignKey: 'format_id', as: 'formats' })
 		Budget.hasMany(BudgetEquipment, { foreignKey: 'budget_id', as: 'equipments' })
 	},
@@ -52,6 +55,7 @@ module.exports = {
 			if (req.params.id) {
 				const md = await Budget.findOne({
 					where: { id: req.params.id },
+					include: ['sellers']
 				})
 				const equipments = await BudgetEquipment.findAll({
 					where: { budget_id: req.params.id },
@@ -59,6 +63,11 @@ module.exports = {
 				})
 				md.dataValues.equipments = equipments
 				if (md && md.dataValues && md.dataValues.id) {
+					const clients = await Client.findOne({
+						where: { id: md.dataValues.client_id },
+						include: 'sessions'
+					})
+					md.dataValues.clients = clients
 					res.send({ status: Budget.tableName.toUpperCase() + '_GET_SUCCESS', data: md })
 				} else {
 					res.send({ status: Budget.tableName.toUpperCase() + '_NOT_FOUND', error: Budget.tableName + ' not found' })
@@ -93,7 +102,21 @@ module.exports = {
 	async create(req, res, self) {
 		delete req.body.id
 		req.body.logist_id = await Sessions.getSessionIdByLogist(req.token)
-		await CrudBasicsController.create(req, res, Budget)
+		if (await Permissions.check(req.token, 'budgets', 'insert')) {
+			const result = await Clients.saveByBudget(req, res, Clients)
+			if (result.id) req.body.client_id = result.id
+			Budget
+				.build(req.body)
+				.save()
+				.then(async (data) => {
+					res.send({ status: 'BUDGETS__INSERT_SUCCESS', data })
+				})
+				.catch((error) => {
+					res.send({ status: 'BUDGETS__INSERT_ERROR', error: error.parent ? error.parent.detail : JSON.stringify(error) })
+				})
+		} else {
+			res.send({ status: 'BUDGETS__PERMISSION_ERROR', error: 'Action not allowed' })
+		}
 	},
 
 	/**
@@ -109,6 +132,7 @@ module.exports = {
 			if (budgets) {
 				req.body.id = budgets.dataValues.id
 				req.body.expiration_date = new Date(req.body.expiration_date)
+				await Clients.saveByBudget(req, res, Clients)
 				budgets
 					.update(req.body)
 					.then(async (data) => {
