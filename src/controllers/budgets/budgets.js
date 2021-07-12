@@ -55,7 +55,7 @@ module.exports = {
 			if (req.params.id) {
 				const md = await Budget.findOne({
 					where: { id: req.params.id },
-					include: ['sellers']
+					include: ['sellers'],
 				})
 				const equipments = await BudgetEquipment.findAll({
 					where: { budget_id: req.params.id },
@@ -65,7 +65,7 @@ module.exports = {
 				if (md && md.dataValues && md.dataValues.id) {
 					const clients = await Client.findOne({
 						where: { id: md.dataValues.client_id },
-						include: 'sessions'
+						include: 'sessions',
 					})
 					md.dataValues.clients = clients
 					res.send({ status: Budget.tableName.toUpperCase() + '_GET_SUCCESS', data: md })
@@ -103,17 +103,17 @@ module.exports = {
 		delete req.body.id
 		req.body.logist_id = await Sessions.getSessionIdByLogist(req.token)
 		if (await Permissions.check(req.token, 'budgets', 'insert')) {
-			const result = await Clients.saveByBudget(req, res, Clients)
-			if (result.id) req.body.client_id = result.id
-			Budget
-				.build(req.body)
-				.save()
-				.then(async (data) => {
-					res.send({ status: 'BUDGETS__INSERT_SUCCESS', data })
-				})
-				.catch((error) => {
-					res.send({ status: 'BUDGETS__INSERT_ERROR', error: error.parent ? error.parent.detail : JSON.stringify(error) })
-				})
+			await Clients.saveByBudget(req, res, Clients, (result) => {
+				if (result.id) req.body.client_id = result.id
+				Budget.build(req.body)
+					.save()
+					.then(async (data) => {
+						res.send({ status: 'BUDGETS__INSERT_SUCCESS', data })
+					})
+					.catch((error) => {
+						res.send({ status: 'BUDGETS__INSERT_ERROR', error: error.parent ? error.parent.detail : JSON.stringify(error) })
+					})
+			})
 		} else {
 			res.send({ status: 'BUDGETS__PERMISSION_ERROR', error: 'Action not allowed' })
 		}
@@ -132,22 +132,38 @@ module.exports = {
 			if (budgets) {
 				req.body.id = budgets.dataValues.id
 				req.body.expiration_date = new Date(req.body.expiration_date)
-				await Clients.saveByBudget(req, res, Clients)
-				budgets
-					.update(req.body)
-					.then(async (data) => {
-						for (const i in req.body.equipments) {
-							await self.saveEquipment(req.body.id, req.body.equipments[i])
+				await Clients.saveByBudget(req, res, Clients, (result) => {
+					if (result && !result.error) {
+						if (result.id) {
+							req.body.client_id = result.id
 						}
-						res.send({ status: 'BUDGETS_UPDATE_SUCCESS', data })
-					})
-					.catch((error) => {
-						console.log(error)
+						budgets
+							.update(req.body)
+							.then(async (data) => {
+								for (const i in req.body.equipments) {
+									await self.saveEquipment(req.body.id, req.body.equipments[i])
+								}
+								res.send({ status: 'BUDGETS_UPDATE_SUCCESS', data })
+							})
+							.catch((error) => {
+								console.log(error)
+								res.send({
+									status: 'BUDGETS_UPDATE_ERROR',
+									error: error.parent ? error.parent.detail : error,
+								})
+							})
+					} else if (result) {
 						res.send({
-							status: 'BUDGETS_UPDATE_ERROR',
-							error: error.parent ? error.parent.detail : error,
+							status: 'CLIENTS_SAVE_ERROR',
+							error: result.error,
 						})
-					})
+					} else {
+						res.send({
+							status: 'CLIENTS_BUDGET_SAVE_ERROR',
+							error: '',
+						})
+					}
+				})
 			} else {
 				res.send({
 					status: 'BUDGETS_NOT_FOUND',
