@@ -38,7 +38,7 @@ module.exports = {
 
 	async lidsByFilters(req, res, self) {
 		if (await Permissions.check(req.token, 'lids', 'select')) {
-			const logist_id = await Sessions.getSessionIdByLogist(req.token)
+			const logist_id = await Sessions.getSessionId(req)
 			const lids = await Lid.findAll({
 				where: { },
 				include: [

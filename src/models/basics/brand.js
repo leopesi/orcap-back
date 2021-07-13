@@ -11,7 +11,7 @@ const Brand = sequelize.define('brands', {
 	logist_id: {
 		type: DataTypes.UUID,
 		references: {
-			model: 'providers',
+			model: 'logists',
 			key: 'id',
 		},
 	},

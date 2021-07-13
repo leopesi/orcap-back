@@ -101,7 +101,7 @@ module.exports = {
 	 */
 	async create(req, res, self) {
 		delete req.body.id
-		req.body.logist_id = await Sessions.getSessionIdByLogist(req.token)
+		req.body.logist_id = await Sessions.getSessionId(req)
 		if (await Permissions.check(req.token, 'budgets', 'insert')) {
 			await Clients.saveByBudget(req, res, Clients, (result) => {
 				if (result.id) req.body.client_id = result.id

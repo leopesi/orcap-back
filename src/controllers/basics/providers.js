@@ -5,6 +5,7 @@ const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
 const CrudBasicsController = require('../defaults/crud-basics')
 const Provider = require('../../models/basics/provider')
+const Logist = require('../../models/sessions/logist')
 
 module.exports = {
 	/**
@@ -18,6 +19,15 @@ module.exports = {
 		Server.addRoute('/providers/:id/restore', this.restore, this).put(true)
 		Server.addRoute('/providers/:id', this.change, this).put(true)
 		Server.addRoute('/providers/:id', this.delete, this).delete(true)
+		this.setForeignKey()
+	},
+
+	/**
+	 * @function
+	 * Seta as as chaves dos models
+	 */
+	async setForeignKey() {
+		Provider.belongsTo(Logist, { foreignKey: 'logist_id', as: 'logists' })
 	},
 
 	/**

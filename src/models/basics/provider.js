@@ -10,7 +10,7 @@ const Provider = sequelize.define('providers', {
 	logist_id: {
 		type: DataTypes.UUID,
 		references: {
-			model: 'providers',
+			model: 'logists',
 			key: 'id',
 		},
 	},

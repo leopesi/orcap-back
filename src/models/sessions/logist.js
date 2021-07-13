@@ -24,31 +24,31 @@ const Logist = sequelize.define(
 		phone: DataTypes.STRING,
 		brand_filter_id: {
 			type: DataTypes.UUID,
-			references: {
-				model: 'brands',
-				key: 'id',
-			},
+			// references: {
+			// 	model: 'brands',
+			// 	key: 'id',
+			// },
 		},
 		brand_profile_id: {
 			type: DataTypes.UUID,
-			references: {
-				model: 'brands',
-				key: 'id',
-			},
+			// references: {
+			// 	model: 'brands',
+			// 	key: 'id',
+			// },
 		},
 		brand_blanket_id: {
 			type: DataTypes.UUID,
-			references: {
-				model: 'brands',
-				key: 'id',
-			},
+			// references: {
+			// 	model: 'brands',
+			// 	key: 'id',
+			// },
 		},
 		brand_vinyl_id: {
 			type: DataTypes.UUID,
-			references: {
-				model: 'brands',
-				key: 'id',
-			},
+			// references: {
+			// 	model: 'brands',
+			// 	key: 'id',
+			// },
 		},
 		debit_card: DataTypes.DECIMAL,
 		// cash_credit_card: 'Cartão de crédito à vista',

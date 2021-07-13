@@ -36,7 +36,7 @@ module.exports = {
 
 	async vinylsByDimension(req, res, self) {
 		if (await Permissions.check(req.token, 'vinyls', 'select')) {
-			const logist_id = await Sessions.getSessionIdByLogist(req.token)
+			const logist_id = await Sessions.getSessionId(req)
 			const vinyls = await Vinyl.findAll({
 				where: {  },
 				include: [

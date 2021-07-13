@@ -1,6 +1,8 @@
 /**
  * @module CrudBasicsController
  */
+
+const isuuid = require('isuuid')
 const Sessions = require('../sessions/sessions')
 const Equipments = require('../../controllers/equipments/equipments')
 const Equipment = require('../../models/equipments/equipment')
@@ -17,7 +19,7 @@ module.exports = {
 	async get(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'select')) {
 			if (req.params.id) {
-				const logist_id = await Sessions.getSessionIdByLogist(req.token)
+				const logist_id = await Sessions.getSessionId(req)
 				const md = await model.findOne({
 					where: { id: req.params.id },
 					include: [
@@ -57,7 +59,7 @@ module.exports = {
 	 */
 	async list(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'select')) {
-			const logist_id = await Sessions.getSessionIdByLogist(req.token)
+			const logist_id = await Sessions.getSessionId(req)
 			const md = await model.findAll({
 				where: {},
 				include: [
@@ -92,30 +94,36 @@ module.exports = {
 	async create(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'insert')) {
 			delete req.body.id
-			req.body.logist_id = await Sessions.getSessionIdByLogist(req.token)
-			Equipment.build(req.body)
-				.save()
-				.then(async (result) => {
-					req.body.equipment_id = result.dataValues.id
-					model
-						.build(req.body)
-						.save()
-						.then(async (data) => {
-							res.send({ status: model.tableName.toUpperCase() + '_INSERT_SUCCESS', data })
-						})
-						.catch((error) => {
-							res.send({
-								status: model.tableName.toUpperCase() + '_INSERT_ERROR',
-								error: error.parent ? error.parent.detail : error,
+			req.body.logist_id = await Sessions.getSessionId(req)
+			if (!isuuid(req.body.brand_id)) {
+				res.send({ status: 'BRAND_IS_EMPTY' })
+			} else if (!isuuid(req.body.provider_id)) {
+				res.send({ status: 'PROVIDER_IS_EMPTY' })
+			} else {
+				Equipment.build(req.body)
+					.save()
+					.then(async (result) => {
+						req.body.equipment_id = result.dataValues.id
+						model
+							.build(req.body)
+							.save()
+							.then(async (data) => {
+								res.send({ status: model.tableName.toUpperCase() + '_INSERT_SUCCESS', data })
 							})
-						})
-				})
-				.catch((error) => {
-					res.send({
-						status: 'EQUIPMENT_INSERT_ERROR',
-						error: error.parent ? error.parent.detail : error,
+							.catch((error) => {
+								res.send({
+									status: model.tableName.toUpperCase() + '_INSERT_ERROR',
+									error: error.parent ? error.parent.detail : error,
+								})
+							})
 					})
-				})
+					.catch((error) => {
+						res.send({
+							status: 'EQUIPMENT_INSERT_ERROR',
+							error: error.parent ? error.parent.detail : error,
+						})
+					})
+			}
 		} else {
 			res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
 		}
@@ -130,7 +138,7 @@ module.exports = {
 	 */
 	async change(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'update')) {
-			const logist_id = await Sessions.getSessionIdByLogist(req.token)
+			const logist_id = await Sessions.getSessionId(req)
 			const md = await model.findOne({
 				where: { id: req.params.id },
 				include: [
@@ -143,38 +151,44 @@ module.exports = {
 			})
 			if (md) {
 				req.body.id = md.dataValues.id
-				const EquipmentData = {
-					id: md.dataValues.equipment_id,
-					name: req.body.name,
-					brand_id: req.body.brand_id,
-					provider_id: req.body.provider_id,
-					cost: req.body.cost,
-					profit_margin: req.body.profit_margin,
-					man_power_cost: req.body.man_power_cost,
-					man_power_profit_margin: req.body.man_power_profit_margin,
-					cash_price: req.body.cash_price,
-					forward_price: req.body.forward_price,
-				}
-				const EquipmentModel = await Equipment.findOne({ where: { id: md.dataValues.equipment_id } })
-				EquipmentModel.update(EquipmentData)
-					.then((result) => {
-						md.update(req.body)
-							.then((data) => {
-								res.send({ status: model.tableName.toUpperCase() + '_UPDATE_SUCCESS', data })
-							})
-							.catch((error) => {
-								res.send({
-									status: model.tableName.toUpperCase() + '_UPDATE_ERROR',
-									error: error,
+				if (!isuuid(req.body.brand_id)) {
+					res.send({ status: 'BRAND_IS_EMPTY' })
+				} else if (!isuuid(req.body.provider_id)) {
+					res.send({ status: 'PROVIDER_IS_EMPTY' })
+				} else {
+					const EquipmentData = {
+						id: md.dataValues.equipment_id,
+						name: req.body.name,
+						brand_id: req.body.brand_id,
+						provider_id: req.body.provider_id,
+						cost: req.body.cost,
+						profit_margin: req.body.profit_margin,
+						man_power_cost: req.body.man_power_cost,
+						man_power_profit_margin: req.body.man_power_profit_margin,
+						cash_price: req.body.cash_price,
+						forward_price: req.body.forward_price,
+					}
+					const EquipmentModel = await Equipment.findOne({ where: { id: md.dataValues.equipment_id } })
+					EquipmentModel.update(EquipmentData)
+						.then((result) => {
+							md.update(req.body)
+								.then((data) => {
+									res.send({ status: model.tableName.toUpperCase() + '_UPDATE_SUCCESS', data })
 								})
-							})
-					})
-					.catch((error) => {
-						res.send({
-							status: 'EQUIPMENT_UPDATE_ERROR',
-							error: error,
+								.catch((error) => {
+									res.send({
+										status: model.tableName.toUpperCase() + '_UPDATE_ERROR',
+										error: error,
+									})
+								})
 						})
-					})
+						.catch((error) => {
+							res.send({
+								status: 'EQUIPMENT_UPDATE_ERROR',
+								error: error,
+							})
+						})
+				}
 			} else {
 				res.send({
 					status: model.tableName.toUpperCase() + '_NOT_FOUND',

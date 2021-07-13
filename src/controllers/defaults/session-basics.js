@@ -66,7 +66,7 @@ module.exports = {
 		delete req.body.id
 		const permission = await Permissions.check(req.token, model.tableName, 'insert')
 		if (permission) {
-			req.body.logist_id = await Sessions.getSessionIdByLogist(req.token)
+			req.body.logist_id = await Sessions.getSessionId(req)
 			req.body.password = await Server.getHash(req.body.password)
 			req.body.table = model.tableName
 			Sessions.create(req, (result) => {

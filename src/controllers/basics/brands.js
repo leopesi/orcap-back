@@ -5,6 +5,7 @@ const Server = require('../../helpers/server')
 const CrudBasicsController = require('../defaults/crud-basics')
 const Brand = require('../../models/basics/brand')
 const Provider = require('../../models/basics/provider')
+const Logist = require('../../models/sessions/logist')
 
 module.exports = {
 	/**
@@ -27,6 +28,7 @@ module.exports = {
 	 */
 	async setForeignKey() {
 		Brand.belongsTo(Provider, { foreignKey: 'provider_id', as: 'providers' })
+		Brand.belongsTo(Logist, { foreignKey: 'logist_id', as: 'logists' })
 	},
 
 	/**

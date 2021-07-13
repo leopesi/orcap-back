@@ -47,7 +47,7 @@ module.exports = {
 				req.body.sidewalk_width
 			)
 			const max_capacity = Dimensions.getM3Real(dimension)
-			const logist_id = await Sessions.getSessionIdByLogist(req.token)
+			const logist_id = await Sessions.getSessionId(req)
 			const engines = await Engine.findAll({
 				where: { max_capacity: { [Op.gte]: !isNaN(max_capacity) ? max_capacity : 0 } },
 				include: [

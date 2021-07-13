@@ -1,6 +1,7 @@
 /**
  * @module LogistsController
  */
+const isuuid = require('isuuid')
 const Server = require('../../helpers/server')
 const Sessions = require('../sessions/sessions')
 const SessionBasicsController = require('../defaults/session-basics')
@@ -17,7 +18,7 @@ module.exports = {
 		Server.addRoute('/logists/:id', this.get, this).get(true)
 		Server.addRoute('/logists-by-token/:id', this.getByToken, this).get(true)
 		Server.addRoute('/logists/', this.list, this).get(true)
-		Server.addRoute('/logists', this.create, this).post(true)
+		Server.addRoute('/logists', this.create, this).post(false)
 		Server.addRoute('/logists/:id/restore', this.restore, this).put(true)
 		Server.addRoute('/logists/:id', this.change, this).put(true)
 		Server.addRoute('/logists/:id', this.delete, this).delete(true)
@@ -51,10 +52,9 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async getByToken(req, res, self) {
-		req.params.id = await Sessions.getSessionIdByLogist(req.token)
 		if (await Permissions.check(req.token, 'logists', 'select')) {
 			const md = await Logist.findOne({
-				where: { session_id: req.params.id },
+				where: { session_id: Server.decodedIdByToken(req.token) },
 				include: 'sessions',
 			})
 			if (md && md.id) {
@@ -125,7 +125,18 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		SessionBasicsController.change(req, res, Logist)
+		if (!isuuid(req.body.brand_filter_id)) {
+			res.send({ status: 'BRAND_FILTER_IS_EMPTY' })
+		} else if (!isuuid(req.body.brand_profile_id)) {
+			res.send({ status: 'BRAND_PROFILE_IS_EMPTY' })
+		} else if (!isuuid(req.body.brand_blanket_id)) {
+			res.send({ status: 'BRAND_BLANKET_IS_EMPTY' })
+		} else if (!isuuid(req.body.brand_vinyl_id)) {
+			res.send({ status: 'BRAND_VINYL_IS_EMPTY' })
+		} else {
+			req.params.id = await Sessions.getSessionId(req)
+			SessionBasicsController.change(req, res, Logist)
+		}
 	},
 
 	/**

@@ -3,8 +3,8 @@
  */
 const sequelize = require('sequelize')
 const Op = sequelize.Op
-const Server = require('../../helpers/server')
 const Sessions = require('../sessions/sessions')
+const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
 const EquipmentBasicsController = require('../defaults/equipment-basics')
 const Equipments = require('./equipments')
@@ -38,7 +38,7 @@ module.exports = {
 
 	async profilesByDimension(req, res, self) {
 		if (await Permissions.check(req.token, 'profiles', 'select')) {
-			const logist_id = await Sessions.getSessionIdByLogist(req.token)
+			const logist_id = await Sessions.getSessionId(req)
 			const profiles = await Profile.findAll({
 				where: { },
 				include: [

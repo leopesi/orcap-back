@@ -1,6 +1,7 @@
 /**
  * @module FiltersController
  */
+const isuuid = require('isuuid')
 const sequelize = require('sequelize')
 const Op = sequelize.Op
 const Server = require('../../helpers/server')
@@ -52,7 +53,7 @@ module.exports = {
 		if (await Permissions.check(req.token, 'filters', 'select')) {
 			const dimension = Dimensions.creatDimension(req.body.length, req.body.width, req.body.initial_depth, req.body.final_depth, req.body.sidewalk_width)
 			const max_capacity = Dimensions.getM3Real(dimension)
-			const logist_id = await Sessions.getSessionIdByLogist(req.token)
+			const logist_id = await Sessions.getSessionId(req)
 			const filters = await Filter.findAll({
 				where: { max_capacity: { [Op.gte]: !isNaN(max_capacity) ? max_capacity : 0 } },
 				include: [
@@ -112,7 +113,13 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		await EquipmentBasicsController.create(req, res, Filter)
+		if (!isuuid(req.body.engine_id)) {
+			res.send({ status: 'ENGINE_IS_EMPTY' })
+		} else if (!isuuid(req.body.lid_id)) {
+			res.send({ status: 'LID_IS_EMPTY' })
+		} else {
+			await EquipmentBasicsController.create(req, res, Filter)
+		}
 	},
 
 	/**
@@ -123,7 +130,13 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		await EquipmentBasicsController.change(req, res, Filter)
+		if (!isuuid(req.body.engine_id)) {
+			res.send({ status: 'ENGINE_IS_EMPTY' })
+		} else if (!isuuid(req.body.lid_id)) {
+			res.send({ status: 'LID_IS_EMPTY' })
+		} else {
+			await EquipmentBasicsController.change(req, res, Filter)
+		}
 	},
 
 	/**

@@ -42,7 +42,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		const logist_id = await Sessions.getSessionIdByLogist(req.token)
+		const logist_id = await Sessions.getSessionId(req)
 		SessionBasicsController.get(req, res, Client, { where: { logist_id } })
 	},
 
@@ -54,7 +54,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		const logist_id = await Sessions.getSessionIdByLogist(req.token)
+		const logist_id = await Sessions.getSessionId(req)
 		SessionBasicsController.list(req, res, Client, { where: { logist_id } })
 	},
 
@@ -66,7 +66,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		req.body.logist_id = await Sessions.getSessionIdByLogist(req.token)
+		req.body.logist_id = await Sessions.getSessionId(req)
 		SessionBasicsController.create(req, res, Client)
 	},
 
@@ -78,7 +78,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		const logist_id = await Sessions.getSessionIdByLogist(req.token)
+		const logist_id = await Sessions.getSessionId(req)
 		const result = await Client.findOne({ where: { id: req.body.id, logist_id } })
 		if (result) {
 			SessionBasicsController.change(req, res, Client)
@@ -95,7 +95,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async saveByBudget(req, res, self, callback) {
-		const logist_id = await Sessions.getSessionIdByLogist(req.token)
+		const logist_id = await Sessions.getSessionId(req)
 		const result = await Client.findOne({ where: { id: req.body.clients.id, logist_id } })
 		if (result) {
 			delete req.body.clients.password
@@ -160,7 +160,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async delete(req, res, self) {
-		const logist_id = await Sessions.getSessionIdByLogist(req.token)
+		const logist_id = await Sessions.getSessionId(req)
 		SessionBasicsController.delete(req, res, Client, { where: { logist_id } })
 	},
 
@@ -172,7 +172,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async restore(req, res, self) {
-		const logist_id = await Sessions.getSessionIdByLogist(req.token)
+		const logist_id = await Sessions.getSessionId(req)
 		SessionBasicsController.restore(req, res, Client, { where: { logist_id } })
 	},
 
@@ -184,7 +184,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async getClientsByDocument(req, res, self) {
-		const logist_id = await Sessions.getSessionIdByLogist(req.token)
+		const logist_id = await Sessions.getSessionId(req)
 		SessionBasicsController.list(req, res, Client, { where: { logist_id, document: req.params.document } })
 	},
 }

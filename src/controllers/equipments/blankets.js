@@ -43,7 +43,7 @@ module.exports = {
 	 */
 	async blanketsByDimension(req, res, self) {
 		if (await Permissions.check(req.token, 'blankets', 'select')) {
-			const logist_id = await Sessions.getSessionIdByLogist(req.token)
+			const logist_id = await Sessions.getSessionId(req)
 			const blankets = await Blanket.findAll({
 				where: {},
 				include: [

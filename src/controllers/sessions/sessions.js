@@ -37,8 +37,21 @@ module.exports = {
 	 */
 	async setForeignKey() {},
 
-	async getSessionIdByLogist(token) {
-		const session_id = Server.decodedIdByToken(token)
+	async getSessionId(req) {
+		const id = Server.decodedIdByToken(req.token)
+		const md = await Session.findOne({
+			where: { id },
+		})
+		if (md && md.dataValues) {
+			if (md.dataValues.table == 'logists') {
+				return this.getSessionIdByLogist(md.dataValues.id)
+			}
+		} else {
+			return null
+		}
+	},
+
+	async getSessionIdByLogist(session_id) {
 		const md = await Logist.findOne({
 			where: { session_id },
 		})
@@ -48,43 +61,7 @@ module.exports = {
 			return null
 		}
 	},
-
-	async getSessionIdByClient(token) {
-		const session_id = Server.decodedIdByToken(token)
-		const md = await Client.findOne({
-			where: { session_id },
-		})
-		if (md && md.dataValues) {
-			return md.dataValues.id
-		} else {
-			return null
-		}
-	},
-
-	async getSessionIdBySeller(token) {
-		const session_id = Server.decodedIdByToken(token)
-		const md = await Seller.findOne({
-			where: { session_id },
-		})
-		if (md && md.dataValues) {
-			return md.dataValues.id
-		} else {
-			return null
-		}
-	},
-
-	async getSessionIdByUser(token) {
-		const session_id = Server.decodedIdByToken(token)
-		const md = await User.findOne({
-			where: { session_id },
-		})
-		if (md && md.dataValues) {
-			return md.dataValues.id
-		} else {
-			return null
-		}
-	},
-
+	
 	/**
 	 * @function
 	 * Cria uma Sessão
