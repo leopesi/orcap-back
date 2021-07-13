@@ -16,6 +16,7 @@ module.exports = {
 	 */
 	setRoutes() {
 		Server.addRoute('/clients/:id', this.get, this).get(true)
+		Server.addRoute('/clients-by-documents/', this.getClientsByDocument, this).get(true)
 		Server.addRoute('/clients-by-documents/:document', this.getClientsByDocument, this).get(true)
 		Server.addRoute('/clients/', this.list, this).get(true)
 		Server.addRoute('/clients', this.create, this).post(true)
@@ -98,30 +99,30 @@ module.exports = {
 		const logist_id = await Sessions.getSessionId(req)
 		if (req.body.clients) {
 			if (req.body.clients.id) {
-			const result = await Client.findOne({ where: { id: req.body.clients.id, logist_id } })
-			if (result) {
-				delete req.body.clients.password
-				await result
-					.update(req.body.clients)
-					.then(async () => {
-						const resultSession = await Session.findOne({ where: { id: result.dataValues.session_id } })
-						if (resultSession) {
-							req.body.clients.sessions.mail = req.body.clients.mail
-							await resultSession
-								.update(req.body.clients.sessions)
-								.then(async () => {
-									callback({})
-								})
-								.catch(async (error) => {
-									callback({ error })
-								})
-						} else {
-							callback({ error: 'SESSION_CLIENT_NOT_FOUND' })
-						}
-					})
-					.catch(async (error) => {
-						callback({ error })
-					})
+				const result = await Client.findOne({ where: { id: req.body.clients.id, logist_id } })
+				if (result) {
+					delete req.body.clients.password
+					await result
+						.update(req.body.clients)
+						.then(async () => {
+							const resultSession = await Session.findOne({ where: { id: result.dataValues.session_id } })
+							if (resultSession) {
+								req.body.clients.sessions.mail = req.body.clients.mail
+								await resultSession
+									.update(req.body.clients.sessions)
+									.then(async () => {
+										callback({})
+									})
+									.catch(async (error) => {
+										callback({ error })
+									})
+							} else {
+								callback({ error: 'SESSION_CLIENT_NOT_FOUND' })
+							}
+						})
+						.catch(async (error) => {
+							callback({ error })
+						})
 				} else {
 					callback({})
 				}
@@ -193,6 +194,10 @@ module.exports = {
 	 */
 	async getClientsByDocument(req, res, self) {
 		const logist_id = await Sessions.getSessionId(req)
-		SessionBasicsController.list(req, res, Client, { where: { logist_id, document: req.params.document } })
+		if (req.params.document && req.params.document.toString().trim() != '') {
+			SessionBasicsController.list(req, res, Client, { where: { logist_id, document: req.params.document } })
+		} else {
+			res.send({})
+		}
 	},
 }
