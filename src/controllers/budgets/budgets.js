@@ -1,6 +1,7 @@
 /**
  * @module BudgetsController
  */
+const isuuid = require('isuuid')
 const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
 const Sessions = require('../sessions/sessions')
@@ -105,14 +106,18 @@ module.exports = {
 		if (await Permissions.check(req.token, 'budgets', 'insert')) {
 			await Clients.saveByBudget(req, res, Clients, (result) => {
 				if (result.id) req.body.client_id = result.id
-				Budget.build(req.body)
-					.save()
-					.then(async (data) => {
-						res.send({ status: 'BUDGETS__INSERT_SUCCESS', data })
-					})
-					.catch((error) => {
-						res.send({ status: 'BUDGETS__INSERT_ERROR', error: error.parent ? error.parent.detail : JSON.stringify(error) })
-					})
+				if (req.body.logist_id && isuuid(req.body.logist_id)) {
+					Budget.build(req.body)
+						.save()
+						.then(async (data) => {
+							res.send({ status: 'BUDGETS__INSERT_SUCCESS', data })
+						})
+						.catch((error) => {
+							res.send({ status: 'BUDGETS__INSERT_ERROR', error: error.parent ? error.parent.detail : JSON.stringify(error) })
+						})
+				} else {
+					res.send({ status: 'LOGIST_ID_INSERT_ERROR' })
+				}
 			})
 		} else {
 			res.send({ status: 'BUDGETS__PERMISSION_ERROR', error: 'Action not allowed' })

@@ -129,31 +129,35 @@ module.exports = {
 			} else {
 				delete req.body.clients.id
 				req.body.clients.logist_id = logist_id
-				if (await Permissions.check(req.token, 'sessions', 'insert')) {
-					req.body.clients.password = await Server.getHash(Date.now())
-					await Session.build(req.body.clients)
-						.save()
-						.then(async (result) => {
-							if (result) {
-								req.body.clients.session_id = result.dataValues.id
-								await Client.build(req.body.clients)
-									.save()
-									.then(async (result2) => {
-										callback({ id: result2.dataValues.id })
-									})
-									.catch(async (error) => {
-										await Session.destroy({ where: { id: result.dataValues.id } })
-										callback({ error })
-									})
-							} else {
-								callback({ error: 'SESSION_CLIENT_NOT_FOUND' })
-							}
-						})
-						.catch(async (error) => {
-							callback({ error })
-						})
+				if (req.body.clients.document && req.body.clients.document.toString().trim() != '') {
+					if (await Permissions.check(req.token, 'sessions', 'insert')) {
+						req.body.clients.password = await Server.getHash(Date.now())
+						await Session.build(req.body.clients)
+							.save()
+							.then(async (result) => {
+								if (result) {
+									req.body.clients.session_id = result.dataValues.id
+									await Client.build(req.body.clients)
+										.save()
+										.then(async (result2) => {
+											callback({ id: result2.dataValues.id })
+										})
+										.catch(async (error) => {
+											await Session.destroy({ where: { id: result.dataValues.id } })
+											callback({ error })
+										})
+								} else {
+									callback({ error: 'SESSION_CLIENT_NOT_FOUND' })
+								}
+							})
+							.catch(async (error) => {
+								callback({ error })
+							})
+					} else {
+						callback({ error: 'SESSION_CLIENT_NOT_FOUND' })
+					}
 				} else {
-					callback({ error: 'SESSION_CLIENT_NOT_FOUND' })
+					callback({})
 				}
 			}
 		} else {
