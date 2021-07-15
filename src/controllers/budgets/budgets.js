@@ -145,6 +145,7 @@ module.exports = {
 						budgets
 							.update(req.body)
 							.then(async (data) => {
+								await self.deleteEquipments(req.body.id, req.body.equipments)
 								for (const i in req.body.equipments) {
 									await self.saveEquipment(req.body.id, req.body.equipments[i])
 								}
@@ -229,6 +230,24 @@ module.exports = {
 					.catch((error) => {
 						console.log(error)
 					})
+			}
+		}
+	},
+
+	async deleteEquipments(budget_id, equipments) {
+		const equips = await BudgetEquipment.findAll({
+			where: { budget_id },
+			order: [['index', 'ASC']],
+		})
+		for (const i in equips) {
+			let finded = false
+			for (const j in equipments) {
+				if (equips[i].dataValues.id == equipments[j].id) {
+					finded = true
+				}
+			}
+			if (!finded) {
+				await BudgetEquipment.destroy({ where: { id: equips[i].dataValues.id } })
 			}
 		}
 	},
