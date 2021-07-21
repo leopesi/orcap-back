@@ -204,7 +204,7 @@ module.exports = {
 	},
 
 	async saveEquipment(budget_id, equipment) {
-		if (equipment.equipment_id) {
+		if (equipment.equipment_id || equipment.text) {
 			if (equipment.id) {
 				const equip = await BudgetEquipment.findOne({
 					where: { id: equipment.id },
@@ -220,6 +220,7 @@ module.exports = {
 						})
 				}
 			} else {
+				console.log(equipment)
 				delete equipment.id
 				equipment.budget_id = budget_id
 				BudgetEquipment.build(equipment)
