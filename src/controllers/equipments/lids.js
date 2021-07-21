@@ -4,9 +4,9 @@
 const sequelize = require('sequelize')
 const Op = sequelize.Op
 const Server = require('../../helpers/server')
+const Sessions = require('../sessions/sessions')
 const Permissions = require('../sessions/permissions')
 const EquipmentBasicsController = require('../defaults/equipment-basics')
-const Dimensions = require('../defaults/dimensions')
 const Equipments = require('./equipments')
 
 const Lid = require('../../models/equipments/lid')
@@ -38,9 +38,16 @@ module.exports = {
 
 	async lidsByFilters(req, res, self) {
 		if (await Permissions.check(req.token, 'lids', 'select')) {
+			const logist_id = await Sessions.getSessionId(req)
 			const lids = await Lid.findAll({
 				where: { },
-				include: 'equipments',
+				include: [
+					{
+						model: Equipment,
+						as: 'equipments',
+						where: { logist_id },
+					},
+				],
 			})
 			if (lids && lids[0]) {
 				await Equipments.updateAllRelations(lids)

@@ -32,8 +32,8 @@ const Equipment = sequelize.define('equipments', {
 	description: DataTypes.STRING(50),
 	cost: DataTypes.DECIMAL(10, 2),
 	profit_margin: DataTypes.DECIMAL(10, 2),
-	cash_price: DataTypes.DECIMAL(10, 2),
-	forward_price: DataTypes.DECIMAL(10, 2),
+	man_power_cost: DataTypes.DECIMAL(10, 2),
+	man_power_profit_margin: DataTypes.DECIMAL(10, 2),
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW,

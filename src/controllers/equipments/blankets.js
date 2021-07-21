@@ -2,6 +2,7 @@
  * @module BlanketsController
  */
 const Server = require('../../helpers/server')
+const Sessions = require('../sessions/sessions')
 const Permissions = require('../sessions/permissions')
 const EquipmentBasicsController = require('../defaults/equipment-basics')
 const Equipments = require('./equipments')
@@ -42,9 +43,16 @@ module.exports = {
 	 */
 	async blanketsByDimension(req, res, self) {
 		if (await Permissions.check(req.token, 'blankets', 'select')) {
+			const logist_id = await Sessions.getSessionId(req)
 			const blankets = await Blanket.findAll({
 				where: {},
-				include: 'equipments',
+				include: [
+					{
+						model: Equipment,
+						as: 'equipments',
+						where: { logist_id },
+					},
+				],
 			})
 			if (blankets && blankets[0]) {
 				await Equipments.updateAllRelations(blankets)

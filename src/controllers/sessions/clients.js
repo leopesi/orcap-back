@@ -2,6 +2,8 @@
  * @module ClientsController
  */
 const Server = require('../../helpers/server')
+const Sessions = require('../sessions/sessions')
+const Permissions = require('../sessions/permissions')
 const SessionBasicsController = require('../defaults/session-basics')
 const Session = require('../../models/sessions/session')
 const Client = require('../../models/sessions/client')
@@ -14,6 +16,8 @@ module.exports = {
 	 */
 	setRoutes() {
 		Server.addRoute('/clients/:id', this.get, this).get(true)
+		Server.addRoute('/clients-by-documents/', this.getClientsByDocument, this).get(true)
+		Server.addRoute('/clients-by-documents/:document', this.getClientsByDocument, this).get(true)
 		Server.addRoute('/clients/', this.list, this).get(true)
 		Server.addRoute('/clients', this.create, this).post(true)
 		Server.addRoute('/clients/:id/restore', this.restore, this).put(true)
@@ -39,7 +43,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		const logist_id = Server.decodedIdByToken(req.token)
+		const logist_id = await Sessions.getSessionId(req)
 		SessionBasicsController.get(req, res, Client, { where: { logist_id } })
 	},
 
@@ -51,7 +55,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		const logist_id = Server.decodedIdByToken(req.token)
+		const logist_id = await Sessions.getSessionId(req)
 		SessionBasicsController.list(req, res, Client, { where: { logist_id } })
 	},
 
@@ -63,7 +67,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		req.body.logist_id = Server.decodedIdByToken(req.token)
+		req.body.logist_id = await Sessions.getSessionId(req)
 		SessionBasicsController.create(req, res, Client)
 	},
 
@@ -75,12 +79,89 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		const logist_id = Server.decodedIdByToken(req.token)
+		const logist_id = await Sessions.getSessionId(req)
 		const result = await Client.findOne({ where: { id: req.body.id, logist_id } })
 		if (result) {
 			SessionBasicsController.change(req, res, Client)
 		} else {
 			res.send({ status: 'CLIENT_UPDATE_SESSION_ERROR', error: 'Data not found' })
+		}
+	},
+
+	/**
+	 * @function
+	 * Altera ou Cria um cliente
+	 * @param {Object} req
+	 * @param {Object} res
+	 * @param {Object} self
+	 */
+	async saveByBudget(req, res, self, callback) {
+		const logist_id = await Sessions.getSessionId(req)
+		if (req.body.clients) {
+			if (req.body.clients.id) {
+				const result = await Client.findOne({ where: { id: req.body.clients.id, logist_id } })
+				if (result) {
+					delete req.body.clients.password
+					await result
+						.update(req.body.clients)
+						.then(async () => {
+							const resultSession = await Session.findOne({ where: { id: result.dataValues.session_id } })
+							if (resultSession) {
+								req.body.clients.sessions.mail = req.body.clients.mail
+								await resultSession
+									.update(req.body.clients.sessions)
+									.then(async () => {
+										callback({})
+									})
+									.catch(async (error) => {
+										callback({ error })
+									})
+							} else {
+								callback({ error: 'SESSION_CLIENT_NOT_FOUND' })
+							}
+						})
+						.catch(async (error) => {
+							callback({ error })
+						})
+				} else {
+					callback({})
+				}
+			} else {
+				delete req.body.clients.id
+				req.body.clients.logist_id = logist_id
+				if (req.body.clients.document && req.body.clients.document.toString().trim() != '') {
+					if (await Permissions.check(req.token, 'sessions', 'insert')) {
+						req.body.clients.password = await Server.getHash(Date.now())
+						await Session.build(req.body.clients)
+							.save()
+							.then(async (result) => {
+								if (result) {
+									req.body.clients.session_id = result.dataValues.id
+									await Client.build(req.body.clients)
+										.save()
+										.then(async (result2) => {
+											callback({ id: result2.dataValues.id })
+										})
+										.catch(async (error) => {
+											await Session.destroy({ where: { id: result.dataValues.id } })
+											callback({ error })
+										})
+								} else {
+									callback({ error: 'SESSION_CLIENT_NOT_FOUND' })
+								}
+							})
+							.catch(async (error) => {
+								callback({ error })
+							})
+					} else {
+						callback({ error: 'SESSION_CLIENT_NOT_FOUND' })
+					}
+				} else {
+					callback({})
+				}
+			}
+		} else {
+			callback({})
 		}
 	},
 
@@ -92,7 +173,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async delete(req, res, self) {
-		const logist_id = Server.decodedIdByToken(req.token)
+		const logist_id = await Sessions.getSessionId(req)
 		SessionBasicsController.delete(req, res, Client, { where: { logist_id } })
 	},
 
@@ -104,7 +185,23 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async restore(req, res, self) {
-		const logist_id = Server.decodedIdByToken(req.token)
+		const logist_id = await Sessions.getSessionId(req)
 		SessionBasicsController.restore(req, res, Client, { where: { logist_id } })
+	},
+
+	/**
+	 * @function
+	 * Busca um cliente pelo documento (CPF/CNPJ)
+	 * @param {Object} req
+	 * @param {Object} res
+	 * @param {Object} self
+	 */
+	async getClientsByDocument(req, res, self) {
+		const logist_id = await Sessions.getSessionId(req)
+		if (req.params.document && req.params.document.toString().trim() != '') {
+			SessionBasicsController.list(req, res, Client, { where: { logist_id, document: req.params.document } })
+		} else {
+			res.send({})
+		}
 	},
 }

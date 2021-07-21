@@ -19,7 +19,6 @@ module.exports = {
     budgets: [
       "budget",
       "budget_equipment",
-      "budget_manpower",
       "budget_material",
     ],
   },

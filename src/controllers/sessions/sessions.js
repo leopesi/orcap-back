@@ -2,14 +2,15 @@
  * @module SessionsController
  */
 const Server = require('../../helpers/server')
+const Sessions = require('../sessions/sessions')
 const Permissions = require('./permissions')
 const Session = require('../../models/sessions/session')
 
 const MailsSendActive = require('../mails/sessions/send-mail-active')
-// const User = require('../../models/sessions/user')
-// const Logist = require('../../models/sessions/logist')
-// const Seller = require('../../models/sessions/seller')
-// const Client = require('../../models/sessions/client')
+const User = require('../../models/sessions/user')
+const Logist = require('../../models/sessions/logist')
+const Seller = require('../../models/sessions/seller')
+const Client = require('../../models/sessions/client')
 
 module.exports = {
 	setRoutes() {
@@ -35,6 +36,31 @@ module.exports = {
 	 * Seta as as chaves dos models
 	 */
 	async setForeignKey() {},
+
+	async getSessionId(req) {
+		const id = Server.decodedIdByToken(req.token)
+		const md = await Session.findOne({
+			where: { id },
+		})
+		if (md && md.dataValues) {
+			if (md.dataValues.table == 'logists') {
+				return this.getSessionIdByLogist(md.dataValues.id)
+			}
+		} else {
+			return null
+		}
+	},
+
+	async getSessionIdByLogist(session_id) {
+		const md = await Logist.findOne({
+			where: { session_id },
+		})
+		if (md && md.dataValues) {
+			return md.dataValues.id
+		} else {
+			return null
+		}
+	},
 	
 	/**
 	 * @function
@@ -44,6 +70,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, callback) {
+		console.log('CREATE ON SESSIONS CONTROLLER ')
 		if (await Permissions.check(req.token, 'sessions', 'insert')) {
 			req.body.password = await Server.getHash(req.body.password)
 			Session.build(req.body)

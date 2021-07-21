@@ -1,17 +1,20 @@
 /**
  * @module FiltersController
  */
+const isuuid = require('isuuid')
 const sequelize = require('sequelize')
 const Op = sequelize.Op
 const Server = require('../../helpers/server')
+const Sessions = require('../sessions/sessions')
 const Permissions = require('../sessions/permissions')
 const EquipmentBasicsController = require('../defaults/equipment-basics')
 const Dimensions = require('../defaults/dimensions')
 const Equipments = require('./equipments')
 
 const Filter = require('../../models/equipments/filter')
+const Engine = require('../../models/equipments/engine')
+const Lid = require('../../models/equipments/lid')
 const Equipment = require('../../models/equipments/equipment')
-const Brand = require('../../models/basics/brand')
 
 module.exports = {
 	/**
@@ -35,6 +38,8 @@ module.exports = {
 	 */
 	async setForeignKey() {
 		Filter.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
+		Filter.belongsTo(Engine, { foreignKey: 'engine_id', as: 'engines' })
+		Filter.belongsTo(Lid, { foreignKey: 'lid_id', as: 'lids' })
 	},
 
 	/**
@@ -46,18 +51,26 @@ module.exports = {
 	 */
 	async filtersByDimension(req, res, self) {
 		if (await Permissions.check(req.token, 'filters', 'select')) {
-			const dimension = Dimensions.creatDimension(
-				req.body.length,
-				req.body.width,
-				req.body.initial_depth,
-				req.body.final_depth,
-				req.body.sidewalk_width
-			)
+			const dimension = Dimensions.creatDimension(req.body.length, req.body.width, req.body.initial_depth, req.body.final_depth, req.body.sidewalk_width)
 			const max_capacity = Dimensions.getM3Real(dimension)
-			const logist_id = Server.decodedIdByToken(req.token)
+			const logist_id = await Sessions.getSessionId(req)
 			const filters = await Filter.findAll({
-				where: { max_capacity: { [Op.gte]: !isNaN(max_capacity) ? max_capacity : 0 }, logist_id },
-				include: 'equipments',
+				where: { max_capacity: { [Op.gte]: !isNaN(max_capacity) ? max_capacity : 0 } },
+				include: [
+					{
+						model: Equipment,
+						as: 'equipments',
+						where: { logist_id },
+					},
+					{
+						model: Engine,
+						as: 'engines',
+					},
+					{
+						model: Lid,
+						as: 'lids',
+					},
+				],
 			})
 			if (filters && filters[0]) {
 				await Equipments.updateAllRelations(filters)
@@ -100,7 +113,13 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		await EquipmentBasicsController.create(req, res, Filter)
+		if (!isuuid(req.body.engine_id)) {
+			res.send({ status: 'ENGINE_IS_EMPTY' })
+		} else if (!isuuid(req.body.lid_id)) {
+			res.send({ status: 'LID_IS_EMPTY' })
+		} else {
+			await EquipmentBasicsController.create(req, res, Filter)
+		}
 	},
 
 	/**
@@ -111,7 +130,13 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		await EquipmentBasicsController.change(req, res, Filter)
+		if (!isuuid(req.body.engine_id)) {
+			res.send({ status: 'ENGINE_IS_EMPTY' })
+		} else if (!isuuid(req.body.lid_id)) {
+			res.send({ status: 'LID_IS_EMPTY' })
+		} else {
+			await EquipmentBasicsController.change(req, res, Filter)
+		}
 	},
 
 	/**

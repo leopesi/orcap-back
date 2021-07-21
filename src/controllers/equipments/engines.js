@@ -4,6 +4,7 @@
 const sequelize = require('sequelize')
 const Op = sequelize.Op
 const Server = require('../../helpers/server')
+const Sessions = require('../sessions/sessions')
 const Permissions = require('../sessions/permissions')
 const EquipmentBasicsController = require('../defaults/equipment-basics')
 const Dimensions = require('../defaults/dimensions')
@@ -46,9 +47,16 @@ module.exports = {
 				req.body.sidewalk_width
 			)
 			const max_capacity = Dimensions.getM3Real(dimension)
+			const logist_id = await Sessions.getSessionId(req)
 			const engines = await Engine.findAll({
 				where: { max_capacity: { [Op.gte]: !isNaN(max_capacity) ? max_capacity : 0 } },
-				include: 'equipments',
+				include: [
+					{
+						model: Equipment,
+						as: 'equipments',
+						where: { logist_id },
+					},
+				],
 			})
 			if (engines && engines[0]) {
 				await Equipments.updateAllRelations(engines)

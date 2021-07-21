@@ -3,6 +3,7 @@
  */
 const Server = require('../../helpers/server')
 const SessionBasicsController = require('../defaults/session-basics')
+const Sessions = require('./sessions')
 const Session = require('../../models/sessions/session')
 const Seller = require('../../models/sessions/seller')
 const Logist = require('../../models/sessions/logist')
@@ -39,7 +40,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		const logist_id = Server.decodedIdByToken(req.token)
+		const logist_id = await Sessions.getSessionId(req)
 		SessionBasicsController.get(req, res, Seller, { where: { logist_id } })
 	},
 
@@ -51,7 +52,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		const logist_id = Server.decodedIdByToken(req.token)
+		const logist_id = await Sessions.getSessionId(req)
 		SessionBasicsController.list(req, res, Seller, { where: { logist_id } })
 	},
 
@@ -63,7 +64,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		req.body.logist_id = Server.decodedIdByToken(req.token)
+		req.body.logist_id = await Sessions.getSessionId(req)
 		SessionBasicsController.create(req, res, Seller)
 	},
 
@@ -75,7 +76,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		const logist_id = Server.decodedIdByToken(req.token)
+		const logist_id = await Sessions.getSessionId(req)
 		const result = await Seller.findOne({ where: { id: req.body.id, logist_id } })
 		if (result) {
 			SessionBasicsController.change(req, res, Seller)
@@ -92,7 +93,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async delete(req, res, self) {
-		const logist_id = Server.decodedIdByToken(req.token)
+		const logist_id = await Sessions.getSessionId(req)
 		SessionBasicsController.delete(req, res, Seller, { where: { logist_id } })
 	},
 
@@ -104,7 +105,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async restore(req, res, self) {
-		const logist_id = Server.decodedIdByToken(req.token)
+		const logist_id = await Sessions.getSessionId(req)
 		SessionBasicsController.restore(req, res, Seller, { where: { logist_id } })
 	},
 }

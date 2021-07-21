@@ -2,6 +2,7 @@
  * @module SessionBasicsController
  */
 const Server = require('../../helpers/server')
+const Session = require('../../models/sessions/session')
 const Permissions = require('../sessions/permissions')
 const Sessions = require('../sessions/sessions')
 
@@ -63,7 +64,9 @@ module.exports = {
 	 */
 	async create(req, res, model, options) {
 		delete req.body.id
-		if (await Permissions.check(req.token, model.tableName, 'insert')) {
+		const permission = await Permissions.check(req.token, model.tableName, 'insert')
+		if (permission) {
+			req.body.logist_id = await Sessions.getSessionId(req)
 			req.body.password = await Server.getHash(req.body.password)
 			req.body.table = model.tableName
 			Sessions.create(req, (result) => {
@@ -75,11 +78,13 @@ module.exports = {
 						.then(async (data) => {
 							res.send({ status: model.tableName.toUpperCase() + '_INSERT_SUCCESS', data })
 						})
-						.catch((error) => {
+						.catch(async (error) => {
+							await Session.destroy({ where: { id: req.body.session_id } })
 							res.send({
 								status: model.tableName.toUpperCase() + '_INSERT_ERROR',
-								error: error.parent.detail,
+								error: error.parent ? error.parent.detail : error,
 							})
+							return
 						})
 				} else {
 					res.send({ status: 'SESSION_INSERT_ERROR', error: result.error })
@@ -112,7 +117,7 @@ module.exports = {
 					.catch((error) => {
 						res.send({
 							status: model.tableName.toUpperCase() + '_UPDATE_ERROR',
-							error: error.parent.detail,
+							error: error.parent ? error.parent.detail : error,
 						})
 					})
 			} else {
@@ -148,7 +153,7 @@ module.exports = {
 					.catch((error) => {
 						res.send({
 							status: model.tableName.toUpperCase() + '_DELETE_ERROR',
-							error: error.parent.detail,
+							error: error.parent ? error.parent.detail : error,
 						})
 					})
 			} else {
@@ -184,7 +189,7 @@ module.exports = {
 					.catch((error) => {
 						res.send({
 							status: model.tableName.toUpperCase() + '_RESTORE_ERROR',
-							error: error.parent.detail,
+							error: error.parent ? error.parent.detail : error,
 						})
 					})
 			} else {

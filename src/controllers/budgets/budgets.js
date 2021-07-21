@@ -1,15 +1,18 @@
 /**
  * @module BudgetsController
  */
+const isuuid = require('isuuid')
 const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
+const Sessions = require('../sessions/sessions')
+const Clients = require('../sessions/clients')
 const CrudBasicsController = require('../defaults/crud-basics')
 const Budget = require('../../models/budgets/budget')
 const BudgetEquipment = require('../../models/budgets/budget_equipment')
-const Equipment = require('../../models/equipments/equipment')
 const Logist = require('../../models/sessions/logist')
 const Seller = require('../../models/sessions/Seller')
 const Client = require('../../models/sessions/Client')
+const Session = require('../../models/sessions/session')
 const Format = require('../../models/basics/format')
 
 module.exports = {
@@ -36,7 +39,9 @@ module.exports = {
 		Budget.belongsTo(Logist, { foreignKey: 'logist_id', as: 'logists' })
 		Budget.belongsTo(Seller, { foreignKey: 'seller_id', as: 'sellers' })
 		Budget.belongsTo(Client, { foreignKey: 'client_id', as: 'clients' })
+		Client.belongsTo(Session, { foreignKey: 'session_id', as: 'sessions' })
 		Budget.belongsTo(Format, { foreignKey: 'format_id', as: 'formats' })
+		Budget.hasMany(BudgetEquipment, { foreignKey: 'budget_id', as: 'equipments' })
 	},
 
 	/**
@@ -47,7 +52,33 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		await CrudBasicsController.get(req, res, Budget)
+		if (await Permissions.check(req.token, Budget.tableName, 'select')) {
+			if (req.params.id) {
+				const md = await Budget.findOne({
+					where: { id: req.params.id },
+					include: ['sellers'],
+				})
+				const equipments = await BudgetEquipment.findAll({
+					where: { budget_id: req.params.id },
+					order: [['index', 'ASC']],
+				})
+				md.dataValues.equipments = equipments
+				if (md && md.dataValues && md.dataValues.id) {
+					const clients = await Client.findOne({
+						where: { id: md.dataValues.client_id },
+						include: 'sessions',
+					})
+					md.dataValues.clients = clients
+					res.send({ status: Budget.tableName.toUpperCase() + '_GET_SUCCESS', data: md })
+				} else {
+					res.send({ status: Budget.tableName.toUpperCase() + '_NOT_FOUND', error: Budget.tableName + ' not found' })
+				}
+			} else {
+				res.send({ status: Budget.tableName.toUpperCase() + '_NOT_FOUND', error: Budget.tableName + ' not found' })
+			}
+		} else {
+			res.send({ status: Budget.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
+		}
 	},
 
 	/**
@@ -71,7 +102,26 @@ module.exports = {
 	 */
 	async create(req, res, self) {
 		delete req.body.id
-		await CrudBasicsController.create(req, res, Budget)
+		req.body.logist_id = await Sessions.getSessionId(req)
+		if (await Permissions.check(req.token, 'budgets', 'insert')) {
+			await Clients.saveByBudget(req, res, Clients, (result) => {
+				if (result.id) req.body.client_id = result.id
+				if (req.body.logist_id && isuuid(req.body.logist_id)) {
+					Budget.build(req.body)
+						.save()
+						.then(async (data) => {
+							res.send({ status: 'BUDGETS__INSERT_SUCCESS', data })
+						})
+						.catch((error) => {
+							res.send({ status: 'BUDGETS__INSERT_ERROR', error: error.parent ? error.parent.detail : JSON.stringify(error) })
+						})
+				} else {
+					res.send({ status: 'LOGIST_ID_INSERT_ERROR' })
+				}
+			})
+		} else {
+			res.send({ status: 'BUDGETS__PERMISSION_ERROR', error: 'Action not allowed' })
+		}
 	},
 
 	/**
@@ -87,20 +137,39 @@ module.exports = {
 			if (budgets) {
 				req.body.id = budgets.dataValues.id
 				req.body.expiration_date = new Date(req.body.expiration_date)
-				budgets
-					.update(req.body)
-					.then(async (data) => {
-						for (const i in req.body.equipments) {
-							await self.saveEquipment(req.body.equipments[i])
+				await Clients.saveByBudget(req, res, Clients, (result) => {
+					if (result && !result.error) {
+						if (result.id) {
+							req.body.client_id = result.id
 						}
-						res.send({ status: 'BUDGETS_UPDATE_SUCCESS', data })
-					})
-					.catch((error) => {
+						budgets
+							.update(req.body)
+							.then(async (data) => {
+								await self.deleteEquipments(req.body.id, req.body.equipments)
+								for (const i in req.body.equipments) {
+									await self.saveEquipment(req.body.id, req.body.equipments[i])
+								}
+								res.send({ status: 'BUDGETS_UPDATE_SUCCESS', data })
+							})
+							.catch((error) => {
+								console.log(error)
+								res.send({
+									status: 'BUDGETS_UPDATE_ERROR',
+									error: error.parent ? error.parent.detail : error,
+								})
+							})
+					} else if (result) {
 						res.send({
-							status: 'BUDGETS_UPDATE_ERROR',
-							error: error.parent.detail,
+							status: 'CLIENTS_SAVE_ERROR',
+							error: result.error,
 						})
-					})
+					} else {
+						res.send({
+							status: 'CLIENTS_BUDGET_SAVE_ERROR',
+							error: '',
+						})
+					}
+				})
 			} else {
 				res.send({
 					status: 'BUDGETS_NOT_FOUND',
@@ -134,10 +203,53 @@ module.exports = {
 		await CrudBasicsController.restore(req, res, Budget)
 	},
 
-	async saveEquipment(equipment) {
-		const equip = await Equipment.findOne({ where: { id: equipment.id } })
-		if (equip) {
-			
+	async saveEquipment(budget_id, equipment) {
+		if (equipment.equipment_id || equipment.text) {
+			if (equipment.id) {
+				const equip = await BudgetEquipment.findOne({
+					where: { id: equipment.id },
+				})
+				if (equip) {
+					equip
+						.update(equipment)
+						.then(async (result) => {
+							return result
+						})
+						.catch((error) => {
+							console.log(error)
+						})
+				}
+			} else {
+				console.log(equipment)
+				delete equipment.id
+				equipment.budget_id = budget_id
+				BudgetEquipment.build(equipment)
+					.save()
+					.then(async (result) => {
+						return result
+					})
+					.catch((error) => {
+						console.log(error)
+					})
+			}
+		}
+	},
+
+	async deleteEquipments(budget_id, equipments) {
+		const equips = await BudgetEquipment.findAll({
+			where: { budget_id },
+			order: [['index', 'ASC']],
+		})
+		for (const i in equips) {
+			let finded = false
+			for (const j in equipments) {
+				if (equips[i].dataValues.id == equipments[j].id) {
+					finded = true
+				}
+			}
+			if (!finded) {
+				await BudgetEquipment.destroy({ where: { id: equips[i].dataValues.id } })
+			}
 		}
 	},
 }

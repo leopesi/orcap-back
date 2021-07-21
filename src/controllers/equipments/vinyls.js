@@ -2,6 +2,7 @@
  * @module VinylsController
  */
 const Server = require('../../helpers/server')
+const Sessions = require('../sessions/sessions')
 const Permissions = require('../sessions/permissions')
 const EquipmentBasicsController = require('../defaults/equipment-basics')
 const Equipments = require('./equipments')
@@ -35,9 +36,16 @@ module.exports = {
 
 	async vinylsByDimension(req, res, self) {
 		if (await Permissions.check(req.token, 'vinyls', 'select')) {
+			const logist_id = await Sessions.getSessionId(req)
 			const vinyls = await Vinyl.findAll({
 				where: {  },
-				include: 'equipments',
+				include: [
+					{
+						model: Equipment,
+						as: 'equipments',
+						where: { logist_id },
+					},
+				],
 			})
 			if (vinyls && vinyls[0]) {
 				await Equipments.updateAllRelations(vinyls)
