@@ -27,6 +27,9 @@ const BudgetEquipment = sequelize.define('budgets_equipments', {
 	type: {
 		type: DataTypes.STRING
 	},
+	text: {
+		type: DataTypes.STRING
+	},
 	cost: DataTypes.DECIMAL(10, 2),
 	profit_margin: DataTypes.DECIMAL(10, 2),
 	price: DataTypes.DECIMAL(10, 2),
