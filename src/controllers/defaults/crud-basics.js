@@ -1,6 +1,7 @@
 /**
  * @module CrudBasicsController
  */
+const isuuid = require('isuuid')
 const Server = require('../../helpers/server')
 const Sessions = require('../sessions/sessions')
 const Permissions = require('../sessions/permissions')
@@ -63,15 +64,19 @@ module.exports = {
 		if (await Permissions.check(req.token, model.tableName, 'insert')) {
 			delete req.body.id
 			req.body.logist_id = await Sessions.getSessionId(req)
-			model
-				.build(req.body)
-				.save()
-				.then(async (data) => {
-					res.send({ status: model.tableName.toUpperCase() + '_INSERT_SUCCESS', data })
-				})
-				.catch((error) => {
-					res.send({ status: model.tableName.toUpperCase() + '_INSERT_ERROR', error: error.parent ? error.parent.detail : JSON.stringify(error) })
-				})
+			if (!isuuid(req.body.logist_id)) {
+				res.send({ status: 'LOGIST_IS_EMPTY' })
+			} else {
+				model
+					.build(req.body)
+					.save()
+					.then(async (data) => {
+						res.send({ status: model.tableName.toUpperCase() + '_INSERT_SUCCESS', data })
+					})
+					.catch((error) => {
+						res.send({ status: model.tableName.toUpperCase() + '_INSERT_ERROR', error: error.parent ? error.parent.detail : JSON.stringify(error) })
+					})
+			}
 		} else {
 			res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
 		}
@@ -90,16 +95,20 @@ module.exports = {
 			if (md) {
 				req.body.id = md.dataValues.id
 				req.body.logist_id = await Sessions.getSessionId(req)
-				md.update(req.body)
-					.then((data) => {
-						res.send({ status: model.tableName.toUpperCase() + '_UPDATE_SUCCESS', data })
-					})
-					.catch((error) => {
-						res.send({
-							status: model.tableName.toUpperCase() + '_UPDATE_ERROR',
-							error: error.parent ? error.parent.detail : error,
+				if (!isuuid(req.body.logist_id)) {
+					res.send({ status: 'LOGIST_IS_EMPTY' })
+				} else {
+					md.update(req.body)
+						.then((data) => {
+							res.send({ status: model.tableName.toUpperCase() + '_UPDATE_SUCCESS', data })
 						})
-					})
+						.catch((error) => {
+							res.send({
+								status: model.tableName.toUpperCase() + '_UPDATE_ERROR',
+								error: error.parent ? error.parent.detail : error,
+							})
+						})
+				}
 			} else {
 				res.send({
 					status: model.tableName.toUpperCase() + '_NOT_FOUND',
