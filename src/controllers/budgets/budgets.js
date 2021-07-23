@@ -110,17 +110,17 @@ module.exports = {
 					Budget.build(req.body)
 						.save()
 						.then(async (data) => {
-							res.send({ status: 'BUDGETS__INSERT_SUCCESS', data })
+							res.send({ status: 'BUDGETS_INSERT_SUCCESS', data })
 						})
 						.catch((error) => {
-							res.send({ status: 'BUDGETS__INSERT_ERROR', error: error.parent ? error.parent.detail : JSON.stringify(error) })
+							res.send({ status: 'BUDGETS_INSERT_ERROR', error: error.parent ? error.parent.detail : JSON.stringify(error) })
 						})
 				} else {
 					res.send({ status: 'LOGIST_ID_INSERT_ERROR' })
 				}
 			})
 		} else {
-			res.send({ status: 'BUDGETS__PERMISSION_ERROR', error: 'Action not allowed' })
+			res.send({ status: 'BUDGETS_PERMISSION_ERROR', error: 'Action not allowed' })
 		}
 	},
 

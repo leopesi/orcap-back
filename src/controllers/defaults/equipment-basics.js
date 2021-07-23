@@ -95,10 +95,12 @@ module.exports = {
 		if (await Permissions.check(req.token, model.tableName, 'insert')) {
 			delete req.body.id
 			req.body.logist_id = await Sessions.getSessionId(req)
-			if (!isuuid(req.body.brand_id)) {
-				res.send({ status: 'BRAND_IS_EMPTY' })
+			if (!isuuid(req.body.logist_id)) {
+				res.send({ status: 'LOGIST_IS_EMPTY' })
 			} else if (!isuuid(req.body.provider_id)) {
 				res.send({ status: 'PROVIDER_IS_EMPTY' })
+			} else if (!isuuid(req.body.brand_id)) {
+				res.send({ status: 'BRAND_IS_EMPTY' })
 			} else {
 				Equipment.build(req.body)
 					.save()
@@ -151,10 +153,12 @@ module.exports = {
 			})
 			if (md) {
 				req.body.id = md.dataValues.id
-				if (!isuuid(req.body.brand_id)) {
-					res.send({ status: 'BRAND_IS_EMPTY' })
+				if (!isuuid(logist_id)) {
+					res.send({ status: 'LOGIST_IS_EMPTY' })
 				} else if (!isuuid(req.body.provider_id)) {
 					res.send({ status: 'PROVIDER_IS_EMPTY' })
+				} else if (!isuuid(req.body.brand_id)) {
+					res.send({ status: 'BRAND_IS_EMPTY' })
 				} else {
 					const EquipmentData = {
 						id: md.dataValues.equipment_id,
