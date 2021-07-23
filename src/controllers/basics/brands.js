@@ -1,6 +1,7 @@
 /**
  * @module BrandsController
  */
+const isuuid = require('isuuid')
 const Server = require('../../helpers/server')
 const CrudBasicsController = require('../defaults/crud-basics')
 const Brand = require('../../models/basics/brand')
@@ -61,7 +62,11 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		await CrudBasicsController.create(req, res, Brand)
+		if (!isuuid(req.body.provider_id)) {
+			res.send({ status: 'PROVIDER_IS_EMPTY' })
+		} else {
+			await CrudBasicsController.create(req, res, Brand)
+		}
 	},
 
 	/**
@@ -72,7 +77,11 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		await CrudBasicsController.change(req, res, Brand)
+		if (!isuuid(req.body.provider_id)) {
+			res.send({ status: 'PROVIDER_IS_EMPTY' })
+		} else {
+			await CrudBasicsController.change(req, res, Brand)
+		}
 	},
 
 	/**

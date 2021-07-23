@@ -69,27 +69,31 @@ module.exports = {
 			req.body.logist_id = await Sessions.getSessionId(req)
 			req.body.password = await Server.getHash(req.body.password)
 			req.body.table = model.tableName
-			Sessions.create(req, (result) => {
-				if (result.status == 'SESSION_INSERT_SUCCESS') {
-					req.body.session_id = result.data.id
-					model
-						.build(req.body)
-						.save()
-						.then(async (data) => {
-							res.send({ status: model.tableName.toUpperCase() + '_INSERT_SUCCESS', data })
-						})
-						.catch(async (error) => {
-							await Session.destroy({ where: { id: req.body.session_id } })
-							res.send({
-								status: model.tableName.toUpperCase() + '_INSERT_ERROR',
-								error: error.parent ? error.parent.detail : error,
+			if (!isuuid(req.body.logist_id)) {
+				res.send({ status: 'LOGIST_IS_EMPTY' })
+			} else {
+				Sessions.create(req, (result) => {
+					if (result.status == 'SESSION_INSERT_SUCCESS') {
+						req.body.session_id = result.data.id
+						model
+							.build(req.body)
+							.save()
+							.then(async (data) => {
+								res.send({ status: model.tableName.toUpperCase() + '_INSERT_SUCCESS', data })
 							})
-							return
-						})
-				} else {
-					res.send({ status: 'SESSION_INSERT_ERROR', error: result.error })
-				}
-			})
+							.catch(async (error) => {
+								await Session.destroy({ where: { id: req.body.session_id } })
+								res.send({
+									status: model.tableName.toUpperCase() + '_INSERT_ERROR',
+									error: error.parent ? error.parent.detail : error,
+								})
+								return
+							})
+					} else {
+						res.send({ status: 'SESSION_INSERT_ERROR', error: result.error })
+					}
+				})
+			}
 		} else {
 			res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
 		}
