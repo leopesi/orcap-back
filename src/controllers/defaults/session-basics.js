@@ -1,6 +1,7 @@
 /**
  * @module SessionBasicsController
  */
+const isuuid = require('isuuid')
 const Server = require('../../helpers/server')
 const Session = require('../../models/sessions/session')
 const Permissions = require('../sessions/permissions')
