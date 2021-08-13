@@ -21,7 +21,7 @@ module.exports = {
 			if (req.params.id) {
 				const logist_id = await Sessions.getSessionId(req)
 				const md = await model.findOne({
-					where: { id: req.params.id },
+					where: { id: req.params.id, active: true },
 					include: [
 						{
 							model: Equipment,
@@ -61,7 +61,7 @@ module.exports = {
 		if (await Permissions.check(req.token, model.tableName, 'select')) {
 			const logist_id = await Sessions.getSessionId(req)
 			const md = await model.findAll({
-				where: {},
+				where: { active: true },
 				include: [
 					{
 						model: Equipment,
@@ -95,6 +95,7 @@ module.exports = {
 		if (await Permissions.check(req.token, model.tableName, 'insert')) {
 			delete req.body.id
 			req.body.logist_id = await Sessions.getSessionId(req)
+			req.body.active = true
 			if (!isuuid(req.body.logist_id)) {
 				res.send({ status: 'LOGIST_IS_EMPTY' })
 			} else if (!isuuid(req.body.provider_id)) {

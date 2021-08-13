@@ -55,7 +55,7 @@ module.exports = {
 		if (await Permissions.check(req.token, Budget.tableName, 'select')) {
 			if (req.params.id) {
 				const md = await Budget.findOne({
-					where: { id: req.params.id },
+					where: { id: req.params.id, active: true },
 					include: ['sellers'],
 				})
 				const equipments = await BudgetEquipment.findAll({
@@ -103,6 +103,7 @@ module.exports = {
 	async create(req, res, self) {
 		delete req.body.id
 		req.body.logist_id = await Sessions.getSessionId(req)
+		req.body.active = true
 		if (await Permissions.check(req.token, 'budgets', 'insert')) {
 			await Clients.saveByBudget(req, res, Clients, (result) => {
 				if (result.id) req.body.client_id = result.id

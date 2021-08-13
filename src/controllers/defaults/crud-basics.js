@@ -18,7 +18,7 @@ module.exports = {
 		if (check_permission === false || (await Permissions.check(req.token, model.tableName, 'select'))) {
 			if (req.params.id) {
 				const logist_id = await Sessions.getSessionId(req)
-				const md = await model.findOne({ where: { id: req.params.id, logist_id }, include })
+				const md = await model.findOne({ where: { id: req.params.id, logist_id, active: true }, include })
 				if (md && md.dataValues && md.dataValues.id) {
 					res.send({ status: model.tableName.toUpperCase() + '_GET_SUCCESS', data: md })
 				} else {
@@ -42,7 +42,7 @@ module.exports = {
 	async list(req, res, model, include, check_permission) {
 		if (check_permission === false || (await Permissions.check(req.token, model.tableName, 'select'))) {
 			const logist_id = await Sessions.getSessionId(req)
-			const md = await model.findAll({ where: { logist_id }, include })
+			const md = await model.findAll({ where: { logist_id, active: true }, include })
 			if (md && md.length > 0) {
 				res.send({ status: model.tableName.toUpperCase() + '_LIST_SUCCESS', data: md })
 			} else {
@@ -64,6 +64,7 @@ module.exports = {
 		if (await Permissions.check(req.token, model.tableName, 'insert')) {
 			delete req.body.id
 			req.body.logist_id = await Sessions.getSessionId(req)
+			req.body.active = true
 			if (!isuuid(req.body.logist_id)) {
 				res.send({ status: 'LOGIST_IS_EMPTY' })
 			} else {

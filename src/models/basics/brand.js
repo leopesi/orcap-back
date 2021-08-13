@@ -24,6 +24,10 @@ const Brand = sequelize.define('brands', {
 	},
 	name: DataTypes.STRING(50),
 	description: DataTypes.STRING(50),
+	active: {
+		type: DataTypes.BOOLEAN,
+		defaultValue: false,
+	},
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW,

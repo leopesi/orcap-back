@@ -26,6 +26,10 @@ const Provider = sequelize.define('providers', {
   phone: DataTypes.STRING(50),
   mail: DataTypes.STRING(50),
   website: DataTypes.STRING(50),
+	active: {
+		type: DataTypes.BOOLEAN,
+		defaultValue: false,
+	},
 
   createdAt: {
     type: DataTypes.DATE,

@@ -16,6 +16,10 @@ const Material = sequelize.define('materials', {
 	profit_margin: DataTypes.DECIMAL(10, 2),
 	cash_price: DataTypes.DECIMAL(10, 2),
 	forward_price: DataTypes.DECIMAL(10, 2),
+	active: {
+		type: DataTypes.BOOLEAN,
+		defaultValue: false,
+	},
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW

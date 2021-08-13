@@ -17,7 +17,7 @@ module.exports = {
 	 */
 	async get(req, res, model, options) {
 		if (await Permissions.check(req.token, model.tableName, 'select')) {
-			const where = Object.assign({ id: req.params.id }, options ? options.where : {})
+			const where = Object.assign({ id: req.params.id, active: true }, options ? options.where : {})
 			const md = await model.findOne({
 				where,
 				include: 'sessions',
@@ -45,6 +45,7 @@ module.exports = {
 	 */
 	async list(req, res, model, options) {
 		if (await Permissions.check(req.token, model.tableName, 'select')) {
+			options.where.active = true
 			const md = await model.findAll({ where: options.where, include: 'sessions' })
 			if (md && md.length > 0) {
 				res.send({ status: model.tableName.toUpperCase() + '_LIST_SUCCESS', data: md })
@@ -70,6 +71,7 @@ module.exports = {
 			req.body.logist_id = await Sessions.getSessionId(req)
 			req.body.password = await Server.getHash(req.body.password)
 			req.body.table = model.tableName
+			req.body.active= true
 			if (!isuuid(req.body.logist_id)) {
 				res.send({ status: 'LOGIST_IS_EMPTY' })
 			} else {

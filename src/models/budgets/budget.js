@@ -91,6 +91,10 @@ const Budget = sequelize.define('budgets', {
 	forward_price: DataTypes.DECIMAL(10, 2),
 	cash_price_total: DataTypes.DECIMAL(10, 2),
 	forward_price_total: DataTypes.DECIMAL(10, 2),
+	active: {
+		type: DataTypes.BOOLEAN,
+		defaultValue: false,
+	},
 
 	createdAt: {
 		type: DataTypes.DATE,

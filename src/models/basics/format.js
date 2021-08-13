@@ -14,6 +14,10 @@ const Format = sequelize.define('formats', {
 	initial_depth: DataTypes.DECIMAL(10, 2), 
 	final_depth: DataTypes.DECIMAL(10, 2), 
 	sidewalk_width: DataTypes.DECIMAL(10, 2), 
+	active: {
+		type: DataTypes.BOOLEAN,
+		defaultValue: false,
+	},
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW
