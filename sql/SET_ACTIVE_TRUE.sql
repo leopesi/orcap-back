@@ -17,4 +17,5 @@ update materials set active = true;
 update clients set active = true;
 update logists set active = true;
 update sellers set active = true;
+update sessions set active = true;
 update users set active = true;

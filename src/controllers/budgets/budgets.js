@@ -52,32 +52,36 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		if (await Permissions.check(req.token, Budget.tableName, 'select')) {
-			if (req.params.id) {
-				const md = await Budget.findOne({
-					where: { id: req.params.id, active: true },
-					include: ['sellers'],
-				})
-				const equipments = await BudgetEquipment.findAll({
-					where: { budget_id: req.params.id },
-					order: [['index', 'ASC']],
-				})
-				md.dataValues.equipments = equipments
-				if (md && md.dataValues && md.dataValues.id) {
-					const clients = await Client.findOne({
-						where: { id: md.dataValues.client_id },
-						include: 'sessions',
+		if (isuuid(req.params.id)) {
+			if (await Permissions.check(req.token, Budget.tableName, 'select')) {
+				if (req.params.id) {
+					const md = await Budget.findOne({
+						where: { id: req.params.id, active: true },
+						include: ['sellers'],
 					})
-					md.dataValues.clients = clients
-					res.send({ status: Budget.tableName.toUpperCase() + '_GET_SUCCESS', data: md })
+					const equipments = await BudgetEquipment.findAll({
+						where: { budget_id: req.params.id },
+						order: [['index', 'ASC']],
+					})
+					md.dataValues.equipments = equipments
+					if (md && md.dataValues && md.dataValues.id) {
+						const clients = await Client.findOne({
+							where: { id: md.dataValues.client_id },
+							include: 'sessions',
+						})
+						md.dataValues.clients = clients
+						res.send({ status: Budget.tableName.toUpperCase() + '_GET_SUCCESS', data: md })
+					} else {
+						res.send({ status: Budget.tableName.toUpperCase() + '_NOT_FOUND', error: Budget.tableName + ' not found' })
+					}
 				} else {
 					res.send({ status: Budget.tableName.toUpperCase() + '_NOT_FOUND', error: Budget.tableName + ' not found' })
 				}
 			} else {
-				res.send({ status: Budget.tableName.toUpperCase() + '_NOT_FOUND', error: Budget.tableName + ' not found' })
+				res.send({ status: Budget.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
 			}
 		} else {
-			res.send({ status: Budget.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
+			res.send({ status: Budget.tableName.toUpperCase() + '_ID_NOT_UUID', error: '' })
 		}
 	},
 

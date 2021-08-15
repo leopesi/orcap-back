@@ -15,20 +15,24 @@ module.exports = {
 	 * @param {Object} model
 	 */
 	async get(req, res, model, include, check_permission) {
-		if (check_permission === false || (await Permissions.check(req.token, model.tableName, 'select'))) {
-			if (req.params.id) {
-				const logist_id = await Sessions.getSessionId(req)
-				const md = await model.findOne({ where: { id: req.params.id, logist_id, active: true }, include })
-				if (md && md.dataValues && md.dataValues.id) {
-					res.send({ status: model.tableName.toUpperCase() + '_GET_SUCCESS', data: md })
+		if (isuuid(req.params.id)) {
+			if (check_permission === false || (await Permissions.check(req.token, model.tableName, 'select'))) {
+				if (req.params.id) {
+					const logist_id = await Sessions.getSessionId(req)
+					const md = await model.findOne({ where: { id: req.params.id, logist_id, active: true }, include })
+					if (md && md.dataValues && md.dataValues.id) {
+						res.send({ status: model.tableName.toUpperCase() + '_GET_SUCCESS', data: md })
+					} else {
+						res.send({ status: model.tableName.toUpperCase() + '_NOT_FOUND', error: model.tableName + ' not found' })
+					}
 				} else {
 					res.send({ status: model.tableName.toUpperCase() + '_NOT_FOUND', error: model.tableName + ' not found' })
 				}
 			} else {
-				res.send({ status: model.tableName.toUpperCase() + '_NOT_FOUND', error: model.tableName + ' not found' })
+				res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
 			}
 		} else {
-			res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
+			res.send({ status: Budget.tableName.toUpperCase() + '_ID_NOT_UUID', error: '' })
 		}
 	},
 
