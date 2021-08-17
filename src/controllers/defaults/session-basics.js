@@ -36,7 +36,7 @@ module.exports = {
 				res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
 			}
 		} else {
-			res.send({ status: Budget.tableName.toUpperCase() + '_ID_NOT_UUID', error: '' })
+			res.send({ status: model.tableName.toUpperCase() + '_ID_NOT_UUID', error: '' })
 		}
 	},
 
