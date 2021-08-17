@@ -3,7 +3,7 @@
  */
 const Server = require('../../helpers/server')
 const Permissions = require('../sessions/permissions')
-const CrudBasicsController = require('../defaults/crud-basics')
+const FormBasicsController = require('../defaults/form-basics')
 const Format = require('../../models/basics/format')
 
 module.exports = {
@@ -28,7 +28,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		await CrudBasicsController.get(req, res, Format)
+		await FormBasicsController.get(req, res, Format)
 	},
 
 	/**
@@ -39,7 +39,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async list(req, res, self) {
-		await CrudBasicsController.list(req, res, Format)
+		await FormBasicsController.list(req, res, Format)
 	},
 
 	/**
@@ -50,7 +50,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		await CrudBasicsController.create(req, res, Format)
+		await FormBasicsController.create(req, res, Format)
 	},
 
 	/**
@@ -61,7 +61,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		await CrudBasicsController.change(req, res, Format)
+		await FormBasicsController.change(req, res, Format)
 	},
 
 	/**
@@ -72,7 +72,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async delete(req, res, self) {
-		await CrudBasicsController.delete(req, res, Format)
+		await FormBasicsController.delete(req, res, Format)
 	},
 
 	/**
@@ -83,6 +83,6 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async restore(req, res, self) {
-		await CrudBasicsController.restore(req, res, Format)
+		await FormBasicsController.restore(req, res, Format)
 	},
 }

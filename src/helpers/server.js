@@ -31,8 +31,10 @@ module.exports = {
 		this.server.use(bodyParser.json())
 
 		this.routes = express.Router()
+		this.server.use(express.static('public'))
 
 		this.http.listen(Config.port)
+
 
 		console.log('Porta: ' + Config.port)
 	},
