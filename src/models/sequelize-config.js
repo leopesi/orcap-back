@@ -21,5 +21,8 @@ module.exports = {
       "budget_equipment",
       "budget_material",
     ],
+    materials: [
+      "material",
+    ]
   },
 };
