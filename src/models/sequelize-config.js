@@ -15,14 +15,13 @@ module.exports = {
       "blanket",
       "profile",
       "vinyl",
+      "material"
     ],
     budgets: [
       "budget",
       "budget_equipment",
       "budget_material",
     ],
-    materials: [
-      "material",
-    ]
+    
   },
 };
