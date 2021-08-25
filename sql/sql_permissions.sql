@@ -163,3 +163,5 @@ insert into permissions (name, type, "table") values ('logist', 'restore', 'budg
 insert into permissions (name, type, "table") values ('logist', 'select', 'sessions');
 insert into permissions (name, type, "table") values ('logist', 'insert', 'sessions');
 insert into permissions (name, type, "table") values ('logist', 'update', 'sessions');
+
+insert into permissions (name, type, "table") values ('logist', 'select', 'formats');

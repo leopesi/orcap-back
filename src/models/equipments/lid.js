@@ -6,7 +6,7 @@ const Lid = sequelize.define('lids', {
 	id: {
 		type: DataTypes.UUID,
 		primaryKey: true,
-		defaultValue: DataTypes.UUIDV4
+		defaultValue: DataTypes.UUIDV4,
 	},
 	equipment_id: {
 		type: DataTypes.UUID,
@@ -15,14 +15,18 @@ const Lid = sequelize.define('lids', {
 			key: 'id',
 		},
 	},
+	active: {
+		type: DataTypes.BOOLEAN,
+		defaultValue: false,
+	},
 	createdAt: {
 		type: DataTypes.DATE,
-		defaultValue: Sequelize.NOW
+		defaultValue: Sequelize.NOW,
 	},
 	updatedAt: {
 		type: DataTypes.DATE,
-		defaultValue: Sequelize.NOW
-	}
+		defaultValue: Sequelize.NOW,
+	},
 })
 
 module.exports = Lid

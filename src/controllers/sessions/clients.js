@@ -16,8 +16,8 @@ module.exports = {
 	 */
 	setRoutes() {
 		Server.addRoute('/clients/:id', this.get, this).get(true)
-		Server.addRoute('/clients-by-documents/', this.getClientsByDocument, this).get(true)
 		Server.addRoute('/clients-by-documents/:document', this.getClientsByDocument, this).get(true)
+		Server.addRoute('/clients-by-mail/:mail', this.getClientsByMail, this).get(true)
 		Server.addRoute('/clients/', this.list, this).get(true)
 		Server.addRoute('/clients', this.create, this).post(true)
 		Server.addRoute('/clients/:id/restore', this.restore, this).put(true)
@@ -198,8 +198,38 @@ module.exports = {
 	 */
 	async getClientsByDocument(req, res, self) {
 		const logist_id = await Sessions.getSessionId(req)
-		if (req.params.document && req.params.document.toString().trim() != '') {
-			SessionBasicsController.list(req, res, Client, { where: { logist_id, document: req.params.document } })
+		const result = await Client.findOne({
+			where: { document: req.params.document, logist_id },
+			include: ['sessions'],
+		})
+		if (result) {
+			res.send({ status: 'CLIENT_GET_SUCCESS', data: result })
+		} else {
+			res.send({})
+		}
+	},
+
+	/**
+	 * @function
+	 * Busca um cliente pelo email
+	 * @param {Object} req
+	 * @param {Object} res
+	 * @param {Object} self
+	 */
+	async getClientsByMail(req, res, self) {
+		const logist_id = await Sessions.getSessionId(req)
+		const result = await Session.findOne({
+			where: { mail: req.params.mail },
+			include: [
+				{
+					model: Client,
+					as: 'clients',
+					where: { logist_id },
+				},
+			],
+		})
+		if (result) {
+			res.send({ status: 'CLIENT_GET_SUCCESS', data: result.dataValues.clients })
 		} else {
 			res.send({})
 		}

@@ -17,22 +17,29 @@ module.exports = {
 	 * @param {Object} model
 	 */
 	async get(req, res, model) {
-		if (await Permissions.check(req.token, model.tableName, 'select')) {
-			if (req.params.id) {
-				const logist_id = await Sessions.getSessionId(req)
-				const md = await model.findOne({
-					where: { id: req.params.id },
-					include: [
-						{
-							model: Equipment,
-							as: 'equipments',
-							where: { logist_id },
-						},
-					],
-				})
-				if (md && md.dataValues && md.dataValues.id) {
-					await Equipments.updateSingleRelations(md.dataValues)
-					res.send({ status: model.tableName.toUpperCase() + '_GET_SUCCESS', data: md })
+		if (isuuid(req.params.id)) {
+			if (await Permissions.check(req.token, model.tableName, 'select')) {
+				if (req.params.id) {
+					const logist_id = await Sessions.getSessionId(req)
+					const md = await model.findOne({
+						where: { id: req.params.id, active: true },
+						include: [
+							{
+								model: Equipment,
+								as: 'equipments',
+								where: { logist_id },
+							},
+						],
+					})
+					if (md && md.dataValues && md.dataValues.id) {
+						await Equipments.updateSingleRelations(md.dataValues)
+						res.send({ status: model.tableName.toUpperCase() + '_GET_SUCCESS', data: md })
+					} else {
+						res.send({
+							status: model.tableName.toUpperCase() + '_NOT_FOUND',
+							error: model.tableName + ' not found',
+						})
+					}
 				} else {
 					res.send({
 						status: model.tableName.toUpperCase() + '_NOT_FOUND',
@@ -40,13 +47,10 @@ module.exports = {
 					})
 				}
 			} else {
-				res.send({
-					status: model.tableName.toUpperCase() + '_NOT_FOUND',
-					error: model.tableName + ' not found',
-				})
+				res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
 			}
 		} else {
-			res.send({ status: model.tableName.toUpperCase() + '_PERMISSION_ERROR', error: 'Action not allowed' })
+			res.send({ status: model.tableName.toUpperCase() + '_ID_NOT_UUID', error: '' })
 		}
 	},
 
@@ -61,7 +65,7 @@ module.exports = {
 		if (await Permissions.check(req.token, model.tableName, 'select')) {
 			const logist_id = await Sessions.getSessionId(req)
 			const md = await model.findAll({
-				where: {},
+				where: { active: true },
 				include: [
 					{
 						model: Equipment,
@@ -95,6 +99,7 @@ module.exports = {
 		if (await Permissions.check(req.token, model.tableName, 'insert')) {
 			delete req.body.id
 			req.body.logist_id = await Sessions.getSessionId(req)
+			req.body.active = true
 			if (!isuuid(req.body.logist_id)) {
 				res.send({ status: 'LOGIST_IS_EMPTY' })
 			} else if (!isuuid(req.body.provider_id)) {

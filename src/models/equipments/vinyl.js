@@ -18,6 +18,10 @@ const Vinyl = sequelize.define('vinyls', {
 	thickness: {
 		type: DataTypes.DECIMAL,
 	},
+	active: {
+		type: DataTypes.BOOLEAN,
+		defaultValue: false,
+	},
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW

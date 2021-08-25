@@ -34,6 +34,10 @@ const Equipment = sequelize.define('equipments', {
 	profit_margin: DataTypes.DECIMAL(10, 2),
 	man_power_cost: DataTypes.DECIMAL(10, 2),
 	man_power_profit_margin: DataTypes.DECIMAL(10, 2),
+	active: {
+		type: DataTypes.BOOLEAN,
+		defaultValue: false,
+	},
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW,

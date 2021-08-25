@@ -18,6 +18,10 @@ const Engine = sequelize.define('engines', {
 	max_capacity: {
 		type: DataTypes.DECIMAL,
 	},
+	active: {
+		type: DataTypes.BOOLEAN,
+		defaultValue: false,
+	},
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW,

@@ -18,6 +18,10 @@ const Blanket = sequelize.define('blankets', {
 	m2_size: {
 		type: DataTypes.DECIMAL,
 	},
+	active: {
+		type: DataTypes.BOOLEAN,
+		defaultValue: false,
+	},
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW

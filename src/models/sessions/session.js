@@ -18,7 +18,6 @@ const Session = sequelize.define(
 		},
 		mail: {
 			type: DataTypes.STRING(255),
-			unique: true,
 		},
 		password: DataTypes.STRING,
 		active: {
