@@ -63,9 +63,44 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
+
 	async create(req, res, self) {
+		delete req.body.id
+		req.body.password = await Server.getHash(req.body.password)
+		req.body.table = 'sellers'
 		req.body.logist_id = await Sessions.getSessionId(req)
-		SessionBasicsController.create(req, res, Seller)
+		const checkSeller = await Session.findOne({
+			where: { mail: req.body.mail },
+		})
+		if (!checkSeller) {
+			Session.build(req.body)
+				.save()
+				.then((data) => {
+					req.body.session_id = data.id
+					Seller.build(req.body)
+						.save()
+						.then(async (data) => {
+							res.send({ status: 'SELLER_INSERT_SUCCESS', data })
+						})
+						.catch((error) => {
+							res.send({
+								status: 'SELLER_INSERT_ERROR',
+								error: error.parent ? error.parent.detail : error,
+							})
+						})
+				})
+				.catch((error) => {
+					res.send({
+						status: 'SESSION_INSERT_ERROR',
+						error: error.parent ? error.parent.detail : error,
+					})
+				})
+		} else {
+      res.send({
+        status: 'MAIL_SELLER_EXISTS',
+        error: 'Seller email already exists in the system',
+      })
+		}
 	},
 
 	/**

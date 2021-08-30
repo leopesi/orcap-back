@@ -95,7 +95,7 @@ module.exports = {
 	async create(req, res, self) {
 		delete req.body.id
 		req.body.password = await Server.getHash(req.body.password)
-		req.body.table = Logist.tableName
+		req.body.table = 'logists'
 		const checkLogist = await Session.findOne({
 			where: { mail: req.body.mail },
 		})
