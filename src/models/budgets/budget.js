@@ -87,6 +87,8 @@ const Budget = sequelize.define('budgets', {
 	steps: DataTypes.BOOLEAN,
 	number_steps: DataTypes.INTEGER,
 
+	thickness: DataTypes.DECIMAL,
+
 	cash_price: DataTypes.DECIMAL(10, 2),
 	forward_price: DataTypes.DECIMAL(10, 2),
 	cash_price_total: DataTypes.DECIMAL(10, 2),

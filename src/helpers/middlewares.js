@@ -27,7 +27,6 @@ module.exports = {
                     authHeader = req.headers.Authorization
                 }
             }
-            
             if (!authHeader) {
                 return res.status(401).send({ error: 'TOKEN_NOT_FOUND' })
             }
@@ -36,6 +35,7 @@ module.exports = {
             const token = aut.length === 2 ? aut[1] : ''
             try {
                 req.token = token
+                req.logistToken = req.headers.logisttoken
                 return true
             } catch (err) {
 

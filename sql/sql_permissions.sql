@@ -165,3 +165,89 @@ insert into permissions (name, type, "table") values ('logist', 'insert', 'sessi
 insert into permissions (name, type, "table") values ('logist', 'update', 'sessions');
 
 insert into permissions (name, type, "table") values ('logist', 'select', 'formats');
+
+
+------------------------------------------------
+--           Vendedor
+------------------------------------------------
+
+insert into permissions (name, type, "table") values ('seller', 'select', 'equipments');
+insert into permissions (name, type, "table") values ('seller', 'insert', 'equipments');
+insert into permissions (name, type, "table") values ('seller', 'update', 'equipments');
+insert into permissions (name, type, "table") values ('seller', 'delete', 'equipments');
+insert into permissions (name, type, "table") values ('seller', 'restore', 'equipments');
+
+insert into permissions (name, type, "table") values ('seller', 'select', 'blankets');
+insert into permissions (name, type, "table") values ('seller', 'insert', 'blankets');
+insert into permissions (name, type, "table") values ('seller', 'update', 'blankets');
+insert into permissions (name, type, "table") values ('seller', 'delete', 'blankets');
+insert into permissions (name, type, "table") values ('seller', 'restore', 'blankets');
+
+insert into permissions (name, type, "table") values ('seller', 'select', 'engines');
+insert into permissions (name, type, "table") values ('seller', 'insert', 'engines');
+insert into permissions (name, type, "table") values ('seller', 'update', 'engines');
+insert into permissions (name, type, "table") values ('seller', 'delete', 'engines');
+insert into permissions (name, type, "table") values ('seller', 'restore', 'engines');
+
+insert into permissions (name, type, "table") values ('seller', 'select', 'filters');
+insert into permissions (name, type, "table") values ('seller', 'insert', 'filters');
+insert into permissions (name, type, "table") values ('seller', 'update', 'filters');
+insert into permissions (name, type, "table") values ('seller', 'delete', 'filters');
+insert into permissions (name, type, "table") values ('seller', 'restore', 'filters');
+
+insert into permissions (name, type, "table") values ('seller', 'select', 'lids');
+insert into permissions (name, type, "table") values ('seller', 'insert', 'lids');
+insert into permissions (name, type, "table") values ('seller', 'update', 'lids');
+insert into permissions (name, type, "table") values ('seller', 'delete', 'lids');
+insert into permissions (name, type, "table") values ('seller', 'restore', 'lids');
+
+insert into permissions (name, type, "table") values ('seller', 'select', 'profiles');
+insert into permissions (name, type, "table") values ('seller', 'insert', 'profiles');
+insert into permissions (name, type, "table") values ('seller', 'update', 'profiles');
+insert into permissions (name, type, "table") values ('seller', 'delete', 'profiles');
+insert into permissions (name, type, "table") values ('seller', 'restore', 'profiles');
+
+insert into permissions (name, type, "table") values ('seller', 'select', 'vinyls');
+insert into permissions (name, type, "table") values ('seller', 'insert', 'vinyls');
+insert into permissions (name, type, "table") values ('seller', 'update', 'vinyls');
+insert into permissions (name, type, "table") values ('seller', 'delete', 'vinyls');
+insert into permissions (name, type, "table") values ('seller', 'restore', 'vinyls');
+
+-- insert into permissions (name, type, "table") values ('seller', 'select', 'logists');
+-- insert into permissions (name, type, "table") values ('seller', 'update', 'logists');
+
+-- insert into permissions (name, type, "table") values ('seller', 'select', 'sellers');
+-- insert into permissions (name, type, "table") values ('seller', 'insert', 'sellers');
+-- insert into permissions (name, type, "table") values ('seller', 'update', 'sellers');
+-- insert into permissions (name, type, "table") values ('seller', 'delete', 'sellers');
+-- insert into permissions (name, type, "table") values ('seller', 'restore', 'sellers');
+
+insert into permissions (name, type, "table") values ('seller', 'select', 'clients');
+insert into permissions (name, type, "table") values ('seller', 'insert', 'clients');
+insert into permissions (name, type, "table") values ('seller', 'update', 'clients');
+insert into permissions (name, type, "table") values ('seller', 'delete', 'clients');
+insert into permissions (name, type, "table") values ('seller', 'restore', 'clients');
+
+insert into permissions (name, type, "table") values ('seller', 'select', 'brands');
+insert into permissions (name, type, "table") values ('seller', 'insert', 'brands');
+insert into permissions (name, type, "table") values ('seller', 'update', 'brands');
+insert into permissions (name, type, "table") values ('seller', 'delete', 'brands');
+insert into permissions (name, type, "table") values ('seller', 'restore', 'brands');
+
+insert into permissions (name, type, "table") values ('seller', 'select', 'providers');
+insert into permissions (name, type, "table") values ('seller', 'insert', 'providers');
+insert into permissions (name, type, "table") values ('seller', 'update', 'providers');
+insert into permissions (name, type, "table") values ('seller', 'delete', 'providers');
+insert into permissions (name, type, "table") values ('seller', 'restore', 'providers');
+
+insert into permissions (name, type, "table") values ('seller', 'select', 'budgets');
+insert into permissions (name, type, "table") values ('seller', 'insert', 'budgets');
+insert into permissions (name, type, "table") values ('seller', 'update', 'budgets');
+insert into permissions (name, type, "table") values ('seller', 'delete', 'budgets');
+insert into permissions (name, type, "table") values ('seller', 'restore', 'budgets');
+
+insert into permissions (name, type, "table") values ('seller', 'select', 'sessions');
+insert into permissions (name, type, "table") values ('seller', 'insert', 'sessions');
+insert into permissions (name, type, "table") values ('seller', 'update', 'sessions');
+
+insert into permissions (name, type, "table") values ('seller', 'select', 'formats');

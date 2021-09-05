@@ -45,6 +45,8 @@ module.exports = {
 		if (md && md.dataValues) {
 			if (md.dataValues.table == 'logists') {
 				return this.getSessionIdByLogist(md.dataValues.id)
+			} else if (md.dataValues.table == 'sellers') {
+				return Server.decodedIdByToken(req.logistToken)
 			}
 		} else {
 			return null
@@ -118,13 +120,14 @@ module.exports = {
 							}
 						)
 						if (session.users) {
-							res.send({ token, type: session.users.user_type, name: session.users.name })
+							res.send({ token, type: 'user', name: session.users.name })
 						} else if (session.logists) {
-							res.send({ token, type: session.logists.user_type, name: session.logists.name })
+							res.send({ token, type: 'logist', name: session.logists.name })
 						} else if (session.sellers) {
-							res.send({ token, type: session.sellers.user_type, name: session.sellers.name })
+							const logist_token = Server.createToken(session.sellers.logist_id)
+							res.send({ token, logist_token, type: 'seller', name: session.sellers.name })
 						} else if (session.clients) {
-							res.send({ token, type: session.clients.user_type, name: session.clients.name })
+							res.send({ token, type: 'client', name: session.clients.name })
 						} else {
 							res.send({
 								status: (session.type ? session.type.toUpperCase() : '_') + 'SESSION_NOT_FOUND',
