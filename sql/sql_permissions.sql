@@ -213,12 +213,12 @@ insert into permissions (name, type, "table") values ('seller', 'update', 'vinyl
 insert into permissions (name, type, "table") values ('seller', 'delete', 'vinyls');
 insert into permissions (name, type, "table") values ('seller', 'restore', 'vinyls');
 
--- insert into permissions (name, type, "table") values ('seller', 'select', 'logists');
+insert into permissions (name, type, "table") values ('seller', 'select', 'logists');
 -- insert into permissions (name, type, "table") values ('seller', 'update', 'logists');
 
--- insert into permissions (name, type, "table") values ('seller', 'select', 'sellers');
--- insert into permissions (name, type, "table") values ('seller', 'insert', 'sellers');
--- insert into permissions (name, type, "table") values ('seller', 'update', 'sellers');
+insert into permissions (name, type, "table") values ('seller', 'select', 'sellers');
+insert into permissions (name, type, "table") values ('seller', 'insert', 'sellers');
+insert into permissions (name, type, "table") values ('seller', 'update', 'sellers');
 -- insert into permissions (name, type, "table") values ('seller', 'delete', 'sellers');
 -- insert into permissions (name, type, "table") values ('seller', 'restore', 'sellers');
 

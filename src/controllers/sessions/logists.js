@@ -52,9 +52,10 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async getByToken(req, res, self) {
+		const logistToken = req.logistToken && req.logistToken.toString().length > 100 ? req.logistToken : req.token
 		if (await Permissions.check(req.token, 'logists', 'select')) {
 			const md = await Logist.findOne({
-				where: { session_id: Server.decodedIdByToken(req.token) },
+				where: { session_id: Server.decodedIdByToken(logistToken) },
 				include: 'sessions',
 			})
 			if (md && md.id) {

@@ -4,6 +4,7 @@
 const Server = require('../../helpers/server')
 const SessionBasicsController = require('../defaults/session-basics')
 const Sessions = require('./sessions')
+const Permissions = require('./permissions')
 const Session = require('../../models/sessions/session')
 const Seller = require('../../models/sessions/seller')
 const Logist = require('../../models/sessions/logist')
@@ -14,6 +15,7 @@ module.exports = {
 	 * Seta as rotas dos Usuários
 	 */
 	setRoutes() {
+		Server.addRoute('/sellers-by-token/:id', this.getByToken, this).get(true)
 		Server.addRoute('/sellers/:id', this.get, this).get(true)
 		Server.addRoute('/sellers/', this.list, this).get(true)
 		Server.addRoute('/sellers', this.create, this).post(true)
@@ -30,6 +32,36 @@ module.exports = {
 	async setForeignKey() {
 		Seller.belongsTo(Session, { foreignKey: 'session_id', as: 'sessions' })
 		Seller.belongsTo(Logist, { foreignKey: 'logist_id', as: 'logists' })
+	},
+
+	/**
+	 * @function
+	 * Retorna um Vendedor pelo Token de autenticação
+	 * @param {Object} req
+	 * @param {Object} res
+	 * @param {Object} self
+	 */
+	 async getByToken(req, res, self) {
+		if (await Permissions.check(req.token, 'sellers', 'select')) {
+			const md = await Seller.findOne({
+				where: { session_id: Server.decodedIdByToken(req.token) },
+				include: ['sessions', 'logists']
+			})
+			if (md && md.id) {
+				delete md.password
+				res.send({ status: 'SELLER_GET_SUCCESS', data: md })
+			} else {
+				res.send({
+					status: 'SELLER_NOT_FOUND',
+					error: 'Seller not found',
+				})
+			}
+		} else {
+			res.send({
+				status: 'SELLER_PERMISSION_ERROR',
+				error: 'Action not allowed',
+			})
+		}
 	},
 
 	/**

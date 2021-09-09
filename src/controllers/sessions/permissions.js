@@ -52,17 +52,19 @@ module.exports = {
 		})
 		let data = {}
 		data.type = []
-		if (session.users) {
-			data.type.push('user')
-		}
-		if (session.logists) {
-			data.type.push('logist')
-		}
-		if (session.sellers) {
-			data.type.push('seller')
-		}
-		if (session.clients) {
-			data.type.push('client')
+		if (session) {
+			if (session.users) {
+				data.type.push('user')
+			}
+			if (session.logists) {
+				data.type.push('logist')
+			}
+			if (session.sellers) {
+				data.type.push('seller')
+			}
+			if (session.clients) {
+				data.type.push('client')
+			}
 		}
 		return data
 	},
