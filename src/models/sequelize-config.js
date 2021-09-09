@@ -10,12 +10,12 @@ module.exports = {
     equipments: [
       "equipment",
       "engine",
-	  "lid",
+	    "lid",
       "filter",
       "blanket",
       "profile",
       "vinyl",
-      "material"
+      "sand", 
     ],
     budgets: [
       "budget",

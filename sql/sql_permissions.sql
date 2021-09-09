@@ -32,6 +32,12 @@ insert into permissions (name, type, "table") values ('admin', 'update', 'lids')
 insert into permissions (name, type, "table") values ('admin', 'delete', 'lids');
 insert into permissions (name, type, "table") values ('admin', 'restore', 'lids');
 
+insert into permissions (name, type, "table") values ('admin', 'select', 'sands');
+insert into permissions (name, type, "table") values ('admin', 'insert', 'sands');
+insert into permissions (name, type, "table") values ('admin', 'update', 'sands');
+insert into permissions (name, type, "table") values ('admin', 'delete', 'sands');
+insert into permissions (name, type, "table") values ('admin', 'restore', 'sands');
+
 insert into permissions (name, type, "table") values ('admin', 'select', 'profiles');
 insert into permissions (name, type, "table") values ('admin', 'insert', 'profiles');
 insert into permissions (name, type, "table") values ('admin', 'update', 'profiles');
@@ -115,6 +121,12 @@ insert into permissions (name, type, "table") values ('logist', 'update', 'lids'
 insert into permissions (name, type, "table") values ('logist', 'delete', 'lids');
 insert into permissions (name, type, "table") values ('logist', 'restore', 'lids');
 
+insert into permissions (name, type, "table") values ('logist', 'select', 'sands');
+insert into permissions (name, type, "table") values ('logist', 'insert', 'sands');
+insert into permissions (name, type, "table") values ('logist', 'update', 'sands');
+insert into permissions (name, type, "table") values ('logist', 'delete', 'sands');
+insert into permissions (name, type, "table") values ('logist', 'restore', 'sands');
+
 insert into permissions (name, type, "table") values ('logist', 'select', 'profiles');
 insert into permissions (name, type, "table") values ('logist', 'insert', 'profiles');
 insert into permissions (name, type, "table") values ('logist', 'update', 'profiles');
@@ -165,3 +177,13 @@ insert into permissions (name, type, "table") values ('logist', 'insert', 'sessi
 insert into permissions (name, type, "table") values ('logist', 'update', 'sessions');
 
 insert into permissions (name, type, "table") values ('logist', 'select', 'formats');
+
+------------------------------------------------
+--           Vendedor
+------------------------------------------------
+
+insert into permissions (name, type, "table") values ('seeler', 'select', 'sands');
+insert into permissions (name, type, "table") values ('seeler', 'insert', 'sands');
+insert into permissions (name, type, "table") values ('seeler', 'update', 'sands');
+insert into permissions (name, type, "table") values ('seeler', 'delete', 'sands');
+insert into permissions (name, type, "table") values ('seeler', 'restore', 'sands');

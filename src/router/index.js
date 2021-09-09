@@ -21,6 +21,7 @@ const Filters = require('../controllers/equipments/filters')
 const Engines = require('../controllers/equipments/engines')
 const Blankets = require('../controllers/equipments/blankets')
 const Lids = require('../controllers/equipments/lids')
+const Sands = require('../controllers/equipments/sands')
 const Profiles = require('../controllers/equipments/profiles')
 const Vinyls = require('../controllers/equipments/vinyls')
 
@@ -47,6 +48,7 @@ module.exports = {
 		Engines.setRoutes()
 		Blankets.setRoutes()
 		Lids.setRoutes()
+		Sands.setRoutes()
 		Profiles.setRoutes()
 		Vinyls.setRoutes()
 

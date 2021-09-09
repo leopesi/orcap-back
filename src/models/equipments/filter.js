@@ -29,6 +29,14 @@ const Filter = sequelize.define('filters', {
 			key: 'id',
 		},
 	},
+	sand_id: {
+		type: DataTypes.UUID,
+		references: {
+			model: 'sands',
+			key: 'id',
+		},
+	},
+	
 	max_capacity: {
 		type: DataTypes.DECIMAL,
 	},
