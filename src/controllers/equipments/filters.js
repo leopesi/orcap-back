@@ -14,6 +14,7 @@ const Equipments = require('./equipments')
 const Filter = require('../../models/equipments/filter')
 const Engine = require('../../models/equipments/engine')
 const Lid = require('../../models/equipments/lid')
+const Sand = require('../../models/equipments/sand')
 const Equipment = require('../../models/equipments/equipment')
 
 module.exports = {
@@ -40,6 +41,7 @@ module.exports = {
 		Filter.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
 		Filter.belongsTo(Engine, { foreignKey: 'engine_id', as: 'engines' })
 		Filter.belongsTo(Lid, { foreignKey: 'lid_id', as: 'lids' })
+		Filter.belongsTo(Sand, { foreignKey: 'sand_id', as: 'sands' })
 	},
 
 	/**
@@ -69,6 +71,10 @@ module.exports = {
 					{
 						model: Lid,
 						as: 'lids',
+					},
+					{
+						model: Sand,
+						as: 'sands',
 					},
 				],
 			})
@@ -117,6 +123,8 @@ module.exports = {
 			res.send({ status: 'ENGINE_IS_EMPTY' })
 		} else if (!isuuid(req.body.lid_id)) {
 			res.send({ status: 'LID_IS_EMPTY' })
+		} else if (!isuuid(req.body.sand_id)) {
+			res.send({ status: 'SAND_IS_EMPTY' })
 		} else {
 			await EquipmentBasicsController.create(req, res, Filter)
 		}
@@ -134,6 +142,8 @@ module.exports = {
 			res.send({ status: 'ENGINE_IS_EMPTY' })
 		} else if (!isuuid(req.body.lid_id)) {
 			res.send({ status: 'LID_IS_EMPTY' })
+		} else if (!isuuid(req.body.sand_id)) {
+			res.send({ status: 'SAND_IS_EMPTY' })
 		} else {
 			await EquipmentBasicsController.change(req, res, Filter)
 		}
