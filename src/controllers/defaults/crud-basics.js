@@ -2,7 +2,7 @@
  * @module CrudBasicsController
  */
 const isuuid = require('isuuid')
-const Server = require('../../helpers/server')
+const { Op } = require('sequelize')
 const Sessions = require('../sessions/sessions')
 const Permissions = require('../sessions/permissions')
 
@@ -19,7 +19,19 @@ module.exports = {
 			if (check_permission === false || (await Permissions.check(req.token, model.tableName, 'select'))) {
 				if (req.params.id) {
 					const logist_id = await Sessions.getSessionId(req)
-					const md = await model.findOne({ where: { id: req.params.id, logist_id, active: true }, include })
+					const md = await model.findOne({
+						where: {
+							id: req.params.id,
+							logist_id: {
+								[Op.or]: {
+									[Op.eq]: logist_id,
+									[Op.eq]: null,
+								},
+							},
+							active: true,
+						},
+						include,
+					})
 					if (md && md.dataValues && md.dataValues.id) {
 						res.send({ status: model.tableName.toUpperCase() + '_GET_SUCCESS', data: md })
 					} else {
@@ -46,7 +58,18 @@ module.exports = {
 	async list(req, res, model, include, check_permission) {
 		if (check_permission === false || (await Permissions.check(req.token, model.tableName, 'select'))) {
 			const logist_id = await Sessions.getSessionId(req)
-			const md = await model.findAll({ where: { logist_id, active: true }, include })
+			const md = await model.findAll({
+				where: {
+					logist_id: {
+						[Op.or]: {
+							[Op.eq]: logist_id,
+							[Op.eq]: null,
+						},
+					},
+					active: true,
+				},
+				include,
+			})
 			if (md && md.length > 0) {
 				res.send({ status: model.tableName.toUpperCase() + '_LIST_SUCCESS', data: md })
 			} else {
@@ -96,7 +119,8 @@ module.exports = {
 	 */
 	async change(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'update')) {
-			const md = await model.findOne({ where: { id: req.params.id } })
+			const logist_id = await Sessions.getSessionId(req)
+			const md = await model.findOne({ where: { id: req.params.id, logist_id } })
 			if (md) {
 				req.body.id = md.dataValues.id
 				req.body.logist_id = await Sessions.getSessionId(req)
@@ -134,7 +158,8 @@ module.exports = {
 	 */
 	async delete(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'delete')) {
-			const md = await model.findOne({ where: { id: req.params.id } })
+			const logist_id = await Sessions.getSessionId(req)
+			const md = await model.findOne({ where: { id: req.params.id, logist_id } })
 			if (md) {
 				req.body.active = false
 				req.body.logist_id = await Sessions.getSessionId(req)
@@ -168,7 +193,8 @@ module.exports = {
 	 */
 	async restore(req, res, model) {
 		if (await Permissions.check(req.token, model.tableName, 'restore')) {
-			const md = await model.findOne({ where: { id: req.params.id } })
+			const logist_id = await Sessions.getSessionId(req)
+			const md = await model.findOne({ where: { id: req.params.id, logist_id } })
 			if (md) {
 				req.body.active = true
 				req.body.logist_id = await Sessions.getSessionId(req)
