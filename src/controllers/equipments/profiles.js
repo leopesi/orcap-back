@@ -18,7 +18,7 @@ module.exports = {
 	 * Seta as rotas do Controller
 	 */
 	setRoutes() {
-		Server.addRoute('/profiles-by-dimension', this.profilesByDimension, this).post(true)
+		Server.addRoute('/profiles-by-logist', this.profilesByLogist, this).post(true)
 		Server.addRoute('/profiles/:id', this.get, this).get(true)
 		Server.addRoute('/profiles/', this.list, this).get(true)
 		Server.addRoute('/profiles', this.create, this).post(true)
@@ -36,7 +36,7 @@ module.exports = {
 		Profile.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
 	},
 
-	async profilesByDimension(req, res, self) {
+	async profilesByLogist(req, res, self) {
 		if (await Permissions.check(req.token, 'profiles', 'select')) {
 			const logist_id = await Sessions.getSessionId(req)
 			const profiles = await Profile.findAll({

@@ -15,9 +15,6 @@ const Engine = sequelize.define('engines', {
 			key: 'id',
 		},
 	},
-	max_capacity: {
-		type: DataTypes.DECIMAL,
-	},
 	active: {
 		type: DataTypes.BOOLEAN,
 		defaultValue: false,

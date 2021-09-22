@@ -36,7 +36,7 @@ const Filter = sequelize.define('filters', {
 			key: 'id',
 		},
 	},
-	
+	sand_kg: DataTypes.DECIMAL,
 	max_capacity: {
 		type: DataTypes.DECIMAL,
 	},

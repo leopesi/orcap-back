@@ -16,7 +16,7 @@ module.exports = {
 	 * Seta as rotas do Controller
 	 */
 	setRoutes() {
-		Server.addRoute('/blankets-by-dimension', this.blanketsByDimension, this).post(true)
+		Server.addRoute('/blankets-by-logist', this.blanketsByLogist, this).post(true)
 		Server.addRoute('/blankets/:id', this.get, this).get(true)
 		Server.addRoute('/blankets/', this.list, this).get(true)
 		Server.addRoute('/blankets', this.create, this).post(true)
@@ -41,7 +41,7 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	async blanketsByDimension(req, res, self) {
+	async blanketsByLogist(req, res, self) {
 		if (await Permissions.check(req.token, 'blankets', 'select')) {
 			const logist_id = await Sessions.getSessionId(req)
 			const blankets = await Blanket.findAll({

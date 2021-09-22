@@ -19,7 +19,7 @@ module.exports = {
 	 * Seta as rotas do Controller
 	 */
 	setRoutes() {
-		Server.addRoute('/engines-by-dimension', this.enginesByDimension, this).post(true)
+		Server.addRoute('/engines-by-filters', this.enginesByFilters, this).post(true)
 		Server.addRoute('/engines/:id', this.get, this).get(true)
 		Server.addRoute('/engines/', this.list, this).get(true)
 		Server.addRoute('/engines', this.create, this).post(true)
@@ -37,19 +37,11 @@ module.exports = {
 		Engine.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
 	},
 
-	async enginesByDimension(req, res, self) {
+	async enginesByFilters(req, res, self) {
 		if (await Permissions.check(req.token, 'engines', 'select')) {
-			const dimension = Dimensions.creatDimension(
-				req.body.length,
-				req.body.width,
-				req.body.initial_depth,
-				req.body.final_depth,
-				req.body.sidewalk_width
-			)
-			const max_capacity = Dimensions.getM3Real(dimension)
 			const logist_id = await Sessions.getSessionId(req)
 			const engines = await Engine.findAll({
-				where: { max_capacity: { [Op.gte]: !isNaN(max_capacity) ? max_capacity : 0 } },
+				where: { },
 				include: [
 					{
 						model: Equipment,

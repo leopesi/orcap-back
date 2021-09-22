@@ -19,6 +19,7 @@ const Sand = sequelize.define('sands', {
 		type: DataTypes.BOOLEAN,
 		defaultValue: false,
 	},
+	sand_kg: DataTypes.DECIMAL,
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.NOW,

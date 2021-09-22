@@ -15,7 +15,6 @@ const Provider = sequelize.define('providers', {
     },
   },
   name: DataTypes.STRING(50),
-  description: DataTypes.STRING(50),
 
   document: DataTypes.STRING(50),
   city: DataTypes.STRING(50),
@@ -26,6 +25,7 @@ const Provider = sequelize.define('providers', {
   phone: DataTypes.STRING(50),
   mail: DataTypes.STRING(50),
   website: DataTypes.STRING(50),
+  
 	active: {
 		type: DataTypes.BOOLEAN,
 		defaultValue: false,

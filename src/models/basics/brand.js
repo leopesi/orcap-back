@@ -15,15 +15,18 @@ const Brand = sequelize.define('brands', {
 			key: 'id',
 		},
 	},
-	provider_id: {
-		type: DataTypes.UUID,
-		references: {
-			model: 'providers',
-			key: 'id',
-		},
-	},
 	name: DataTypes.STRING(50),
-	description: DataTypes.STRING(50),
+	
+	document: DataTypes.STRING(50),
+	city: DataTypes.STRING(50),
+	neighborhood: DataTypes.STRING(50),
+	street: DataTypes.STRING(50),
+	number: DataTypes.STRING(50),
+	zipcode: DataTypes.STRING(50),
+	phone: DataTypes.STRING(50),
+	mail: DataTypes.STRING(50),
+	website: DataTypes.STRING(50),
+
 	active: {
 		type: DataTypes.BOOLEAN,
 		defaultValue: false,

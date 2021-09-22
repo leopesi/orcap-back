@@ -15,6 +15,7 @@ const Profile = sequelize.define('profiles', {
 			key: 'id',
 		},
 	},
+	meter: DataTypes.DECIMAL,
 	active: {
 		type: DataTypes.BOOLEAN,
 		defaultValue: false,

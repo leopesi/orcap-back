@@ -1,6 +1,9 @@
 
-ALTER TABLE providers 
-DROP COLUMN logist_id;
+ALTER TABLE brands DROP COLUMN provider_id;
+ALTER TABLE brands DROP COLUMN description;
+ALTER TABLE providers DROP COLUMN description;
+ALTER TABLE engines DROP COLUMN max_capacity;
+
 
 -- Fazer manualmente para cada sessions_mail_key que existir, exemplo: sessions_mail_key5, fazer do 1 ao 5
 select * from information_schema.table_constraints where constraint_name like 'sessions_mail%';

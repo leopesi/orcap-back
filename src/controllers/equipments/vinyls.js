@@ -16,7 +16,7 @@ module.exports = {
 	 * Seta as rotas do Controller
 	 */
 	setRoutes() {
-		Server.addRoute('/vinyls-by-dimension', this.vinylsByDimension, this).post(true)
+		Server.addRoute('/vinyls-by-logist', this.vinylsByLogist, this).post(true)
 		Server.addRoute('/vinyls/:id', this.get, this).get(true)
 		Server.addRoute('/vinyls/', this.list, this).get(true)
 		Server.addRoute('/vinyls', this.create, this).post(true)
@@ -34,7 +34,7 @@ module.exports = {
 		Vinyl.belongsTo(Equipment, { foreignKey: 'equipment_id', as: 'equipments' })
 	},
 
-	async vinylsByDimension(req, res, self) {
+	async vinylsByLogist(req, res, self) {
 		if (await Permissions.check(req.token, 'vinyls', 'select')) {
 			const logist_id = await Sessions.getSessionId(req)
 			const vinyls = await Vinyl.findAll({

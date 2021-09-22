@@ -5,7 +5,6 @@ const isuuid = require('isuuid')
 const Server = require('../../helpers/server')
 const CrudBasicsController = require('../defaults/crud-basics')
 const Brand = require('../../models/basics/brand')
-const Provider = require('../../models/basics/provider')
 const Logist = require('../../models/sessions/logist')
 
 module.exports = {
@@ -28,7 +27,6 @@ module.exports = {
 	 * Seta as as chaves dos models
 	 */
 	async setForeignKey() {
-		Brand.belongsTo(Provider, { foreignKey: 'provider_id', as: 'providers' })
 		Brand.belongsTo(Logist, { foreignKey: 'logist_id', as: 'logists' })
 	},
 
@@ -40,7 +38,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async get(req, res, self) {
-		await CrudBasicsController.get(req, res, Brand, 'providers')
+		await CrudBasicsController.get(req, res, Brand)
 	},
 
 	/**
@@ -62,11 +60,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async create(req, res, self) {
-		if (!isuuid(req.body.provider_id)) {
-			res.send({ status: 'PROVIDER_IS_EMPTY' })
-		} else {
-			await CrudBasicsController.create(req, res, Brand)
-		}
+		await CrudBasicsController.create(req, res, Brand)
 	},
 
 	/**
@@ -77,11 +71,7 @@ module.exports = {
 	 * @param {Object} self
 	 */
 	async change(req, res, self) {
-		if (!isuuid(req.body.provider_id)) {
-			res.send({ status: 'PROVIDER_IS_EMPTY' })
-		} else {
-			await CrudBasicsController.change(req, res, Brand)
-		}
+		await CrudBasicsController.change(req, res, Brand)
 	},
 
 	/**
