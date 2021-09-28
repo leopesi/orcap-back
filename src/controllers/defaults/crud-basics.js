@@ -61,10 +61,8 @@ module.exports = {
 			const md = await model.findAll({
 				where: {
 					logist_id: {
-						[Op.or]: {
-							[Op.eq]: logist_id,
-							[Op.eq]: null,
-						},
+						[Op.or]: [null,
+							logist_id],
 					},
 					active: true,
 				},

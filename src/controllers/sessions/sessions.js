@@ -122,10 +122,10 @@ module.exports = {
 						if (session.users) {
 							res.send({ token, type: 'user', name: session.users.name })
 						} else if (session.logists) {
-							res.send({ token, type: 'logist', name: session.logists.name })
+							res.send({ token, type: 'logist', name: session.logists.name, logist_id: session.logists.id })
 						} else if (session.sellers) {
 							const logist_token = Server.createToken(session.sellers.logist_id)
-							res.send({ token, logist_token, type: 'seller', name: session.sellers.name })
+							res.send({ token, logist_token, type: 'seller', name: session.sellers.name, logist_id: session.logist_id.name })
 						} else if (session.clients) {
 							res.send({ token, type: 'client', name: session.clients.name })
 						} else {
