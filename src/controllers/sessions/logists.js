@@ -8,6 +8,7 @@ const SessionBasicsController = require('../defaults/session-basics')
 const Session = require('../../models/sessions/session')
 const Logist = require('../../models/sessions/logist')
 const Permissions = require('./permissions')
+const AutosInserts = require('../../auto/')
 
 module.exports = {
 	/**
@@ -108,7 +109,9 @@ module.exports = {
 					Logist.build(req.body)
 						.save()
 						.then(async (data) => {
-							res.send({ status: 'LOGIST_INSERT_SUCCESS', data })
+							AutosInserts.start(data.id, (result) => {
+								res.send({ status: 'LOGIST_INSERT_SUCCESS', data })
+							})
 						})
 						.catch((error) => {
 							res.send({
@@ -124,10 +127,10 @@ module.exports = {
 					})
 				})
 		} else {
-      res.send({
-        status: 'MAIL_LOGIST_EXISTS',
-        error: 'Logist email already exists in the system',
-      })
+			res.send({
+				status: 'MAIL_LOGIST_EXISTS',
+				error: 'Logist email already exists in the system',
+			})
 		}
 	},
 
