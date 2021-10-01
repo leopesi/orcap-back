@@ -145,11 +145,15 @@ module.exports = {
 							dataFilter.engine_id = engine.id
 						}
 					}
+					dataFilter.sand_id = null
                     for (const j in this.sands) {
 						const sand = this.sands[j]
 						if (sand && sand.brand_id && sand.brand_id.toString().trim() == AutoFilter.data[i][1].toString().trim()) {
 							dataFilter.sand_id = sand.id
 						}
+					}
+					if (!dataFilter.sand_id) {
+						dataFilter.sand_id = this.sands[0].id
 					}
 					await Filter.build(dataFilter)
 						.save()
