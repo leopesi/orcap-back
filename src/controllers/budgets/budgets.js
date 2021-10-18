@@ -150,7 +150,6 @@ module.exports = {
 		if (await Permissions.check(req.token, 'budgets', 'update')) {
 			const budgets = await Budget.findOne({ where: { id: req.params.id } })
 			if (budgets) {
-				console.log(req.body)
 				req.body.id = req.params.id
 				req.body.expiration_date = new Date(req.body.expiration_date)
 				await Clients.saveByBudget(req, res, Clients, (result) => {
