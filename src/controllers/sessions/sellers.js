@@ -41,11 +41,11 @@ module.exports = {
 	 * @param {Object} res
 	 * @param {Object} self
 	 */
-	 async getByToken(req, res, self) {
+	async getByToken(req, res, self) {
 		if (await Permissions.check(req.token, 'sellers', 'select')) {
 			const md = await Seller.findOne({
 				where: { session_id: Server.decodedIdByToken(req.token) },
-				include: ['sessions', 'logists']
+				include: ['sessions', 'logists'],
 			})
 			if (md && md.id) {
 				delete md.password
@@ -105,33 +105,50 @@ module.exports = {
 			where: { mail: req.body.mail },
 		})
 		if (!checkSeller) {
-			Session.build(req.body)
-				.save()
-				.then((data) => {
-					req.body.session_id = data.id
-					Seller.build(req.body)
-						.save()
-						.then(async (data) => {
-							res.send({ status: 'SELLER_INSERT_SUCCESS', data })
-						})
-						.catch((error) => {
-							res.send({
-								status: 'SELLER_INSERT_ERROR',
-								error: error.parent ? error.parent.detail : error,
+			if (req.body.logist_id) {
+				Session.build(req.body)
+					.save()
+					.then((data) => {
+						req.body.session_id = data.id
+						req.body.active = true
+						Seller.build(req.body)
+							.save()
+							.then(async (data) => {
+								res.send({ status: 'SELLER_INSERT_SUCCESS', data })
 							})
-						})
-				})
-				.catch((error) => {
-					res.send({
-						status: 'SESSION_INSERT_ERROR',
-						error: error.parent ? error.parent.detail : error,
+							.catch((error) => {
+								res.send({
+									status: 'SELLER_INSERT_ERROR',
+									error: error.parent ? error.parent.detail : error,
+								})
+							})
 					})
+					.catch((error) => {
+						res.send({
+							status: 'SESSION_INSERT_ERROR',
+							error: error.parent ? error.parent.detail : error,
+						})
+					})
+			} else {
+				res.send({
+					status: 'LOGIST_TOKEN_NOT_FINDED',
+					error: '',
 				})
+			}
 		} else {
-      res.send({
-        status: 'MAIL_SELLER_EXISTS',
-        error: 'Seller email already exists in the system',
-      })
+			res.send({
+				status: 'MAIL_SELLER_EXISTS',
+				error: 'Seller email already exists in the system',
+			})
+		}
+	},
+
+	async deleteSessions(session_id, equipments) {
+		const md = await Session.findOne({
+			where: { id: session_id },
+		})
+		if (md) {
+			await Session.destroy({ where: { id: session_id } })
 		}
 	},
 

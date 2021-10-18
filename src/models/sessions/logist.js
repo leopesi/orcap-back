@@ -19,9 +19,21 @@ const Logist = sequelize.define(
 		user_type: {
 			type: DataTypes.STRING(50),
 		},
+		
+		city: DataTypes.STRING(50),
+		state: DataTypes.STRING(50),
+		neighborhood: DataTypes.STRING(50),
+		street: DataTypes.STRING(50),
+		number: DataTypes.STRING(50),
+		zipcode: DataTypes.STRING(50),
+
+		document: DataTypes.STRING(50),
 		name: DataTypes.STRING(50),
-		document: DataTypes.STRING,
 		phone: DataTypes.STRING,
+		fax: DataTypes.STRING,
+
+		website: DataTypes.STRING,
+		
 		brand_filter_id: {
 			type: DataTypes.UUID,
 			// references: {

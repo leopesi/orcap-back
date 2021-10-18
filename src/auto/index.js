@@ -96,7 +96,6 @@ module.exports = {
 				name: AutoEngine.data[i][1],
 				active: true,
 			}
-
 			const result = await this.insertEquipment(data)
 				if (result && result.dataValues && result.dataValues.id) {
 					const dataEngine = {

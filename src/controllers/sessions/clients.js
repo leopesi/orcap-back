@@ -132,6 +132,8 @@ module.exports = {
 				if (req.body.clients.document && req.body.clients.document.toString().trim() != '') {
 					if (await Permissions.check(req.token, 'sessions', 'insert')) {
 						req.body.clients.password = await Server.getHash(Date.now())
+						req.body.clients.type = 'clients'
+						req.body.clients.active = true
 						await Session.build(req.body.clients)
 							.save()
 							.then(async (result) => {

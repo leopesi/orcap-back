@@ -22,6 +22,7 @@ module.exports = {
 		Server.addRoute('/logists', this.create, this).post(false)
 		Server.addRoute('/logists/:id/restore', this.restore, this).put(true)
 		Server.addRoute('/logists/:id', this.change, this).put(true)
+		Server.addRoute('/profile/:id', this.profile, this).put(true)
 		Server.addRoute('/logists/:id', this.delete, this).delete(true)
 		this.setForeignKey()
 	},
@@ -154,6 +155,18 @@ module.exports = {
 			req.params.id = await Sessions.getSessionId(req)
 			SessionBasicsController.change(req, res, Logist)
 		}
+	},
+
+	/**
+	 * @function
+	 * Perfil de um Logista
+	 * @param {Object} req
+	 * @param {Object} res
+	 * @param {Object} self
+	 */
+	async profile(req, res, self) {
+		req.params.id = await Sessions.getSessionId(req)
+		SessionBasicsController.change(req, res, Logist)
 	},
 
 	/**

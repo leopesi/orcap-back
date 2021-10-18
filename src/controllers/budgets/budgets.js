@@ -9,6 +9,7 @@ const Clients = require('../sessions/clients')
 const CrudBasicsController = require('../defaults/crud-basics')
 const Budget = require('../../models/budgets/budget')
 const BudgetEquipment = require('../../models/budgets/budget_equipment')
+const Equipment = require('../../models/equipments/equipment')
 const Logist = require('../../models/sessions/logist')
 const Seller = require('../../models/sessions/Seller')
 const Client = require('../../models/sessions/Client')
@@ -57,12 +58,13 @@ module.exports = {
 				if (req.params.id) {
 					const md = await Budget.findOne({
 						where: { id: req.params.id, active: true },
-						include: ['sellers'],
+						include: ['sellers', 'logists'],
 					})
-					const equipments = await BudgetEquipment.findAll({
+					let equipments = await BudgetEquipment.findAll({
 						where: { budget_id: req.params.id },
 						order: [['index', 'ASC']],
 					})
+					equipments = await self.getRelsEquipments(equipments)
 					md.dataValues.equipments = equipments
 					if (md && md.dataValues && md.dataValues.id) {
 						const clients = await Client.findOne({
@@ -70,6 +72,11 @@ module.exports = {
 							include: 'sessions',
 						})
 						md.dataValues.clients = clients
+						const logists_sessions = await Logist.findOne({
+							where: { id: md.dataValues.logists.id },
+							include: 'sessions',
+						})
+						md.dataValues.logists.dataValues.logists_sessions = logists_sessions
 						res.send({ status: Budget.tableName.toUpperCase() + '_GET_SUCCESS', data: md })
 					} else {
 						res.send({ status: Budget.tableName.toUpperCase() + '_NOT_FOUND', error: Budget.tableName + ' not found' })
@@ -115,6 +122,9 @@ module.exports = {
 					Budget.build(req.body)
 						.save()
 						.then(async (data) => {
+							for (const i in req.body.equipments) {
+								await self.saveEquipment(data.id, req.body.equipments[i])
+							}
 							res.send({ status: 'BUDGETS_INSERT_SUCCESS', data })
 						})
 						.catch((error) => {
@@ -140,7 +150,8 @@ module.exports = {
 		if (await Permissions.check(req.token, 'budgets', 'update')) {
 			const budgets = await Budget.findOne({ where: { id: req.params.id } })
 			if (budgets) {
-				req.body.id = budgets.dataValues.id
+				console.log(req.body)
+				req.body.id = req.params.id
 				req.body.expiration_date = new Date(req.body.expiration_date)
 				await Clients.saveByBudget(req, res, Clients, (result) => {
 					if (result && !result.error) {
@@ -209,7 +220,7 @@ module.exports = {
 	},
 
 	async saveEquipment(budget_id, equipment) {
-		if (equipment.equipment_id || equipment.text) {
+		if ((equipment && equipment.equipment_id) || (equipment && equipment.text)) {
 			if (equipment.id) {
 				const equip = await BudgetEquipment.findOne({
 					where: { id: equipment.id },
@@ -247,13 +258,27 @@ module.exports = {
 		for (const i in equips) {
 			let finded = false
 			for (const j in equipments) {
-				if (equips[i].dataValues.id == equipments[j].id) {
-					finded = true
+				if (equips[i].dataValues && equipments[j]) {
+					if (equips[i].dataValues.id == equipments[j].id) {
+						finded = true
+					}
 				}
 			}
 			if (!finded) {
 				await BudgetEquipment.destroy({ where: { id: equips[i].dataValues.id } })
 			}
 		}
+	},
+
+	async getRelsEquipments(equipments) {
+		for (const i in equipments) {
+			const equipment = equipments[i].dataValues
+			const equip = await Equipment.findOne({
+				where: { id: equipment.equipment_id },
+				include: ['brands'],
+			})
+			equipment.equipment = equip.dataValues
+		}
+		return equipments
 	},
 }
