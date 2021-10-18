@@ -58,7 +58,7 @@ module.exports = {
 				if (req.params.id) {
 					const md = await Budget.findOne({
 						where: { id: req.params.id, active: true },
-						include: ['sellers', 'logists'],
+						include: ['sellers', 'logists', 'formats'],
 					})
 					let equipments = await BudgetEquipment.findAll({
 						where: { budget_id: req.params.id },
