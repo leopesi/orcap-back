@@ -78,6 +78,7 @@ const Budget = sequelize.define('budgets', {
 	excavation_labor: DataTypes.DECIMAL(10, 2),
 	earth_removal_labor: DataTypes.DECIMAL(10, 2),
 	short_wall_labor: DataTypes.DECIMAL(10, 2),
+	short_wall_labor_m2: DataTypes.DECIMAL(10, 2),
 	subfloor_labor: DataTypes.DECIMAL(10, 2),
 	material_placement_labor: DataTypes.DECIMAL(10, 2),
 	reserve: DataTypes.DECIMAL(10, 2),

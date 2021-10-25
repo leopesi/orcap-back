@@ -17,8 +17,6 @@ delete from sands;
 
 delete from equipments;
 
-
-
 delete from logists;
 delete from sellers;
 delete from clients;
