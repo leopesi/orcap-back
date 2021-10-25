@@ -26,6 +26,7 @@ module.exports = {
 		Server.addRoute('/budgets/', this.list, this).get(true)
 		Server.addRoute('/budgets', this.create, this).post(true)
 		Server.addRoute('/budgets/:id/restore', this.restore, this).put(true)
+		Server.addRoute('/budgets/:id/finish', this.finish, this).put(true)
 		Server.addRoute('/budgets/:id', this.change, this).put(true)
 		Server.addRoute('/budgets/:id', this.delete, this).delete(true)
 
@@ -185,6 +186,42 @@ module.exports = {
 						})
 					}
 				})
+			} else {
+				res.send({
+					status: 'BUDGETS_NOT_FOUND',
+					error: req.params,
+				})
+			}
+		} else {
+			res.send({ status: 'BUDGETS_PERMISSION_ERROR', error: 'Action not allowed' })
+		}
+	},
+
+	/**
+	 * @function
+	 * Finalizar um Orçamento
+	 * @param {Object} req
+	 * @param {Object} res
+	 * @param {Object} self
+	 */
+	async finish(req, res, self) {
+		if (await Permissions.check(req.token, 'budgets', 'update')) {
+			const budgets = await Budget.findOne({ where: { id: req.params.id } })
+			if (budgets) {
+				const data = {}
+				data.id = req.params.id
+				data.status = 'finished'
+				budgets
+					.update(data)
+					.then(async (data) => {
+						res.send({ status: 'BUDGETS_UPDATE_SUCCESS', data })
+					})
+					.catch((error) => {
+						res.send({
+							status: 'BUDGETS_UPDATE_ERROR',
+							error: error.parent ? error.parent.detail : error,
+						})
+					})
 			} else {
 				res.send({
 					status: 'BUDGETS_NOT_FOUND',
