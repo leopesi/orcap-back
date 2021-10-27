@@ -11,7 +11,7 @@ exec_sequelize = async () => {
 			const files = dirs[i]
 			for (const j in files) {
 				const model = require('../src/models/' + i + '/' + files[j])
-				//console.log(model)
+				// Deixar alter para nao apagar o banco
 				await model.sync({ alter: true })
 			}
 		} catch (e) {}
