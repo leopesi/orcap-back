@@ -12,7 +12,7 @@ const jwt = require('jsonwebtoken')
 const middlewares = require('./middlewares')
 const morgan = require('morgan')
 
-const Config = require('../config')
+const Config = require('../config/index')
 //const {SERVER_PORT} = require('../config-teste')
 
 module.exports = {
