@@ -2,22 +2,30 @@
  * @module Postgres
  * Modulo para configurar e utilizar o Postgres
  */
-
-const DBConfig = require('../config/database')
+require('dotenv').config()
+const { DB_DATABASE, DB_USER, DB_PASS, DB_HOST, DB_PORT} = require('../config/database.js')
 const { Sequelize } = require('sequelize')
+
 
 // Option 2: Passing parameters separately (other dialects)
 const sequelize = new Sequelize(
-	DBConfig.database,
-	DBConfig.user,
-	DBConfig.password,
+	DB_DATABASE,
+	DB_USER,
+	DB_PASS,
 	{
-		host: DBConfig.host,
+		host: DB_HOST,
 		dialect: 'postgres',
-		port: DBConfig.port,
+		port: DB_PORT,
 		logging: false
 	}
 )
+
+sequelize.authenticate()
+.then(function(){
+console.log(`DB conected on ${DB_HOST}, port: ${DB_PORT}. `);
+}).catch(function(){
+    console.log('Erro de conexão com o DB!');
+})
 
 module.exports = sequelize
 

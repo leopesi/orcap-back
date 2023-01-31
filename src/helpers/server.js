@@ -2,7 +2,7 @@
  * @module Server
  * Módulo para criar e utilizar o express e suas dependências
  */
-
+require('dotenv').config()
 const http = require('http')
 const express = require('express')
 const cors = require('cors')
@@ -13,6 +13,7 @@ const middlewares = require('./middlewares')
 const morgan = require('morgan')
 
 const Config = require('../config')
+//const {SERVER_PORT} = require('../config-teste')
 
 module.exports = {
 	/**
