@@ -10,6 +10,7 @@ const bodyParser = require('body-parser')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const middlewares = require('./middlewares')
+const morgan = require('morgan')
 
 const Config = require('../config')
 
@@ -23,6 +24,7 @@ module.exports = {
 
 		this.server = express()
 		this.http = http.Server(this.server)
+		this.server.use(morgan('dev'))
 
 		this.server.use(cors())
 		this.server.use(express.json())
