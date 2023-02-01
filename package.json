@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.js",
-    "test": "node test/test.js",
+    "start": "npm run index ",
+    "index": "nodemon src/index.js",
     "sequelize": "node bin/sequelize.js",
     "scheme": "node bin/scheme.js"
   },

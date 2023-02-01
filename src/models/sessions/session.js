@@ -2,8 +2,8 @@ const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = require('../../helpers/postgres')
 const User = require('./user')
 const Logist = require('./logist')
-const Seller = require('./Seller')
-const Client = require('./Client')
+const Seller = require('./seller')
+const Client = require('./client')
 
 const Session = sequelize.define(
 	'sessions',
