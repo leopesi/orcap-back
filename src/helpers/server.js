@@ -28,7 +28,7 @@ module.exports = {
 		this.server.use(morgan('dev'))
 		this.server.use(cors(
 			{
-				origin: 'http://easypool.s3-website-sa-east-1.amazonaws.com'
+				origin: '*'
 			}
 		))
 		this.server.use(express.json())
